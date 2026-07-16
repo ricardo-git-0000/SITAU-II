@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Enable_ScanView2>false</Enable_ScanView2>
+    <Enable_MatLab>true</Enable_MatLab>
+    <Enable_UpgradeFirmware2>false</Enable_UpgradeFirmware2>
+    <Enable_stlib2_vc>false</Enable_stlib2_vc>
+    <Enable_pcie_vc>true</Enable_pcie_vc>
+    <Enable_Solution>false</Enable_Solution>
+  </PropertyGroup>
+  <Target Name="PostBuild_api_pcie" AfterTargets="PostBuildEvent">
+    <Message Text="=====&gt; Copying headers file" Importance="high" />
+    <Exec Command="copy &quot;$(ProjectDir)src\api_pcie.h&quot; &quot;$(OutDir)&quot;" />
+  </Target>
+  <Import Project="$(ProjectDir)..\CommonSettingsLib.targets" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\api_pcie.h" />
+    <ClInclude Include="src\c_critical_section.h" />
+    <ClInclude Include="src\c_image_handle.h" />
+    <ClInclude Include="src\c_pcie_buffer.h" />
+    <ClInclude Include="src\c_timeout.h" />
+    <ClInclude Include="src\fileformat.h" />
+    <ClInclude Include="src\fuse\dma_buffer.h" />
+    <ClInclude Include="src\fuse\fuse.h" />
+    <ClInclude Include="src\fuse\fuse_api.h" />
+    <ClInclude Include="src\fuse\fuse_types.h" />
+    <ClInclude Include="src\fuse\sw_fifo.h" />
+    <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\pcie.h" />
+    <ClInclude Include="src\pcie_error_code.h" />
+    <ClInclude Include="src\pcie_tad.h" />
+    <ClInclude Include="src\pcie_thread_acq.h" />
+    <ClInclude Include="src\pcie_thread_ge.h" />
+    <ClInclude Include="src\pcie_utils.h" />
+    <ClInclude Include="src\stlib2\stlib2.h" />
+    <ClInclude Include="src\stlib2\stlib2_wrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\c_critical_section.cpp" />
+    <ClCompile Include="src\c_image_handle.cpp" />
+    <ClCompile Include="src\c_pcie_buffer.cpp" />
+    <ClCompile Include="src\fileformat.cpp" />
+    <ClCompile Include="src\fuse\fuse.cpp" />
+    <ClCompile Include="src\fuse\fuse_api.cpp" />
+    <ClCompile Include="src\fuse\sw_fifo.cpp" />
+    <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\pcie.cpp" />
+    <ClCompile Include="src\pcie_error_code.cpp" />
+    <ClCompile Include="src\pcie_thread_acq.cpp" />
+    <ClCompile Include="src\pcie_thread_ge.cpp" />
+    <ClCompile Include="src\pcie_utils.cpp" />
+    <ClCompile Include="src\stlib2\stlib2_wrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="src\stlib2\stlib2_x64.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>apipcie</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)_x86</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(BuildPath)$(ProjectName)\$(BinPath)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(BuildPath)$(ProjectName)\$(ObjPath)$(Platform)\$(Configuration)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>$(ProjectName)_x64</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(BuildPath)$(ProjectName)\$(BinPath)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(BuildPath)$(ProjectName)\$(ObjPath)$(Platform)\$(Configuration)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>$(ProjectName)_x86</TargetName>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(BuildPath)$(ProjectName)\$(BinPath)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(BuildPath)$(ProjectName)\$(ObjPath)$(Platform)\$(Configuration)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>$(ProjectName)_x64</TargetName>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(BuildPath)$(ProjectName)\$(BinPath)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(BuildPath)$(ProjectName)\$(ObjPath)$(Platform)\$(Configuration)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;APIPCIE_EXPORTS;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_api_pcie_DLL</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\src\;$(MSBuildProjectDirectory)\src\fuse\;$(MSBuildProjectDirectory)\src\stlib2\;$(MSBuildProjectDirectory)\src\xdma_driver\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <OpenMPSupport>
+      </OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>	
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;APIPCIE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_api_pcie_DLL</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\src\;$(MSBuildProjectDirectory)\src\fuse\;$(MSBuildProjectDirectory)\src\stlib2\;$(MSBuildProjectDirectory)\src\xdma_driver\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <OpenMPSupport>
+      </OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;APIPCIE_EXPORTS;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_api_pcie_DLL</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\src\;$(MSBuildProjectDirectory)\src\fuse\;$(MSBuildProjectDirectory)\src\stlib2\;$(MSBuildProjectDirectory)\src\xdma_driver\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <OpenMPSupport>
+      </OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;APIPCIE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_api_pcie_DLL</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\src\;$(MSBuildProjectDirectory)\src\fuse\;$(MSBuildProjectDirectory)\src\stlib2\;$(MSBuildProjectDirectory)\src\xdma_driver\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <OpenMPSupport>
+      </OpenMPSupport>
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets'))" />
+  </Target>
+</Project>

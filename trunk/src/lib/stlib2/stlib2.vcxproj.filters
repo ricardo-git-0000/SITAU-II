@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="c_buffer">
+      <UniqueIdentifier>{cdbbd931-4c77-47bb-be85-43cacf6944da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c_focal_law">
+      <UniqueIdentifier>{2d54dfdf-7c72-46ac-a449-7e0668cdb00b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c_focal_law\c_fl">
+      <UniqueIdentifier>{b6de24fe-2b59-44fe-b919-a5e44127b3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c_log_file">
+      <UniqueIdentifier>{3d46cb1f-cea0-4a24-bf94-364f3c2cf667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c_virtual_channel">
+      <UniqueIdentifier>{430735aa-b359-4ad5-8b39-87064afc92a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HW">
+      <UniqueIdentifier>{fa96e396-48ac-4ff4-92fd-2eb21f02410e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HW\MK32">
+      <UniqueIdentifier>{4a8fcf3b-9754-4b0d-8019-1b041d76bf78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HW\UCI">
+      <UniqueIdentifier>{2b4af4a1-9f15-48c8-bb9c-d8d111eddec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TOOLS">
+      <UniqueIdentifier>{c64ab5fd-1d34-4d83-a382-1f45ad205b9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TOOLS\XML">
+      <UniqueIdentifier>{91e073c5-9a47-44d7-ad5b-0550d64ab470}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\c_buffer\buffer_error_code.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\buffer_mc_data.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\buffer_pa_data.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\buffer_tfm_data.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_acq_data.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_acq.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_hw.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_mc_scan_hw_ut.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_pa_scan_hw_ut.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_ptr.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_scan.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_buffer\c_buffer_tfm_scan_hw_ut.cpp">
+      <Filter>c_buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\fl_pa_ui.cpp">
+      <Filter>c_focal_law</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\fl_scan_ui.cpp">
+      <Filter>c_focal_law</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\fl_specimen_ui.cpp">
+      <Filter>c_focal_law</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\c_fl\fl.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\c_fl\fl_aperture.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\c_fl\fl_calc.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\c_fl\fl_pa.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\c_fl\fl_scan.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_focal_law\c_fl\fl_specimen.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_log_file\c_log_file.cpp">
+      <Filter>c_log_file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_log_file\c_log_message.cpp">
+      <Filter>c_log_file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_acq_file.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_config.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_fl_pa.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_get.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_load.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_set.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_vch_tgc.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\c_virtual_channel.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\st_vch_config.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\st_vch_fl_pa.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\st_vch_get.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\st_vch_load.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\st_vch_set.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\st_vch_tgc.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_virtual_channel\vch_error_code.cpp">
+      <Filter>c_virtual_channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\api_tcp.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\c_log_protocol.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\protocol_uci.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\shared_mem.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\tcp_comm.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\tcp_error_code.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\UCI\winsock_api.cpp">
+      <Filter>HW\UCI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\c_pa_system.cpp">
+      <Filter>HW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\c_pa_system_config.cpp">
+      <Filter>HW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\c_xml_sitau_hw.cpp">
+      <Filter>HW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\sitau_error_code.cpp">
+      <Filter>HW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\sitau_hw.cpp">
+      <Filter>HW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\c_critical_section.cpp">
+      <Filter>TOOLS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\common_error_code.cpp">
+      <Filter>TOOLS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\ctimer.cpp">
+      <Filter>TOOLS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\fileformat.cpp">
+      <Filter>TOOLS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\utils.cpp">
+      <Filter>TOOLS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\XML\cxml.cpp">
+      <Filter>TOOLS\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOOLS\XML\pugixml.cpp">
+      <Filter>TOOLS\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\base_error_code.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\c_afe.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\c_base.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\c_base_config.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\c_base_get.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\c_base_load.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\c_pulser.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HW\MK32\foc_params.cpp">
+      <Filter>HW\MK32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_datalogger.cpp" />
+    <ClCompile Include="src\c_xml_config.cpp" />
+    <ClCompile Include="src\st_acq_file.cpp" />
+    <ClCompile Include="src\st_acq_file_v0.cpp" />
+    <ClCompile Include="src\st_acq_file_v1.cpp" />
+    <ClCompile Include="src\st_calc.cpp" />
+    <ClCompile Include="src\st_config.cpp" />
+    <ClCompile Include="src\st_error_code.cpp" />
+    <ClCompile Include="src\st_get.cpp" />
+    <ClCompile Include="src\st_info.cpp" />
+    <ClCompile Include="src\st_load.cpp" />
+    <ClCompile Include="src\st_range.cpp" />
+    <ClCompile Include="src\st_reg.cpp" />
+    <ClCompile Include="src\st_set.cpp" />
+    <ClCompile Include="src\st_thread_acq.cpp" />
+    <ClCompile Include="src\st_thread_scan.cpp" />
+    <ClCompile Include="src\st_thread_status.cpp" />
+    <ClCompile Include="src\c_focal_law\c_fl\fl_error_code.cpp">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\st_encoder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\c_buffer\buffer_error_code.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\buffer_mc_data.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\buffer_pa_data.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\buffer_tfm_data.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_acq_data.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_acq.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_error_code.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_hw.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_mc_scan_hw_ut.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_pa_scan_hw_ut.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_ptr.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_scan.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_buffer\c_buffer_tfm_scan_hw_ut.h">
+      <Filter>c_buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\fl_pa_ui.h">
+      <Filter>c_focal_law</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\fl_scan_ui.h">
+      <Filter>c_focal_law</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\fl_specimen_ui.h">
+      <Filter>c_focal_law</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl_aperture.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl_calc.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl_pa.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl_scan.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl_specimen.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_focal_law\c_fl\fl_tad.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_log_file\c_log_file.h">
+      <Filter>c_log_file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_log_file\c_log_message.h">
+      <Filter>c_log_file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_acq_file.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_config.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_fl_pa.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_get.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_load.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_set.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_vch_tgc.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\c_virtual_channel.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\st_vch_config.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\st_vch_fl_pa.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\st_vch_get.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\st_vch_load.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\st_vch_set.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\st_vch_tgc.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\t_vch.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_virtual_channel\vch_error_code.h">
+      <Filter>c_virtual_channel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\api_tcp.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\c_log_protocol.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\protocol_define.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\protocol_uci.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\shared_mem.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\shared_mem_type.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\tcp_comm.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\tcp_error_code.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\winsock_api.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\xil_types.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\c_pa_system.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\c_pa_system_config.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\c_sitau_hw_err.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\c_xml_sitau_hw.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\sitau_error_code.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\sitau_hw.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\t_pa_system_tad.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\t_sitau_hw.h">
+      <Filter>HW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\c_critical_section.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\common_err.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\common_error_code.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\ctimer.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\fileformat.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\protocol_log.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\string_define.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\tad.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\thread_vsapi.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\utils.h">
+      <Filter>TOOLS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\XML\cxml.h">
+      <Filter>TOOLS\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\XML\pugiconfig.hpp">
+      <Filter>TOOLS\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\XML\pugixml.hpp">
+      <Filter>TOOLS\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TOOLS\XML\xml_err.h">
+      <Filter>TOOLS\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\base_error_code.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\c_afe.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\c_base.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\c_base_config.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\c_base_get.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\c_base_load.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\c_pulser.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\foc_params.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\protocol_base.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\MK32\t_base_tad.h">
+      <Filter>HW\MK32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HW\UCI\icmplib.h">
+      <Filter>HW\UCI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_datalogger.h" />
+    <ClInclude Include="src\c_xml_config.h" />
+    <ClInclude Include="src\st_acq_file.h" />
+    <ClInclude Include="src\st_acq_file_v0.h" />
+    <ClInclude Include="src\st_acq_file_v1.h" />
+    <ClInclude Include="src\st_calc.h" />
+    <ClInclude Include="src\st_config.h" />
+    <ClInclude Include="src\st_error_code.h" />
+    <ClInclude Include="src\st_get.h" />
+    <ClInclude Include="src\st_info.h" />
+    <ClInclude Include="src\st_load.h" />
+    <ClInclude Include="src\st_range.h" />
+    <ClInclude Include="src\st_reg.h" />
+    <ClInclude Include="src\st_set.h" />
+    <ClInclude Include="src\st_thread_acq.h" />
+    <ClInclude Include="src\st_thread_scan.h" />
+    <ClInclude Include="src\st_thread_status.h" />
+    <ClInclude Include="src\stlib_dev.h" />
+    <ClInclude Include="src\stlib2.h" />
+    <ClInclude Include="src\c_focal_law\c_fl\fl_error_code.h">
+      <Filter>c_focal_law\c_fl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\st_encoder.h" />
+    <ClInclude Include="src\st_encoder_error_code.h" />
+  </ItemGroup>
+</Project>

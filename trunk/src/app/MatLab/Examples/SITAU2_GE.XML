@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<STLIB2>
+	<DateTime pName="Date and Time" pValue="Fri Dec 20 18:08:18 2024" />
+	<Version>
+		<Parameter pName="XML File Version" pValue="2.0" />
+	</Version>
+	<FUS>
+		<Parameter pName="central_frequency" pValue="0.000" />
+		<Parameter pName="rapport_focal_aperture" pValue="0.000" />
+		<Parameter pName="apodization_coefficient" pValue="0.000" />
+		<Parameter pName="lateral_position_x" pValue="0.000" />
+		<Parameter pName="pixel_size_x" pValue="0.000" />
+		<Parameter pName="pixels_x" pValue="0" />
+		<Parameter pName="depth_z" pValue="0.000" />
+		<Parameter pName="pixel_size_z" pValue="0.000" />
+		<Parameter pName="pixels_z" pValue="0" />
+		<Parameter pName="single_plane" pValue="0" />
+		<Parameter pName="samples_wavelength" pValue="0" />
+		<Parameter pName="interpolation_coefficients" pValue="0" />
+	</FUS>
+	<ACQUISITION>
+		<Parameter pName="data_link_mode" pValue="0" />
+		<Parameter pName="acquisition_mode" pValue="1" />
+		<Parameter pName="delay_sync_time" pValue="0.000" />
+		<Parameter pName="trigger_source" pValue="0" />
+	</ACQUISITION>
+	<VirtualChannel>
+		<UT_PARAMETERS>
+			<Parameter pName="gain" pValue="30.000" />
+			<Parameter pName="tgc_enabled" pValue="0" />
+			<Parameter pName="tgc_type" pValue="0" />
+			<Parameter pName="tgc_slope" pValue="0.000" />
+			<Parameter pName="tgc_points_db" pValue="[0.00,1.00]" />
+			<Parameter pName="tgc_points_mm" pValue="[0.00,1.00]" />
+			<Parameter pName="prf_frequency" pValue="100.000" />
+			<Parameter pName="sampling_freq_decimation" pValue="1" />
+			<Parameter pName="material_velocity" pValue="1540.000" />
+			<Parameter pName="acq_start_distance" pValue="0.000" />
+			<Parameter pName="acq_end_distance" pValue="20.000" />
+			<Parameter pName="acq_time_mode" pValue="0" />
+			<Parameter pName="acq_start_samples" pValue="0" />
+			<Parameter pName="acq_n_samples" pValue="3248" />
+		</UT_PARAMETERS>
+		<PULSER>
+			<Parameter pName="pulser_enabled" pValue="1" />
+			<Parameter pName="pulses_number" pValue="1" />
+			<Parameter pName="pulse_width" pValue="28" />
+			<Parameter pName="pulse_amplitude" pValue="0" />
+		</PULSER>
+		<PROBE>
+			<Parameter pName="probe_elements_number" pValue="128" />
+			<Parameter pName="probe_pitch" pValue="0.100" />
+			<Parameter pName="probe_frequency" pValue="18.000" />
+			<Parameter pName="high_voltage_maximum" pValue="50" />
+			<Parameter pName="pin_to_channel_assignment" pValue="0" />
+			<Parameter pName="pin_to_channel" pValue="[1,0,3,2,5,4,7,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,24,27,26,29,28,31,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,57,56,59,58,61,60,63,62,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,89,88,91,90,93,92,95,94,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,121,120,123,122,125,124,127,126]" />
+		</PROBE>
+		<FP_FOCAL_LAW>
+			<Parameter pName="fp_focal_law_type" pValue="1" />
+			<Parameter pName="fp_burst_number" pValue="1" />
+			<Parameter pName="fp_burst_images_number" pValue="1" />
+			<Parameter pName="fp_pwic_angles" pValue="[-15.00,-14.00,-13.00,-12.00,-11.00,-10.00,-9.00,-8.00,-7.00,-6.00,-5.00,-4.00,-3.00,-2.00,-1.00,0.00,1.00,2.00,3.00,4.00,5.00,6.00,7.00,8.00,9.00,10.00,11.00,12.00,13.00,14.00,15.00]" />
+			<Parameter pName="fp_pwic_start_angle" pValue="-15.000" />
+			<Parameter pName="fp_pwic_end_angle" pValue="15.000" />
+			<Parameter pName="fp_pwic_step_angle" pValue="1.000" />
+			<Parameter pName="fp_focal_law_file" pValue="FP_EFL - copia (3).TXT" />
+		</FP_FOCAL_LAW>
+		<MC_DSP>
+			<Parameter pName="mc_fir_enabled" pValue="0" />
+			<Parameter pName="mc_fir_low_frequency" pValue="18000.000" />
+			<Parameter pName="mc_fir_high_frequency" pValue="28000.000" />
+			<Parameter pName="mc_processing_type" pValue="0" />
+			<Parameter pName="mc_average_signals_number" pValue="0" />
+		</MC_DSP>
+		<PA_FOCAL_LAW>
+			<Parameter pName="pa_scan_type" pValue="0" />
+			<Parameter pName="pa_aperture_size" pValue="48" />
+			<Parameter pName="pa_start_element" pValue="0" />
+			<Parameter pName="pa_linear_end_element" pValue="127" />
+			<Parameter pName="pa_linear_step" pValue="1" />
+			<Parameter pName="pa_linear_angle" pValue="0.000" />
+			<Parameter pName="pa_angular_start_angle" pValue="-45.000" />
+			<Parameter pName="pa_angular_end_angle" pValue="45.000" />
+			<Parameter pName="pa_angular_step" pValue="1.000" />
+			<Parameter pName="pa_focus_enabled" pValue="1" />
+			<Parameter pName="pa_emission_auto_focus" pValue="0" />
+			<Parameter pName="pa_reception_auto_focus" pValue="1" />
+			<Parameter pName="pa_emission_focal_point" pValue="15.000" />
+			<Parameter pName="pa_reception_focal_point" pValue="50.000" />
+			<Parameter pName="pa_global_parallel_lines" pValue="1" />
+			<Parameter pName="pa_increased_acquired_samples" pValue="200" />
+		</PA_FOCAL_LAW>
+		<PA_DSP>
+			<Parameter pName="FIR Enabled" pValue="0" />
+			<Parameter pName="FIR Low Frequency [MHz]" pValue="18.000" />
+			<Parameter pName="FIR High Frequency [MHz]" pValue="28.000" />
+			<Parameter pName="Processing Type" pValue="0" />
+			<Parameter pName="Average Signals Number" pValue="8" />
+			<Parameter pName="EMI Signals Number" pValue="3" />
+		</PA_DSP>
+		<TFM_FOCAL_LAW>
+			<Parameter pName="tfm_global_parallel_lines" pValue="28" />
+		</TFM_FOCAL_LAW>
+	</VirtualChannel>
+</STLIB2>

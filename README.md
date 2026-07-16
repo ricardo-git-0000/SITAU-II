@@ -1,2 +1,0 @@
-# SITAU-II
-SDK SITAU-II

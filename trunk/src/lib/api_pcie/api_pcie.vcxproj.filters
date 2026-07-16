@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="src\api_pcie.h" />
+    <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\pcie.h" />
+    <ClInclude Include="src\pcie_error_code.h" />
+    <ClInclude Include="src\pcie_tad.h" />
+    <ClInclude Include="src\fuse\dma_buffer.h">
+      <Filter>fuse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fuse\fuse.h">
+      <Filter>fuse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fuse\fuse_api.h">
+      <Filter>fuse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fuse\fuse_types.h">
+      <Filter>fuse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fuse\sw_fifo.h">
+      <Filter>fuse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fileformat.h" />
+    <ClInclude Include="src\c_timeout.h" />
+    <ClInclude Include="src\pcie_thread_acq.h" />
+    <ClInclude Include="src\c_image_handle.h" />
+    <ClInclude Include="src\c_pcie_buffer.h" />
+    <ClInclude Include="src\pcie_utils.h" />
+    <ClInclude Include="src\c_critical_section.h" />
+    <ClInclude Include="src\pcie_thread_ge.h" />
+    <ClInclude Include="src\stlib2\stlib2.h">
+      <Filter>stlib2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stlib2\stlib2_wrapper.h">
+      <Filter>stlib2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\pcie.cpp" />
+    <ClCompile Include="src\pcie_error_code.cpp" />
+    <ClCompile Include="src\fuse\fuse.cpp">
+      <Filter>fuse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fuse\sw_fifo.cpp">
+      <Filter>fuse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileformat.cpp" />
+    <ClCompile Include="src\pcie_thread_acq.cpp" />
+    <ClCompile Include="src\c_image_handle.cpp" />
+    <ClCompile Include="src\c_pcie_buffer.cpp" />
+    <ClCompile Include="src\pcie_utils.cpp" />
+    <ClCompile Include="src\c_critical_section.cpp" />
+    <ClCompile Include="src\fuse\fuse_api.cpp">
+      <Filter>fuse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pcie_thread_ge.cpp" />
+    <ClCompile Include="src\stlib2\stlib2_wrapper.cpp">
+      <Filter>stlib2</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="stlib2">
+      <UniqueIdentifier>{6ec84b5f-9fec-45e7-ba33-3cb9d5024a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fuse">
+      <UniqueIdentifier>{f4b73455-99ef-4506-b18d-14e6f2c99d2c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="src\stlib2\stlib2_x64.lib">
+      <Filter>stlib2</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,41 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Propiedades comunes -->
+	<PropertyGroup>
+		<BinAppPath>$(SolutionDir)app\</BinAppPath>
+		<BuildPath>$(SolutionDir)make\</BuildPath>
+		<BinPath>bin\</BinPath>
+		<ObjPath>build\</ObjPath>
+	</PropertyGroup>
+
+	<Target Name="PostBuild_pcie_vc" AfterTargets="PostBuildEvent" >
+		<Message Text="=====> Copying pcie_vc Application Files" Importance="high" Condition="Exists('$(BinAppPath)') AND '$(BinAppPath)' != '$(OutDir)'" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(BinAppPath)&quot;" Condition="Exists('$(BinAppPath)') AND '$(BinAppPath)' != '$(OutDir)'" />
+		<Exec Command="copy &quot;$(OutDir)*.pdb&quot; &quot;$(BinAppPath)&quot;" Condition="Exists('$(BinAppPath)') AND '$(BinAppPath)' != '$(OutDir)'" />
+	</Target>
+
+	<Target Name="PostBuild_SystemFiles" AfterTargets="PostBuildEvent" >
+		<PropertyGroup>
+			<SystemFiles_BinPath>$(BinAppPath)\bin\</SystemFiles_BinPath>
+			<SystemFiles_BinNoBFPath>$(BinAppPath)\bin_nobf\</SystemFiles_BinNoBFPath>
+		
+			<CreateBin Condition="!Exists('$(SystemFiles_BinPath)')">true</CreateBin>
+			<CreateBin Condition=" '$(CreateBin)' == '' ">false</CreateBin> 
+
+			<CreateBinNoBF Condition="!Exists('$(SystemFiles_BinNoBFPath)')">true</CreateBinNoBF>
+			<CreateBinNoBF Condition=" '$(CreateBinNoBF)' == '' ">false</CreateBinNoBF> 
+		</PropertyGroup>	
+		
+		<Message Text="=====> Copying pcie_vc System Files" Importance="high" Condition=" '$(CreateBin)' == 'true' " />
+		<MakeDir Directories="$(SystemFiles_BinPath)" Condition=" '$(CreateBin)' == 'true' " />
+		<Exec Command="copy &quot;$(ProjectDir)SystemFiles\bin\*.*&quot; &quot;$(SystemFiles_BinPath)&quot;" Condition=" '$(CreateBin)' == 'true' " />
+
+		<Message Text="=====> Copying pcie_vc System Files" Importance="high" Condition=" '$(CreateBinNoBF)' == 'true' " />
+		<MakeDir Directories="$(SystemFiles_BinNoBFPath)" Condition=" '$(CreateBinNoBF)' == 'true' " />
+		<Exec Command="copy &quot;$(ProjectDir)SystemFiles\bin_nobf\*.*&quot; &quot;$(SystemFiles_BinNoBFPath)&quot;" Condition=" '$(CreateBinNoBF)' == 'true' " />
+
+		<Message Text="=====> Copying pcie_vc App Files" Importance="high" />
+		<Exec Command="copy &quot;$(ProjectDir)AppFiles\*.*&quot; &quot;$(BinAppPath)&quot;" />
+	</Target>
+	
+</Project>

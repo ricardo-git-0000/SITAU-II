@@ -1,0 +1,71 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Propiedades comunes -->
+	<PropertyGroup>
+		<BinAppPath>$(SolutionDir)app\</BinAppPath>
+		<BuildPath>$(SolutionDir)make\</BuildPath>
+		<BinPath>bin\</BinPath>
+		<ObjPath>build\</ObjPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<EnableCustomPostBuild  Condition="'$(Enable_ScanView2)' == ''">false</EnableCustomPostBuild >
+		<EnableCustomPostBuild  Condition="'$(Enable_Matlab)' == ''">false</EnableCustomPostBuild >
+		<EnableCustomPostBuild  Condition="'$(Enable_UpgradeFirmware2)' == ''">false</EnableCustomPostBuild >
+		<EnableCustomPostBuild  Condition="'$(Enable_stlib2_vc)' == ''">false</EnableCustomPostBuild >
+		<EnableCustomPostBuild  Condition="'$(Enable_pcie_vc)' == ''">false</EnableCustomPostBuild >
+		<EnableCustomPostBuild  Condition="'$(Enable_Solution)' == ''">false</EnableCustomPostBuild >
+	</PropertyGroup>
+
+	<Target Name="PostBuild_Solution" AfterTargets="PostBuildEvent" Condition="'$(Enable_Solution)' == 'true'">
+		<Message Text="=====> Copying Solution Files" Importance="high" />
+		<Exec Command="copy &quot;$(OutDir)*.h&quot; &quot;$(BinAppPath)&quot;" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(BinAppPath)&quot;" />
+	</Target>
+
+	<Target Name="PostBuild_MatLab" AfterTargets="PostBuildEvent" Condition="'$(Enable_Matlab)' == 'true'">
+		<PropertyGroup>
+			<DirectorioDestino>$(SolutionDir)..\MatLab\Toolbox_sitau2\</DirectorioDestino>
+		</PropertyGroup>
+		<Message Text="=====> Copying MatLab Files" Importance="high" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.h&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+	</Target>
+	
+	<Target Name="PostBuild_ScanView2" AfterTargets="PostBuildEvent" Condition="'$(Enable_ScanView2)' == 'true'">
+		<PropertyGroup>
+			<DirectorioDestino>$(SolutionDir)..\ScanView2\app\</DirectorioDestino>
+		</PropertyGroup>
+		<Message Text="=====> Copying ScanView2 Files" Importance="high" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.pdb&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+	</Target>
+	
+	<Target Name="PostBuild_UpgradeFirmware2" AfterTargets="PostBuildEvent" Condition="'$(Enable_UpgradeFirmware2)' == 'true'">
+		<PropertyGroup>
+			<DirectorioDestino>$(SolutionDir)..\UpgradeFirmware2\app\</DirectorioDestino>
+		</PropertyGroup>
+		<Message Text="=====> Copying UpgradeFirmware2 Files" Importance="high" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(DirectorioDestino);" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.pdb&quot; &quot;$(DirectorioDestino);" Condition="Exists('$(DirectorioDestino)')" />
+	</Target>	
+
+	<Target Name="PostBuild_stlib2_vc" AfterTargets="PostBuildEvent" Condition="'$(Enable_stlib2_vc)' == 'true'">
+		<PropertyGroup>
+			<DirectorioDestino>$(SolutionDir)..\stlib2_vc\app\</DirectorioDestino>
+		</PropertyGroup>
+		<Message Text="=====> Copying stlib2_vc Files" Importance="high" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.pdb&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+	</Target>	
+
+	<Target Name="PostBuild_pcie_vc" AfterTargets="PostBuildEvent" Condition="'$(Enable_pcie_vc)' == 'true'">
+		<PropertyGroup>
+			<DirectorioDestino>$(SolutionDir)..\pcie_vc\app\</DirectorioDestino>
+		</PropertyGroup>
+		<Message Text="=====> Copying pcie_vc Files" Importance="high" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.dll&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+		<Exec Command="copy &quot;$(OutDir)*.pdb&quot; &quot;$(DirectorioDestino)&quot;" Condition="Exists('$(DirectorioDestino)')" />
+	</Target>	
+
+</Project>

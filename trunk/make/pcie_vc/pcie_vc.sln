@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcie_vc", "..\..\src\APP\pcie_vc\pcie_vc.vcxproj", "{76215CAB-4007-441A-946C-3D43F97A43F0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "api_pcie", "..\..\src\lib\api_pcie\api_pcie.vcxproj", "{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Debug|x64.ActiveCfg = Debug|x64
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Debug|x64.Build.0 = Debug|x64
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Debug|x86.ActiveCfg = Debug|Win32
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Debug|x86.Build.0 = Debug|Win32
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Release|x64.ActiveCfg = Release|x64
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Release|x64.Build.0 = Release|x64
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Release|x86.ActiveCfg = Release|Win32
+		{76215CAB-4007-441A-946C-3D43F97A43F0}.Release|x86.Build.0 = Release|Win32
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Debug|x64.ActiveCfg = Debug|x64
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Debug|x64.Build.0 = Debug|x64
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Debug|x86.ActiveCfg = Debug|Win32
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Debug|x86.Build.0 = Debug|Win32
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Release|x64.ActiveCfg = Release|x64
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Release|x64.Build.0 = Release|x64
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Release|x86.ActiveCfg = Release|Win32
+		{DBEAB08C-8679-4FBD-BEAF-4EFA6B0483D5}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58C4C8B2-AAE5-48E2-96C4-97EEED175E68}
+	EndGlobalSection
+EndGlobal
