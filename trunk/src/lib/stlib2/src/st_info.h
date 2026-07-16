@@ -17,10 +17,10 @@ using namespace std;
 //---------------------------------------------------------------------------
 
 #define _VERSION_DLL_MAJOR 	    "1"
-#define _VERSION_DLL_MINOR 	    "0"
-#define _VERSION_DLL_RELEASE    "23"
+#define _VERSION_DLL_MINOR 	    "1"
+#define _VERSION_DLL_RELEASE    "0"
 #define _VERSION_DLL_BUILD 	    "0"
-#define _VERSION_DLL_DATE 		"28/04/2026"
+#define _VERSION_DLL_DATE 		"16/07/2026"
 
 #define NUM_ENCODER 4
 

@@ -20,10 +20,10 @@ using namespace std;
 // =============================================================================
 
 #define _VERSION_DLL_MAJOR    "1"
-#define _VERSION_DLL_MINOR    "0"
-#define _VERSION_DLL_RELEASE  "8"
-#define _VERSION_DLL_BUILD    "2"
-#define _VERSION_DLL_DATE     "17/06/2026"
+#define _VERSION_DLL_MINOR    "1"
+#define _VERSION_DLL_RELEASE  "0"
+#define _VERSION_DLL_BUILD    "0"
+#define _VERSION_DLL_DATE     "16/07/2026"
 
 #define N_CHANNELS_MODULE     32
 #define N_BYTES_SAMPLES       2
