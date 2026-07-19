@@ -1,6 +1,7 @@
 #ifndef pcie_utilsH
 #define pcie_utilsH
 
+#include <string>
 #include <vector>
 
 using namespace std;
