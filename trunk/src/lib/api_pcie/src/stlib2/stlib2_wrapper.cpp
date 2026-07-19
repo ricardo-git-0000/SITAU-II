@@ -1083,7 +1083,7 @@ int ST2_SetAcqDistance(float start_distance, float end_distance, int acquisition
 // -----------------------------------------------------------------------------
 int ST2_SetAcqTime(float start_time, float end_time)
 {
-	return ST2_SetAcqTime(start_time, end_time);
+	return ST_SetAcqTime(start_time, end_time);
 }
 // -----------------------------------------------------------------------------
 /**
