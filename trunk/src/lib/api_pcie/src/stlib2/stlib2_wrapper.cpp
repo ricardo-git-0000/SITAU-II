@@ -511,7 +511,7 @@ int ST2_Start(int data_sorted)
 	// INICIALIZA EL ENLACE PCIe
 	if (gb_pcie_enabled)
 	{
-		if (ST_PCIe_GetBlocksBurstNumber() > 256) return ELOG(charEPCIE_GTX_BLOCKS, EPCIE_GTX_BLOCKS);
+		if (ST_PCIe_GetBlocksBurstNumber() > 512) return ELOG(charEPCIE_GTX_BLOCKS, EPCIE_GTX_BLOCKS);
 
 		if (gb_pcie_closed)
 		{
