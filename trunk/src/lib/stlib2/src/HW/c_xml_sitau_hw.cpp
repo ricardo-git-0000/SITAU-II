@@ -613,7 +613,7 @@ CXMLParameter < vector<unsigned short>> v_uint16;
    return EXML_NONE;
 }
 // -----------------------------------------------------------------------------
-/**
+/** TODO: Habria que actualizar estos comentarios para 256 canales
 FRONTEND-V1 --> 32 canales
 FRONTEND-MUX128-32 --> 32:128
 FRONTEND-32-128X4 --> 32:512
@@ -772,8 +772,8 @@ int CXML_SITAU_HW::ResetData(void)
    data_.sitau_hardware.frontend[0].version = "0";
    data_.sitau_hardware.frontend[0].serial_number = "";
    data_.sitau_hardware.frontend[0].n_active_channels = 32;
-   data_.sitau_hardware.frontend[0].n_multiplexed_channels = 128;
-   data_.sitau_hardware.frontend[0].n_channels = 128;
+   data_.sitau_hardware.frontend[0].n_multiplexed_channels = 256; //Si el XML no especifica, arrancamos el sistema con 256 por defecto
+   data_.sitau_hardware.frontend[0].n_channels = 256;
    data_.sitau_hardware.frontend[0].n_active_channels = 32;
 
    data_.sitau_hardware.frontend[0].id_base.resize(1);
@@ -783,13 +783,13 @@ int CXML_SITAU_HW::ResetData(void)
    data_.sitau_hardware.frontend[0].connector[0].name = "PA PROBE";
    data_.sitau_hardware.frontend[0].connector[0].pin_to_channel_assignment = true;
    data_.sitau_hardware.frontend[0].connector[0].start_channel = 0;
-   data_.sitau_hardware.frontend[0].connector[0].n_total_channels = 128;
+   data_.sitau_hardware.frontend[0].connector[0].n_total_channels = 256;
 
-   data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.resize(128);
+   data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.resize(256);
    for (i = 0; i < data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.size(); i++)
       data_.sitau_hardware.frontend[0].connector[0].pin_to_channel[i] = i;
 
-   data_.sitau_hardware.frontend[0].connector[0].pin_disabled.resize(128);
+   data_.sitau_hardware.frontend[0].connector[0].pin_disabled.resize(256);
    for (i = 0; i < data_.sitau_hardware.frontend[0].connector[0].pin_disabled.size(); i++)
       data_.sitau_hardware.frontend[0].connector[0].pin_disabled[i] = 0;
 

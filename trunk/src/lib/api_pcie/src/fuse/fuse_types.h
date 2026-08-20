@@ -26,7 +26,7 @@ typedef struct {
 //  constant C_FRAME_BITS : integer := 16;
 //  constant C_IMAGE_BITS : integer := 10;
 
-#define FRAMES_PER_PACKAGE  4
+#define FRAMES_PER_PACKAGE  8  // 1 frame por módulo × 8 módulos = 256 canales
 #define WORD32_PER_BEAT     (256/32)
 
 typedef struct {

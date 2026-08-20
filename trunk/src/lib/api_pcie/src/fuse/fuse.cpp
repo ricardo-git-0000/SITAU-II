@@ -1336,7 +1336,7 @@ int fuse::get_pcie_info(uint16_t &subsys_id, uint8_t &rev_id) {
 // *** HW IMAGE SUPPORT FUNCTIONS ***
 // **********************************
 
-#define FRAMES_PER_PACKAGE  4
+#define FRAMES_PER_PACKAGE  8
 #define HEADER_LEN          1
 
 size_t fuse::calc_hw_image_size(int frame_len, int image_len) const {

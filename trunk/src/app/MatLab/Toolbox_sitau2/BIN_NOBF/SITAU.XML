@@ -2,7 +2,7 @@
 <SITAU2>
    <User_Configuration>
         <Parameter pName="STATUS_ENABLED" pValue="1"/>
-        <Parameter pName="STATUS_PERIOD_MS" pValue="300"/>
+        <Parameter pName="STATUS_PERIOD_MS" pValue="1000"/>
    </User_Configuration> 
    <Buffer_Configuration>
         <Parameter pName="PCIE_USER_BUFER_BURST_NUMBER" pValue="5"/>
@@ -13,9 +13,8 @@
         <Parameter pName="LOG_FILE_ENABLED" pValue="1"/>
         <Parameter pName="LOG_FILE_CONFIG" pValue="1"/>
         <Parameter pName="LOG_FILE_PA_BEAMFORMER" pValue="0"/>
-        <Parameter pName="LOG_FILE_TFM_BEAMFORMER" pValue="0"/>
+        <Parameter pName="LOG_FILE_TFM_BEAMFORMER" pValue="1"/>
         <Parameter pName="LOG_FILE_PCIE_USER_BUFFER" pValue="0"/>
-        <Parameter pName="LOG_PCIE_USER_BUFFER" pValue="0"/>
    </Datalogger_Configuration> 
    <Registers_Configuration>
    		<PULSER>
@@ -32,11 +31,11 @@
 			</BUSSAR>
 			<SPI>
 				<REG21>
-					<Register pName="DIGITAL_HPF_FILTER_ENABLE_1_4" pValue="0" />
+					<Register pName="DIGITAL_HPF_FILTER_ENABLE_1_4" pValue="1" />
 					<Register pName="DIGITAL_HPF_FILTER_K_CH_1_4" pValue="2" />
 				</REG21>
 				<REG33>
-					<Register pName="DIGITAL_HPF_FILTER_ENABLE_5_8" pValue="0" />
+					<Register pName="DIGITAL_HPF_FILTER_ENABLE_5_8" pValue="1" />
 					<Register pName="DIGITAL_HPF_FILTER_K_CH_5_8" pValue="2" />
 				</REG33>
 				<REG51>
@@ -64,12 +63,13 @@
 				</REG61>
 			</SPI>
 		</AFE>
-   </Registers_Configuration>
-   <Hardware_Configuration>
-      <SITAU_Hardware>
-	     <BEAMFORMER>
-            <Parameter pName="BEAMFORMER_NUMBER" pValue="1"/>
-         </BEAMFORMER>    	  
-      </SITAU_Hardware>
-   </Hardware_Configuration>  
+	</Registers_Configuration>
+	<Hardware_Configuration>
+		<Parameter pName="BASES_NUMBER" pValue="8"/>
+		<SITAU_Hardware>
+			<BEAMFORMER>
+				<Parameter pName="BEAMFORMER_NUMBER" pValue="1"/>
+			</BEAMFORMER>    	  
+		</SITAU_Hardware>
+	</Hardware_Configuration>  
 </SITAU2>

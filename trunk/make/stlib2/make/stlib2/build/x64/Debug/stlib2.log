@@ -1,0 +1,30 @@
+﻿  c_xml_config.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1892,54): warning C4305: 'argumento': truncamiento de 'double' a 'T'
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1892,54): warning C4305:         with
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1892,54): warning C4305:         [
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1892,54): warning C4305:             T=float
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1892,54): warning C4305:         ]
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1905,151): warning C4244: 'argumento': conversión de 'double' a 'T'; posible pérdida de datos
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1905,151): warning C4244:         with
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1905,151): warning C4244:         [
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1905,151): warning C4244:             T=int
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\stlib2\src\c_xml_config.cpp(1905,151): warning C4244:         ]
+  buffer_error_code.obj : se encontró un módulo MSIL; vinculación incremental deshabilitada para MSIL; ejecutando vínculo completo
+     Creando biblioteca C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.lib y objeto C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.exp
+  stlib2.vcxproj -> C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.dll
+          1 archivo(s) copiado(s).
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.lib
+          1 archivo(s) copiado(s).
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.dll
+          1 archivo(s) copiado(s).
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.pdb
+          1 archivo(s) copiado(s).
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.exp
+          1 archivo(s) copiado(s).
+  =====> Copying headers file
+          1 archivo(s) copiado(s).
+  =====> Copying pcie_vc Files
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.dll
+          1 archivo(s) copiado(s).
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\stlib2\make\stlib2\bin\x64\Debug\stlib2_x64.pdb
+          1 archivo(s) copiado(s).

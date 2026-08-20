@@ -1,0 +1,30 @@
+
+STLIB Library v1.1.0.0 (16/07/2026) - Buffer Data Information
+________________________________________________________________________
+______ STLIB2 Library Memory Size ______________________________________
+========================================================================
+
+------ GE Acquisition Buffer -------------------------------------------
+Total Memory Size (HW Acquisition Buffer): 10.49 MBytes
+
+------ GE User Data Acquisition Buffer -------------------------------------------
+
+       GEThernet - MC Buffer.-
+
+---> '(vch 0) Original Data' 
+   Size:             5463080960 Bytes (2 Bytes/Data)
+   N. Acquisitions:  10 Acquisitions (256 Blocks/Acquisition)
+   N. Signals/Block: 256 Signals (4168 Samples/Signal)
+   Trigger Lines:    10
+   Auxiliar Lines:   1
+
+---> 'Index Acquisition' 
+   Size:             10240 Bytes (4 Bytes/Data)
+   N. Acquisitions:  10 Acquisitions (256 Blocks/Acquisition)
+   N. Signals/Block: 1 Signals (1 Samples/Signal)
+   Trigger Lines:    10
+   Auxiliar Lines:   1
+
+       GEThernet - PA Buffer.-
+
+       GEThernet - PA Buffer.-

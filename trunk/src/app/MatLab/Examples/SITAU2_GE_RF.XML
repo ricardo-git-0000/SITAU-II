@@ -23,7 +23,7 @@
 		<Parameter pName="acquisition_mode" pValue="1" />
 		<Parameter pName="delay_sync_time" pValue="0.000" />
 		<Parameter pName="trigger_source" pValue="0" />
-        <Parameter pName="pause_after_burst" pValue="1" />	
+        <Parameter pName="pause_after_burst" pValue="0" />	
 	</ACQUISITION>
 	<VirtualChannel>
 		<UT_PARAMETERS>
@@ -46,7 +46,7 @@
 			<Parameter pName="pulse_amplitude" pValue="40" />
 		</PULSER>
 		<PROBE>
-			<Parameter pName="probe_elements_number" pValue="128" />
+			<Parameter pName="probe_elements_number" pValue="256" />
 			<Parameter pName="probe_pitch" pValue="0.1" />
 			<Parameter pName="probe_frequency" pValue="15" />
 			<Parameter pName="high_voltage_maximum" pValue="30" />
