@@ -1,4 +1,4 @@
-[20/08/2026 12:00:09] ---- ACQUISITION CONFIGURATION ----
+[20/08/2026 15:40:51] ---- ACQUISITION CONFIGURATION ----
 ____________________________________________________________________________________________________
 --> User Configuration
     ------------------------------------------------------------------------------------------------
@@ -10,8 +10,8 @@ ________________________________________________________________________________
     PCIe User Buffer (Bursts Number):	5
     PCIe FIFO Pointers Number:			400
     PCIe DMA Blocks Number:				450
-    PCIe Blocks Burst Number:			128
-    PCIe Focal Laws Blocks Number:		2
+    PCIe Blocks Burst Number:			32
+    PCIe Focal Laws Blocks Number:		8
 
 ____________________________________________________________________________________________________
 --> Data Logger Configuration
@@ -21,19 +21,19 @@ ________________________________________________________________________________
 ____________________________________________________________________________________________________
 --> Virtual Channel 0 (Default)
     ------------------------------------------------------------------------------------------------
-    Gain:                  60.00 dB
+    Gain:                  36.00 dB
     Material Velocity:     1500 m/s
     Acq. Mode:             RF
-    A-Scan PRF             50 Hz
+    A-Scan PRF             2000 Hz
     Sampling Frequency:    62.50 MHz
-    Pulser:                DISABLED
+    Pulser:                30 V, 32 ns, 1 pulses (High Voltage Maximum: 30 V)
 
-    Start Acquisition Time:     0.00 us
-    Start Acquisition Distance: 0.00 mm
-    End Acquisition Time:       66.67 us
-    End Acquisition Distance:   50.00 mm
-    Start Acquisition Samples:  0
-    Acquisition Samples:        4168
+    Start Acquisition Time:     2.67 us
+    Start Acquisition Distance: 2.00 mm
+    End Acquisition Time:       24.00 us
+    End Acquisition Distance:   18.00 mm
+    Start Acquisition Samples:  167
+    Acquisition Samples:        1334
 
     Operation Mode:   (1) Continuous Mode
     Delay Sync Time:  0.0 sec - 0 acquisitions
@@ -581,7 +581,7 @@ ________________________________________________________________________________
 
         PULSER.pulse_width = 7 (32.0 ns)
         PULSER.pulser_main_delay = 0
-        PULSER.CONTROL = (0) enabled
+        PULSER.CONTROL = (1) enabled
                          (0) high_z
                          (3) mode
                          (1) n_pulses
@@ -591,7 +591,7 @@ ________________________________________________________________________________
         AFE.spi.reg51 = (2) LPF_PROGRAMMABILITY
                         (0) PGA_INTEGRATOR_DISABLE
                         (0) PGA_CLAMP_LEVEL
-                        (1) PGA_GAIN_CONTROL
+                        (0) PGA_GAIN_CONTROL
 
         AFE.spi.reg52 = (0) ACTIVE_TERMINATION
                         (0) ACT_TER_ENA_CTRL
@@ -599,11 +599,11 @@ ________________________________________________________________________________
                         (1) ACTIVE_TERMINATION_ENABLE
                         (0) LNA_INPUT_CLAMP_SETTING
                         (0) LNA_INTEGRATOR_DISABLE
-                        (1) LNA_GAIN
+                        (2) LNA_GAIN
                         (0) LNA_INDIVIDUAL_CH_CNTL
 
         AFE.spi.reg59 = (2) HPF_LNA
-                        (0) DIG_TGC_ATT_GAIN
+                        (1) DIG_TGC_ATT_GAIN
                         (1) DIG_TGC_ATT
                         (0) CW_SUM_AMP_PDN
                         (0) PGA_TEST_MODE
@@ -614,8 +614,8 @@ ________________________________________________________________________________
 
         AFE.bussar = (0) external_trigger
                      (0) decimation_ratio
-                     (4168) n_samples
-                     (29) water_delay
+                     (1334) n_samples
+                     (196) water_delay
                      (0) log2_average
     ____________________________________________
     BASE (0) Address: 0 - Emitter delay (4 ns).-

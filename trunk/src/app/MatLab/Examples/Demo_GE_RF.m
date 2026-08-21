@@ -27,7 +27,7 @@ end
 
 %% SYSTEM CONFIGURATION 
 
-xmlFile = 'SITAU2_GE_NOISE.XML';
+xmlFile = 'SITAU2_GE_RF.XML';
 
 % [valid, withWarnings, performance] = Validate_XMLConfig(xmlFile);
  
@@ -46,7 +46,8 @@ end
 
 %% Get parameters from system
 
-burst_number = ST2_GetBurstsNumber();
+%burst_number = ST2_GetBurstsNumber(); %CUIDADO QUE PUEDE LLEVAR A ERROR
+number_of_fmc_per_burst=ST2_GetFMCMatrixBurstNumber();
 acquisition_mode_continuous = ST2_GetAcquisitionMode();
 
 %burst_size = ST2_MC_GetFMCMatrixSize() * ST2_GetFMCMatrixBurstNumber();
@@ -63,7 +64,7 @@ fnyq=62.5/2;
 [error,angles] = ST2_MC_GetPlaneWaveImaging_Angles_rad();
 n_angles = length(angles);
 
-burst_size = n_samples*n_channels*n_angles*n_images_burst;
+%burst_size = n_samples*n_channels*n_focal_law*number_of_fmc_per_burst;
 ptr_data = libpointer('int16Ptr', 1:mc_size);
 
 %% Acauisition loop
@@ -93,7 +94,7 @@ flag_end = false;
 try
     while (flag_end == false)
 
-    [result rf idx_burst] = ST2_MC_GetBuffer_LastMatrixCapture (ptr_data, mc_size);
+    [result, rf, idx_burst] = ST2_MC_GetBuffer_LastMatrixCapture (ptr_data, mc_size);
     if (result < 0)
         fprintf('Error PCIe_GetBufferAdress_3 error no received data code %d',n_acq_images);
         flag_end = true;
@@ -101,7 +102,7 @@ try
         if (result > 0)
             burst_counter = burst_counter + 1;
 
-            a=reshape(rf,n_samples,n_channels,n_angles,1);
+            a=reshape(rf,n_samples,n_channels,n_focal_law,1); %aqui estaba n_angles en lugar de n_focal_law
             imagesc(a(200:1000,:,5,1));
                        
         else

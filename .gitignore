@@ -1,1 +1,52 @@
+# Visual Studio
 .vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+ipch/
+
+# C/C++ build artifacts
+*.obj
+*.pch
+*.idb
+*.pdb
+*.ilk
+*.iobj
+*.ipdb
+*.tlog
+*.lastbuildstate
+*.recipe
+*.res
+*.exp
+*.lib
+*.dll
+*.exe
+
+# Solution output directories
+/trunk/make/*/app/
+/trunk/make/*/make/
+
+# XDMA driver build output
+/trunk/src/lib/api_pcie/src/xdma_driver/build/
+/trunk/src/lib/api_pcie/src/xdma_driver/build_tmp/
+
+# MATLAB temporary output (distributed MEX files remain tracked)
+*.asv
+*.m~
+slprj/
+codegen/
+
+# Logs and temporary files
+*.tmp
+*.temp
+*.bak
+*.log
+LOG_*.txt
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+.DS_Store

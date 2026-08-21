@@ -1,7 +1,5 @@
-OPEN LOG FILE - (Status Thread) - 20/08/2026 11:54:22
+OPEN LOG FILE - (Status Thread) - 20/08/2026 15:40:45
 Library Version: v1.1.0.0 16/07/2026
 -----------------------------------------------------------------
 
-[20/08/2026 11:54:23]: Status Thread: Created (Id. 3920) - TimeOut: 1000 ms
-[20/08/2026 11:59:06]: Status Thread: Deleted (Id. 3920) - TimeOut: 1000 ms
-[20/08/2026 11:59:06]: Status Thread: Created (Id. 23340) - TimeOut: 1000 ms
+[20/08/2026 15:40:46]: Status Thread: Created (Id. 18948) - TimeOut: 1000 ms

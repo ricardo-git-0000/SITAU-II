@@ -9,27 +9,20 @@ MSG_StatusConfig.-
    Status PCIe: 0
    Status Period: 1000 ms
 __________________________________________________________________________________
-MSG_TriggerSource.-
-   Trigger Source:
-      - PRF Timer 2
-   PRF Time: 0.020000
-   Encoder Steps: 0
-   N. Acquisitions: 1
-__________________________________________________________________________________
 MSG_VCH_Config (0 VCH).-
    Enabled: 1
    N. Bases: 8
    Start Element: 0
-   N. Acquired Samples: 4168
-   N. Beamformed Samples: 4168
-   PRF Time Lines: 20000.000000
+   N. Acquired Samples: 1334
+   N. Beamformed Samples: 1334
+   PRF Time Lines: 500.000031
    Processing Type: 0
    Processing Wait PRF: 0
    Processing AVR Signals: 8
    Processing EMI Signals: 3
    external_trigger: 0
    decimation_factor: 0
-   water_delay: 29
+   water_delay: 196
    log2_average: 0
    AFE SPI.-
       reg21.DIGITAL_HPF_FILTER_ENABLE_1_4: 1
@@ -39,22 +32,22 @@ MSG_VCH_Config (0 VCH).-
       reg51.LPF_PROGRAMMABILITY: 2
       reg51.PGA_INTEGRATOR_DISABLE: 0
       reg51.PGA_CLAMP_LEVEL: 0
-      reg51.PGA_GAIN_CONTROL: 1
+      reg51.PGA_GAIN_CONTROL: 0
       reg52.ACTIVE_TERMINATION: 0
       reg52.ACT_TER_ENA_CTRL: 0
       reg52.PRESET_ACTIVE_TERMINATIONS: 3
       reg52.ACTIVE_TERMINATION_ENABLE: 1
       reg52.LNA_INPUT_CLAMP_SETTING: 0
       reg52.LNA_INTEGRATOR_DISABLE: 0
-      reg52.LNA_GAIN: 1
+      reg52.LNA_GAIN: 2
       reg52.LNA_INDIVIDUAL_CH_CNTL: 0
       reg59.HPF_LNA: 2
-      reg59.DIG_TGC_ATT_GAIN: 0
+      reg59.DIG_TGC_ATT_GAIN: 1
       reg59.DIG_TGC_ATT: 1
       reg59.CW_SUM_AMP_PDN: 0
       reg59.PGA_TEST_MODE: 0
    PULSER.-
-      enabled: 0
+      enabled: 1
       high_z: 0
       mode: 3
       n_pulses: 1

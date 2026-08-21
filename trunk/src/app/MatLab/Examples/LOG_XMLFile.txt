@@ -1,37 +1,38 @@
-[20/08/2026 11:59:06] Loading Data: 'FUS'
-[20/08/2026 11:59:06]    'pixels_x': 256
-[20/08/2026 11:59:06]    'pixels_z': 150
-[20/08/2026 11:59:06]    'single_plane': 1
-[20/08/2026 11:59:06]    'samples_wavelength': 4
-[20/08/2026 11:59:06]    'interpolation_coefficients': 0
-[20/08/2026 11:59:06] Loading Data: 'ACQUISITION'
-[20/08/2026 11:59:06]    'acquisition_mode': 1
-[20/08/2026 11:59:06]    'trigger_source': 0
-[20/08/2026 11:59:06] Loading Data: 'UT_PARAMETERS'
-[20/08/2026 11:59:06]    'tgc_enabled': 0
-[20/08/2026 11:59:06]    'tgc_type': 0
-[20/08/2026 11:59:06]    'tgc_points_db': 0.000 1.000 
-[20/08/2026 11:59:06]    'tgc_points_mm': 0.000 1.000 
-[20/08/2026 11:59:06]    'sampling_freq_decimation': 1
-[20/08/2026 11:59:06] Loading Data: 'PULSER'
-[20/08/2026 11:59:06]    'pulser_enabled': 0
-[20/08/2026 11:59:06]    'pulses_number': 1
-[20/08/2026 11:59:06]    'pulse_width': 32
-[20/08/2026 11:59:06]    'pulse_amplitude': 40
-[20/08/2026 11:59:06] Loading Data: 'PROBE'
-[20/08/2026 11:59:06]    'probe_elements_number': 256
-[20/08/2026 11:59:06]    'high_voltage_maximum': 30
-[20/08/2026 11:59:06]    'pin_to_channel': 0 2 1 3 4 6 5 7 8 10 9 11 12 14 13 15 16 18 17 19 20 22 21 23 25 27 24 26 29 31 28 30 32 34 33 35 36 38 37 39 40 42 41 43 44 46 45 47 48 50 49 51 52 54 53 55 57 59 56 58 61 63 60 62 64 66 65 67 68 70 69 71 72 74 73 75 76 78 77 79 80 82 81 83 84 86 85 87 89 91 88 90 93 95 92 94 96 98 97 99 100 102 101 103 104 106 105 107 108 110 109 111 112 114 113 115 116 118 117 119 121 123 120 122 125 127 124 126 
-[20/08/2026 11:59:06] Loading Data: 'MC_DSP'
-[20/08/2026 11:59:06]    'mc_processing_type': 0
-[20/08/2026 11:59:06]    'mc_average_signals_number': 3
-[20/08/2026 11:59:06] Loading Data: 'PA_FOCAL_LAW'
-[20/08/2026 11:59:06]    'pa_scan_type': 1
-[20/08/2026 11:59:06]    'pa_aperture_size': 32
-[20/08/2026 11:59:06]    'pa_start_element': 0
-[20/08/2026 11:59:06]    'pa_linear_end_element': 31
-[20/08/2026 11:59:06]    'pa_linear_step': 1
-[20/08/2026 11:59:06]    'pa_focus_enabled': 1
-[20/08/2026 11:59:06]    'pa_reception_auto_focus': 1
-[20/08/2026 11:59:06]    'pa_global_parallel_lines': 4
-[20/08/2026 11:59:06]    'pa_increased_acquired_samples': 200
+[20/08/2026 15:40:46] Loading Data: 'FUS'
+[20/08/2026 15:40:46]    'pixels_x': 256
+[20/08/2026 15:40:46]    'pixels_z': 150
+[20/08/2026 15:40:46]    'single_plane': 1
+[20/08/2026 15:40:46]    'samples_wavelength': 4
+[20/08/2026 15:40:46]    'interpolation_coefficients': 0
+[20/08/2026 15:40:46] Loading Data: 'ACQUISITION'
+[20/08/2026 15:40:46]    'acquisition_mode': 1
+[20/08/2026 15:40:46]    'trigger_source': 0
+[20/08/2026 15:40:46]    'pause_after_burst': 0
+[20/08/2026 15:40:46] Loading Data: 'UT_PARAMETERS'
+[20/08/2026 15:40:46]    'tgc_enabled': 0
+[20/08/2026 15:40:46]    'tgc_type': 0
+[20/08/2026 15:40:46]    'tgc_points_db': 0.000 1.000 
+[20/08/2026 15:40:46]    'tgc_points_mm': 0.000 1.000 
+[20/08/2026 15:40:46]    'sampling_freq_decimation': 1
+[20/08/2026 15:40:46] Loading Data: 'PULSER'
+[20/08/2026 15:40:46]    'pulser_enabled': 1
+[20/08/2026 15:40:46]    'pulses_number': 1
+[20/08/2026 15:40:46]    'pulse_width': 32
+[20/08/2026 15:40:46]    'pulse_amplitude': 40
+[20/08/2026 15:40:46] Loading Data: 'PROBE'
+[20/08/2026 15:40:46]    'probe_elements_number': 256
+[20/08/2026 15:40:46]    'high_voltage_maximum': 30
+[20/08/2026 15:40:46]    'pin_to_channel': 0 2 1 3 4 6 5 7 8 10 9 11 12 14 13 15 16 18 17 19 20 22 21 23 25 27 24 26 29 31 28 30 32 34 33 35 36 38 37 39 40 42 41 43 44 46 45 47 48 50 49 51 52 54 53 55 57 59 56 58 61 63 60 62 64 66 65 67 68 70 69 71 72 74 73 75 76 78 77 79 80 82 81 83 84 86 85 87 89 91 88 90 93 95 92 94 96 98 97 99 100 102 101 103 104 106 105 107 108 110 109 111 112 114 113 115 116 118 117 119 121 123 120 122 125 127 124 126 
+[20/08/2026 15:40:46] Loading Data: 'MC_DSP'
+[20/08/2026 15:40:46]    'mc_processing_type': 0
+[20/08/2026 15:40:46]    'mc_average_signals_number': 3
+[20/08/2026 15:40:46] Loading Data: 'PA_FOCAL_LAW'
+[20/08/2026 15:40:46]    'pa_scan_type': 1
+[20/08/2026 15:40:46]    'pa_aperture_size': 32
+[20/08/2026 15:40:46]    'pa_start_element': 0
+[20/08/2026 15:40:46]    'pa_linear_end_element': 31
+[20/08/2026 15:40:46]    'pa_linear_step': 1
+[20/08/2026 15:40:46]    'pa_focus_enabled': 1
+[20/08/2026 15:40:46]    'pa_reception_auto_focus': 1
+[20/08/2026 15:40:46]    'pa_global_parallel_lines': 4
+[20/08/2026 15:40:46]    'pa_increased_acquired_samples': 200
