@@ -86,7 +86,7 @@ if fp_focal_law_type == 0 %FMC
 
     warning(WRN_GENERAL + " XML validation of the FMC mode is not yet implemented");
     withWarnings = true;
-    
+    n_channels
     number_of_focal_laws = probe_elements_number; %<<<<<<<<<<<<<<<<<<<< JUST FOR DEBUGING
 
 elseif fp_focal_law_type == 1 %PWIC

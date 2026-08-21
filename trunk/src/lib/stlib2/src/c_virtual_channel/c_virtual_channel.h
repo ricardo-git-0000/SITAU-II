@@ -35,7 +35,7 @@ using namespace std;
 #define VCH_PROCESSING_TYPE_MAX        3
 #define VCH_PROCESSING_N_SIGNALS_MAX   255
 
-#define VCH_MAX_LINES	            128 //!< Número máximo de líneas
+#define VCH_MAX_LINES	            256 //!< Número máximo de líneas
 #define VCH_MAX_VIRTUAL_CHANNELS    10
 
 // _____________________________________________________________________________

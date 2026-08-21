@@ -104,6 +104,16 @@ int i;
       if (sys_.connector.size() > 0)
          sys_.connector[0].start_channel = 0;
       break;
+   case 256:
+      sys_.multiplexed = true;
+      sys_.n_bases = 1;
+      sys_.n_active_channels = MOD_MAX_CH;
+      sys_.n_multiplexed_channels = n_multiplexed_channels;
+      sys_.n_total_channels = sys_.n_multiplexed_channels;
+      sys_.connector.resize(2);
+      for (i=0; i<sys_.connector.size(); i++)
+         sys_.connector[i].start_channel = i * 128;
+      break;
    case 512:
       sys_.multiplexed = true;
       sys_.n_bases = 1;

@@ -1920,7 +1920,7 @@ void XMLCFG_ResetData(TXMLCFG_VirtualChannel *xml_vch)
         xml_vch->probe.high_voltage_maximum.Reset(50);
         xml_vch->probe.pin_to_channel_assignment.Reset(0);
         v_ushort.clear();
-        for (int i = 0; i < 128; i++) v_ushort.push_back(i);
+		for (int i = 0; i < 256; i++) v_ushort.push_back(i); //Valor numero de canales hardcodeado
         xml_vch->probe.pin_to_channel.Reset(v_ushort);        
 // .............................................................................
 // .............................................................................

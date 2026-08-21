@@ -1,0 +1,14 @@
+OPEN LOG FILE - (STLIB2 Library) - 20/08/2026 15:40:45
+-----------------------------------------------------------------
+
+[20/08/2026 15:40:45]: Setting Initial System Configuration...
+
+[20/08/2026 15:40:46]: (App Error Code:  -1905) Error: Rango de datos no válido
+                       FILE:     c_vch_config.cpp 
+                       LINE:     368 
+                       FUNCTION: CVirtualChannel::LoadXMLConfigData 
+
+[20/08/2026 15:40:51]: Acquiring PRF Trigger...
+
+-----------------------------------------------------------------
+CLOSE LOG FILE - (STLIB2 Library) - 20/08/2026 16:26:02

@@ -65,7 +65,7 @@
 		</AFE>
 	</Registers_Configuration>
 	<Hardware_Configuration>
-		<Parameter pName="BASES_NUMBER" pValue="4"/>
+		<Parameter pName="BASES_NUMBER" pValue="8"/>
 		<SITAU_Hardware>
 			<BEAMFORMER>
 				<Parameter pName="BEAMFORMER_NUMBER" pValue="1"/>

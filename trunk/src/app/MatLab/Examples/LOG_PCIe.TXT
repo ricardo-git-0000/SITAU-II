@@ -1,0 +1,10 @@
+OPEN ERROR LOG FILE - 19/08/2026 14:44:59
+PCIe Library Version: v1.1.0.0 16/07/2026
+-----------------------------------------------------------------
+Wed Aug 19 14:44:59 2026
+(App Error Code:  -1924) 
+                    FILE:     c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\lib\api_pcie\src\stlib2\stlib2_wrapper.cpp 
+                    LINE:     69 
+
+-----------------------------------------------------------------
+CLOSE ERROR LOG FILE - 19/08/2026 14:44:59

@@ -1,0 +1,160 @@
+﻿  c_critical_section.cpp
+  c_image_handle.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.h(106,55): warning C4244: '=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+  (compilando archivo de origen "src/c_image_handle.cpp")
+  
+  c_pcie_buffer.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.h(106,55): warning C4244: '=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+  (compilando archivo de origen "src/c_pcie_buffer.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(506,16): warning C4477: 'sprintf' : la cadena de formato '%llu' requiere un argumento de tipo 'unsigned __int64', pero el argumento variádico 1 tiene el tipo 'long'
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(506,16):
+      considere el uso de ' %lu' en la cadena de formato
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(506,16): warning C4477: 'sprintf' : la cadena de formato '%llu' requiere un argumento de tipo 'unsigned __int64', pero el argumento variádico 2 tiene el tipo 'long'
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(506,16):
+      considere el uso de ' %lu' en la cadena de formato
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(531,20): warning C4302: 'conversión de tipo': truncamiento de '_Ty' a 'short'
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(531,20): warning C4302:         with
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(531,20): warning C4302:         [
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(531,20): warning C4302:             _Ty=short *
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(531,20): warning C4302:         ]
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(564,26): warning C4018: '>=': no coinciden signed/unsigned
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(621,29): warning C4018: '>=': no coinciden signed/unsigned
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(670,25): warning C4018: '>=': no coinciden signed/unsigned
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(703,29): warning C4018: '>=': no coinciden signed/unsigned
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(744,32): warning C4244: '+=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(745,33): warning C4018: '>=': no coinciden signed/unsigned
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(732,6): warning C4101: 'result': variable local sin referencia
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.cpp(760,6): warning C4101: 'result': variable local sin referencia
+  fileformat.cpp
+  fuse.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1339,9): warning C4005: 'FRAMES_PER_PACKAGE': redefinición de macro
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse_types.h(29,9):
+      vea la definición anterior de “FRAMES_PER_PACKAGE”
+  
+  fuse_api.cpp
+  sw_fifo.cpp
+  log.cpp
+  pcie.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.h(106,55): warning C4244: '=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+  (compilando archivo de origen "src/pcie.cpp")
+  
+  pcie_error_code.cpp
+  pcie_thread_acq.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.h(106,55): warning C4244: '=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+  (compilando archivo de origen "src/pcie_thread_acq.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_thread_acq.cpp(278,84): warning C4312: 'conversión de tipo': conversión de 'unsigned long' a 'short *' de mayor tamaño
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_thread_acq.cpp(304,36): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_thread_acq.cpp(309,99): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_thread_acq.cpp(316,21): warning C4244: '+=': conversión de 'float' a 'unsigned long'; posible pérdida de datos
+  pcie_thread_ge.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.h(106,55): warning C4244: '=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+  (compilando archivo de origen "src/pcie_thread_ge.cpp")
+  
+  pcie_utils.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(8,1): error C4430: falta el especificador de tipo; se presupone int. Nota: C++ no admite default-int
+  (compilando archivo de origen "src/pcie_utils.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(8,8): error C2146: error de sintaxis: falta ';' delante del identificador 'ChangeFileExtension'
+  (compilando archivo de origen "src/pcie_utils.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(9,1): error C4430: falta el especificador de tipo; se presupone int. Nota: C++ no admite default-int
+  (compilando archivo de origen "src/pcie_utils.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(9,1): error C2086: 'int string': nueva definición
+  (compilando archivo de origen "src/pcie_utils.cpp")
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(8,1):
+      vea la declaración de 'string'
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(9,8): error C2146: error de sintaxis: falta ';' delante del identificador 'ToUpper'
+  (compilando archivo de origen "src/pcie_utils.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\log.h(36,8): error C2872: 'string': símbolo ambiguo
+  (compilando archivo de origen "src/pcie_utils.cpp")
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(8,1):
+      puede ser 'int string'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xstring(3511,19):
+      o       'std::string'
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\log.h(36,8): error C4430: falta el especificador de tipo; se presupone int. Nota: C++ no admite default-int
+  (compilando archivo de origen "src/pcie_utils.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\log.h(36,15): error C2146: error de sintaxis: falta ';' delante del identificador 'gb_log_pcie_thread_file_path'
+  (compilando archivo de origen "src/pcie_utils.cpp")
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(19,1): error C2872: 'string': símbolo ambiguo
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\log.h(36,8):
+      puede ser 'int string'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xstring(3511,19):
+      o       'std::string'
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(19,1): error C4430: falta el especificador de tipo; se presupone int. Nota: C++ no admite default-int
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(19,1): error C2086: 'int string': nueva definición
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.h(8,1):
+      vea la declaración de 'string'
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(19,8): error C2146: error de sintaxis: falta ';' delante del identificador 'ChangeFileExtension'
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(20,1): error C2143: error de sintaxis: falta ';' delante de '{'
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(20,1): error C2447: '{': falta el encabezado de función (¿lista formal de estilo anterior?)
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(45,1): error C2872: 'string': símbolo ambiguo
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(19,1):
+      puede ser 'int string'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xstring(3511,19):
+      o       'std::string'
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(45,1): error C4430: falta el especificador de tipo; se presupone int. Nota: C++ no admite default-int
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(45,1): error C2086: 'int string': nueva definición
+      C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(19,1):
+      vea la declaración de 'string'
+  
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(45,8): error C2146: error de sintaxis: falta ';' delante del identificador 'ToUpper'
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(46,1): error C2143: error de sintaxis: falta ';' delante de '{'
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_utils.cpp(46,1): error C2447: '{': falta el encabezado de función (¿lista formal de estilo anterior?)
+  stlib2_wrapper.cpp
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\c_pcie_buffer.h(106,55): warning C4244: '=': conversión de 'unsigned __int64' a 'long'; posible pérdida de datos
+  (compilando archivo de origen "src/stlib2/stlib2_wrapper.cpp")
+  
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  Generando código...
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\stlib2\stlib2_wrapper.cpp(1087,1): warning C4717: 'ST2_SetAcqTime': recursiva para todas las rutas de acceso de control; la función provocará el desbordamiento de la pila en tiempo de ejecución
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_thread_ge.cpp(320,1): warning C4793: 'TThread_GE::olink_event_thread': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\pcie_thread_ge.cpp(320,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winbase.h(9673,1): warning C4793: '_InterlockedExchange': función compilada como nativa :
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winbase.h(9673,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\sw_fifo.cpp(28,1): warning C4793: 'sw_fifo::_empty': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\sw_fifo.cpp(28,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\sw_fifo.cpp(32,1): warning C4793: 'sw_fifo::_full': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\sw_fifo.cpp(32,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(513,1): warning C4793: 'fuse::olink_event_thread': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(513,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(527,1): warning C4793: 'fuse::get_event_olink': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(527,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(562,1): warning C4793: 'fuse::get_event_err_olink': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(562,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(664,1): warning C4793: 'fuse::dma_event_thread': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(664,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(678,1): warning C4793: 'fuse::get_event_dma': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(678,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(713,1): warning C4793: 'fuse::get_event_err_dma': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(713,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(724,1): warning C4793: 'fuse::get_event_emul': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(724,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(760,1): warning C4793: 'fuse::get_event_err_emul': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(760,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1819,1): warning C4793: 'fuse::dma_get_sw_err': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1819,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1820,1): warning C4793: 'fuse::dma_get_sw_err': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1820,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1821,1): warning C4793: 'fuse::dma_get_sw_err': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1821,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1837,1): warning C4793: 'fuse::read_hw_images': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1837,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1884,1): warning C4793: 'fuse::read_hw_images': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1884,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1908,1): warning C4793: 'fuse::read_hw_images': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1908,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1914,1): warning C4793: 'fuse::read_hw_images': función compilada como nativa :
+C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\lib\api_pcie\src\fuse\fuse.cpp(1914,1): warning C4793: 	Se encontró un elemento intrínseco no admitido en código administrado

@@ -1,0 +1,135 @@
+﻿  main.cpp
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(76): warning C4101: 'firmware_boot': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(76): warning C4101: 'firmware_base': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(226): warning C4244: 'argumento': conversión de 'unsigned __int64' a 'unsigned long'; posible pérdida de datos
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): warning C4477: 'printf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 3 tiene el tipo 'unsigned __int64'
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): note: considere el uso de ' %lld' en la cadena de formato
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): note: considere el uso de ' %Id' en la cadena de formato
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): note: considere el uso de ' %I64d' en la cadena de formato
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): warning C4477: 'printf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 4 tiene el tipo 'unsigned __int64'
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): note: considere el uso de ' %lld' en la cadena de formato
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): note: considere el uso de ' %Id' en la cadena de formato
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(231): note: considere el uso de ' %I64d' en la cadena de formato
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(168): warning C4101: 'image_addr': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(161): warning C4101: 'status_code': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(166): warning C4101: 'time_stamp': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(166): warning C4101: 'acquired_image_index': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(158): warning C4101: 'n_blocks_read': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(166): warning C4101: 'images': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(166): warning C4101: 'n_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(163): warning C4101: 'dma_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(162): warning C4101: 'sitau_status': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(166): warning C4101: 'imagen_liberada': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(163): warning C4101: 'olink_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(162): warning C4101: 'trigger_source': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(167): warning C4101: 'punteros_datos_leyes_focales': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(163): warning C4101: 'pci_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(318): warning C4244: '=': conversión de 'double' a 'unsigned long'; posible pérdida de datos
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(353): warning C4018: '>=': no coinciden signed/unsigned
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(243): warning C4101: 'n_samples': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(252): warning C4101: 'image_addr': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(256): warning C4101: 'min_data_idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(255): warning C4101: 'max_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(243): warning C4101: 'n_fl': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(258): warning C4101: 'acq_mode': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(255): warning C4101: 'min_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(246): warning C4101: 'status_code': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(250): warning C4101: 'index_trg': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(250): warning C4101: 'time_stamp': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(250): warning C4101: 'acquired_image_index': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(250): warning C4101: 'images': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(250): warning C4101: 'n_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(248): warning C4101: 'dma_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(243): warning C4101: 'counter_img': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(256): warning C4101: 'max_data_idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(247): warning C4101: 'sitau_status': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(250): warning C4101: 'imagen_liberada': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(248): warning C4101: 'olink_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(247): warning C4101: 'trigger_source': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(243): warning C4101: 'n_bursts': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(251): warning C4101: 'punteros_datos_leyes_focales': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(244): warning C4101: 'i': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(254): warning C4101: 'mean': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(248): warning C4101: 'pci_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(418): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(440): warning C4244: 'argumento': conversión de 'float' a 'size_t'; posible pérdida de datos
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(475): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(393): warning C4101: 'image_addr': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(397): warning C4101: 'min_data_idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(396): warning C4101: 'max_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(383): warning C4101: 'n_fl': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(396): warning C4101: 'min_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(387): warning C4101: 'status_code': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(383): warning C4101: 'fmc_size': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(397): warning C4101: 'idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(391): warning C4101: 'index_trg': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(391): warning C4101: 'time_stamp': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(391): warning C4101: 'acquired_image_index': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(391): warning C4101: 'images': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(383): warning C4101: 'images_per_burst': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(391): warning C4101: 'n_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(389): warning C4101: 'dma_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(397): warning C4101: 'max_data_idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(388): warning C4101: 'sitau_status': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(391): warning C4101: 'imagen_liberada': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(389): warning C4101: 'olink_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(388): warning C4101: 'trigger_source': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(383): warning C4101: 'n_bursts': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(392): warning C4101: 'punteros_datos_leyes_focales': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(384): warning C4101: 'i': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(395): warning C4101: 'mean': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(389): warning C4101: 'pci_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(557): warning C4244: '=': conversión de 'double' a 'unsigned long'; posible pérdida de datos
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(505): warning C4101: 'n_samples': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(515): warning C4101: 'image_addr': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(518): warning C4101: 'min_data_idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(517): warning C4101: 'max_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(505): warning C4101: 'n_fl': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(517): warning C4101: 'min_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(509): warning C4101: 'status_code': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(518): warning C4101: 'idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(513): warning C4101: 'index_trg': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(513): warning C4101: 'time_stamp': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(513): warning C4101: 'acquired_image_index': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(513): warning C4101: 'images': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(513): warning C4101: 'n_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(511): warning C4101: 'dma_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(505): warning C4101: 'counter_img': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(518): warning C4101: 'max_data_idx': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(510): warning C4101: 'sitau_status': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(513): warning C4101: 'imagen_liberada': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(511): warning C4101: 'olink_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(510): warning C4101: 'trigger_source': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(505): warning C4101: 'n_bursts': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(514): warning C4101: 'punteros_datos_leyes_focales': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(506): warning C4101: 'i': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(516): warning C4101: 'mean': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(511): warning C4101: 'pci_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(703): warning C4473: "printf": no se pasaron suficientes argumentos para la cadena de formato
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(703): note: los marcadores de posición y sus parámetros esperan 3 argumentos variádicos, pero se proporcionaron 2
+  c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(703): note: el argumento variádico 3 que falta es requerido por la cadena de formato '%d'
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(631): warning C4101: 'image_addr': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(624): warning C4101: 'status_code': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(629): warning C4101: 'index_trg': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(629): warning C4101: 'time_stamp': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(629): warning C4101: 'acquired_image_index': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(621): warning C4101: 'n_blocks_read': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(629): warning C4101: 'images': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(629): warning C4101: 'n_data': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(626): warning C4101: 'dma_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(625): warning C4101: 'sitau_status': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(629): warning C4101: 'imagen_liberada': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(626): warning C4101: 'olink_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(625): warning C4101: 'trigger_source': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(630): warning C4101: 'punteros_datos_leyes_focales': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(626): warning C4101: 'pci_mask_event': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(741): warning C4101: 'n_images_buffer': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(741): warning C4101: 'n_samples': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(741): warning C4101: 'n_focal_laws_block': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(741): warning C4101: 'n_images': variable local sin referencia
+c:\users\mario\desktop\development\sitau\sitau-ii\trunk\src\app\pcie_vc\src\main.cpp(741): warning C4101: 'n_focal_laws': variable local sin referencia
+  LINK : se especificó /LTCG pero no se requiere generación de código; quite /LTCG de la línea de comandos de vínculo para mejorar el rendimiento del vinculador
+  pcie_vc.vcxproj -> C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\make\pcie_vc\app\pcie_vc.exe
+  =====> Copying pcie_vc App Files
+  C:\Users\Mario\Desktop\DEVELOPMENT\SITAU\SITAU-II\trunk\src\app\pcie_vc\AppFiles\SITAU2_PCIe_TEST.xml
+          1 archivo(s) copiado(s).

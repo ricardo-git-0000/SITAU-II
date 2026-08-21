@@ -224,7 +224,7 @@ int fuse_emul_initialize(fuse_emul *drv, void *hw_mmap, const fuse_emul_Config *
   return ret;
 }
 
-#define FRAMES_PER_PACKAGE  4
+#define FRAMES_PER_PACKAGE  8
 #define WORD32_PER_BEAT     (256/32)
 #define BEAT_SIZE           (256/8)
 #define HEADER_SIZE         (1*BEAT_SIZE)

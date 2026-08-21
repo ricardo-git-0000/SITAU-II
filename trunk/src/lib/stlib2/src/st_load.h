@@ -3,7 +3,7 @@
 // ______________________________________________________________________
 // ------ L I B R E R I A S   P R O P I A S   D E L   C O M P I L A D O R
 // ======================================================================
-#include "tad.h"  //Definición de los tipos de datos
+#include "tad.h"  //DefiniciÃ³n de los tipos de datos
 
 #if defined(_MSC_VER)
    #include <vector>
@@ -27,7 +27,7 @@ using namespace std;
 #define DCFG_BL_EFIN    127
 #define DCFG_BL_STP     1
 #define DCFG_BL_APT     32
-#define DCFG_PA_NE      128
+#define DCFG_PA_NE      256
 #define DCFG_PA_FRQ     5.      // MHz
 #define DCFG_PA_D       0.      // mm
 #define DCFG_PA_PITCH   0.5     // mm
@@ -39,7 +39,7 @@ using namespace std;
 #define DCFG_WEDGE_HEI  10      // mm
 #define DCFG_WEDGE_WID  100     // mm
 #define DCFG_WEDGE_DIS  0       // mm
-#define DCFG_WEDGE_ANG  0       // º
+#define DCFG_WEDGE_ANG  0       // Âº
 #define DCFG_WEDGE_RAD  0       // mm
 #define DCFG_WEDGE_X_CENTER  0       // mm
 #define DCFG_WEDGE_Z_CENTER  0       // mm
@@ -48,9 +48,9 @@ using namespace std;
 #define DCFG_DF_REC     18.     // mm
 #define DCFG_DF_EN      1
 #define DCFG_PRF        3500    // Hz
-#define DCFG_OFFTIME    0.      // µs
+#define DCFG_OFFTIME    0.      // Âµs
 #define DCFG_PUL_N      1
-#define DCFG_PUL_W      50.    // µs
+#define DCFG_PUL_W      50.    // Âµs
 #define DCFG_ADQ_MODE   1       // VIDEO
 #define DCFG_SGN_TST    0
 #define DCFG_FIR_LOW    0.      // KHz

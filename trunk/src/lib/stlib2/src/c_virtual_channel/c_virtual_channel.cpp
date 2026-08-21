@@ -264,7 +264,7 @@ int result;
    cfg_.fp_focal_laws_type = VCH_FP_FL_TYPE_FMC;
 
    cfg_.specimen = new CFL_SpecimenUI(1540);
-   cfg_.pa_probe = new CFL_PAUI(128, 0.3, 0, 10, 0);
+   cfg_.pa_probe = new CFL_PAUI(VCH_MAX_LINES, 0.3, 0, 10, 0); // ESTE 128 esta hardcodeado, hay que cambiarlo por el número de canales del sistema
    cfg_.probe_aperture_samples = 0;
 
    cfg_.scan = new CFL_ScanUI(cfg_.pa_probe, cfg_.specimen);
@@ -296,9 +296,9 @@ int result;
    cfg_.tfm.frame_size = 0;
    cfg_.tfm.n_lines = 0;
    cfg_.tfm.emi_start_element = 0;
-   cfg_.tfm.emi_end_element = 127;
+   cfg_.tfm.emi_end_element = VCH_MAX_LINES - 1; //Deberia de ser VCH_MAX_LINES - 1
    cfg_.tfm.emi_step_element = 1;
-   cfg_.tfm.pwic_start_angle = -15;
+   cfg_.tfm.pwic_start_angle = -15; 
    cfg_.tfm.pwic_step_angle = 1;
    cfg_.tfm.pwic_end_angle = 15;
    cfg_.tfm.pwic_angles.clear();
