@@ -55,16 +55,16 @@
 			<Parameter pName="pin_to_channel_assignment" pValue="0" />
 			<Parameter pName="pin_to_channel" pValue="[1,0,3,2,5,4,7,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,24,27,26,29,28,31,30,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,57,56,59,58,61,60,63,62,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,89,88,91,90,93,92,95,94,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,121,120,123,122,125,124,127,126]" />
 		</PROBE>
-		<FP_FOCAL_LAW>
-			<Parameter pName="fp_focal_law_type" pValue="1" />
-			<Parameter pName="fp_burst_number" pValue="1" />
-			<Parameter pName="fp_burst_images_number" pValue="1" />
-			<Parameter pName="fp_pwic_angles" pValue="[-15.00,-14.00,-13.00,-12.00,-11.00,-10.00,-9.00,-8.00,-7.00,-6.00,-5.00,-4.00,-3.00,-2.00,-1.00,0.00,1.00,2.00,3.00,4.00,5.00,6.00,7.00,8.00,9.00,10.00,11.00,12.00,13.00,14.00,15.00]" />
-			<Parameter pName="fp_pwic_start_angle" pValue="-15.000" />
-			<Parameter pName="fp_pwic_end_angle" pValue="15.000" />
-			<Parameter pName="fp_pwic_step_angle" pValue="1.000" />
-			<Parameter pName="fp_focal_law_file" pValue="FP_EFL - copia (3).TXT" />
-		</FP_FOCAL_LAW>
+		<MC_FOCAL_LAW>
+			<Parameter pName="mc_focal_law_type" pValue="1" />
+			<Parameter pName="mc_burst_number" pValue="1" />
+			<Parameter pName="mc_burst_images_number" pValue="1" />
+			<Parameter pName="mc_pwic_angles" pValue="[-15.00,-14.00,-13.00,-12.00,-11.00,-10.00,-9.00,-8.00,-7.00,-6.00,-5.00,-4.00,-3.00,-2.00,-1.00,0.00,1.00,2.00,3.00,4.00,5.00,6.00,7.00,8.00,9.00,10.00,11.00,12.00,13.00,14.00,15.00]" />
+			<Parameter pName="mc_pwic_start_angle" pValue="-15.000" />
+			<Parameter pName="mc_pwic_end_angle" pValue="15.000" />
+			<Parameter pName="mc_pwic_step_angle" pValue="1.000" />
+			<Parameter pName="mc_focal_law_file" pValue="FP_EFL - copia (3).TXT" />
+		</MC_FOCAL_LAW>
 		<MC_DSP>
 			<Parameter pName="mc_fir_enabled" pValue="0" />
 			<Parameter pName="mc_fir_low_frequency" pValue="18000.000" />
