@@ -2,7 +2,7 @@
 
 path_toolbox_sitau = '..\Toolbox_sitau2\';
 %path_bin_folder = 'BIN_NOBF\'; %No beamforming version (only for FUS)
-path_bin_folder = 'BIN_256\'; %Generic version with beamforming
+path_bin_folder = 'BIN\'; %Generic version with beamforming
 
 addpath(path_toolbox_sitau)
 
@@ -37,7 +37,7 @@ if (result < 0)
     return;
 end
 
-result = ST2_SetPulseAmplitude(30);
+result = ST2_SetPulseAmplitude(0);
 if (result < 0)
     CloseSys();
     return;
@@ -103,7 +103,7 @@ try
 
     [result, rf, idx_burst] = ST2_MC_GetBuffer_LastMatrixCapture (ptr_data, mc_size);
     if (result < 0)
-        fprintf('Error PCIe_GetBufferAdress_3 error no received data code %d',n_acq_images);
+        fprintf('Error ST2_MC_GetBuffer_LastMatrixCapture: %s\n', ST2_ErrorText(result)); % Describe el resultado real sin usar n_acq_images, que no existe.
         flag_end = true;
     else    
         if (result > 0)
