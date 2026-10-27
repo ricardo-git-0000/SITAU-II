@@ -17,7 +17,7 @@ else
         ptr = libpointer('singlePtr', 1:n_data);    
         [result data] = calllib(nlib,'ST2_GetImageEntryPoint_Z', ptr, n_data);  
         if (result < 0)
-            errordlg(['   ST2_GetImageEntryPoint_Z error:' int2str(result)])
+            errordlg(['   ST2_GetImageEntryPoint_Z error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
         end
     end    
 end

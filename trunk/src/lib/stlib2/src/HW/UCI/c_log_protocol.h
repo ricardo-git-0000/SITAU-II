@@ -56,6 +56,7 @@ private:
 	TMSG_EmissionFocalLaws last_MSG_VCH_EmissionFocallaws;
 	TMSG_EmissionFocalLawsExtended last_MSG_VCH_EmissionFocallawsExtended;
 	TMSG_Beamformer last_MSG_VirtualChannel_Beamformer;
+	TMSG_BeamformerExtended last_MSG_VirtualChannel_BeamformerExtended;
 	TMSG_TGC last_MSG_VirtualChannel_TGC;
 	TFP_MSG_PASystemConfig last_MSG_PASystemConfig;
 	unsigned short last_MSG_TERMINAL_LOG;

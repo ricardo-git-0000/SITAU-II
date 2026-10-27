@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result] = calllib(nlib,'PCIe_CreateFileData', file);  
     if (result < 0)
-        errordlg(['   PCIe_CreateFileData() error:' int2str(result)])
+        errordlg(['   PCIe_CreateFileData() error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

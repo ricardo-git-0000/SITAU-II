@@ -18,6 +18,6 @@ else
     
     [result] = calllib(nlib,'ST2_MC_SetPlaneWaveImaging_Angles_rad', angles_deg, n_angles);  
     if (result < 0)
-        errordlg(['   ST2_MC_SetPlaneWaveImaging_Angles_rad() error:' int2str(result)])
+        errordlg(['   ST2_MC_SetPlaneWaveImaging_Angles_rad() error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

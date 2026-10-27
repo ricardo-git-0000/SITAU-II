@@ -357,16 +357,48 @@ float data_float;
    if ((result = LOAD_PulserEnabled(xml->pulser.pulser_enabled.Value())) < 0) { RLOG(result); }
    // .............................................................................
    // .............................................................................
+   if (!xml->probe.probe_elements_number.Update()) // Si el XML omite los elementos, utiliza todos los canales del equipo.
+   { // Resuelve el valor al cargar, incluso despues de utilizar una sonda menor.
+       int probe_elements_number = GET_ChannelsNumber(); // En modo paralelo equivale a BASES_NUMBER * MOD_MAX_CH.
+       if (probe_elements_number <= 0) return ELOG(charEVCH_DataInconsistency, EVCH_DataInconsistency); // Rechaza un sistema sin canales validos.
+       xml->probe.probe_elements_number.Value(probe_elements_number); // Conserva la ausencia del parametro y comparte el valor con la validacion del mapa.
+   } // Los valores explicitos del XML conservan el comportamiento existente.
    if ((result = LOAD_PAConfig(xml->probe.probe_elements_number.Value(), xml->probe.probe_pitch.Value(), xml->probe.probe_frequency.Value())) < 0)
    {
        RLOG(result);
    }
    if (cfg_.pa_probe != NULL)
    {
-       if (xml->probe.pin_to_channel.Value().size() > 0)
+       if (xml->probe.pin_to_channel.Update() && !xml->probe.pin_to_channel_assignment.Value()) // Valida solo un mapa explicito y activo; ausente o secuencial conserva el mapa automatico.
        {
-           if (xml->probe.pin_to_channel.Value().size() != xml->probe.probe_elements_number.Value()) { ELOG(charES2_RANGO, ES2_RANGO); }
-           else xml->probe.pin_to_channel.Assign(cfg_.pa_probe->pin_to_channel_);
+           vector<unsigned short> pin_to_channel = xml->probe.pin_to_channel.Value(); // Copia el mapa antes de resolver el segundo bloque.
+           if (cfg_.pa_probe->GetElementNumber() == 256 && pin_to_channel.size() == 128) // Solo amplia el patron de 128 para una sonda efectiva de 256 elementos.
+           { // Un mapa completo conserva siempre sus asignaciones explicitas.
+               bool used_channels[128] = { false }; // Comprueba que el patron cubre una vez cada canal del primer bloque.
+               bool valid_pattern = true; // No amplia mapas con indices fuera de rango o repetidos.
+               for (int channel_index = 0; channel_index < 128; channel_index++) // Valida las 128 entradas originales.
+               { // Protege el acceso al vector de canales utilizados.
+                   unsigned short channel = pin_to_channel[channel_index]; // Lee el canal fisico del patron.
+                   if (channel >= 128 || used_channels[channel]) // El cortocircuito evita acceder fuera de used_channels.
+                   { // Conserva el mapa incorrecto para la comprobacion de dimensiones existente.
+                       valid_pattern = false; // Impide convertir un patron incorrecto en uno de 256 entradas.
+                       break; // Termina la validacion al detectar el primer defecto.
+                   } // Fin de la comprobacion del canal.
+                   used_channels[channel] = true; // Marca el canal para detectar duplicados.
+               } // Fin de la validacion del primer bloque.
+               if (valid_pattern) // Solo replica una permutacion completa de 0 a 127.
+               { // Construye los canales 128 a 255 con el mismo orden de cableado.
+                   pin_to_channel.resize(256); // Reserva las dos mitades sin alterar la primera.
+                   for (int channel_index = 0; channel_index < 128; channel_index++) // Repite cada asignacion en el segundo bloque.
+                       pin_to_channel[channel_index + 128] = pin_to_channel[channel_index] + 128; // El desplazamiento correcto es 128, no 127.
+                   xml->probe.pin_to_channel.Value(pin_to_channel); // Entrega el mapa resuelto a la validacion y asignacion existentes.
+               } // Los patrones invalidos siguen la gestion de errores existente.
+           } // Los mapas de 128 para sondas de 128 y los mapas completos no se modifican.
+           if (xml->probe.pin_to_channel.Value().size() != cfg_.pa_probe->GetElementNumber()) // Comprueba la longitud del mapa resuelto.
+           { // Encierra ELOG porque su macro ya incluye un punto y coma final.
+               return ELOG(charEVCH_PinToChannelSize, EVCH_PinToChannelSize); // Detiene la carga si el mapa no cubre los elementos efectivos.
+           } // El retorno anterior impide aplicar un mapa incompatible.
+           xml->probe.pin_to_channel.Assign(cfg_.pa_probe->pin_to_channel_); // Aplica el mapa solo cuando la longitud es correcta.
        }
        cfg_.pa_probe->pin_to_channel_assignment_ = xml->probe.pin_to_channel_assignment.Value();
        //xml->probe.pin_to_channel_assignment.Set(cfg_.pa_probe->pin_to_channel_assignment_);

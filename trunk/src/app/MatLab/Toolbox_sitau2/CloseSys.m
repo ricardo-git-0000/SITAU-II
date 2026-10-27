@@ -24,7 +24,7 @@ if error ~= 1
 else
     error = calllib(nlib,'ST2_CloseSys');
     if error < 0
-        errordlg(['   ST2_CloseSys error: ' int2str(error)]);
+        errordlg(['   ST2_CloseSys error: ' ST2_ErrorText(error, nlib)]); % Muestra el codigo junto a su descripcion de la DLL.
     end   
     unloadlibrary(nlib);
 end

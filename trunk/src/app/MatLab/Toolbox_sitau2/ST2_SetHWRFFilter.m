@@ -14,6 +14,6 @@ if result ~= 1
 else
     result = calllib(nlib,'ST2_SetHWRFFilter', low_frequency, high_frequency);  
     if (result < 0)
-        errordlg(['   ST2_SetHWRFFilter error:' int2str(result)])
+        errordlg(['   ST2_SetHWRFFilter error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

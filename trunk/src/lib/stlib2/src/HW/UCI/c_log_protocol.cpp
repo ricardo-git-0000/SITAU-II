@@ -150,7 +150,7 @@ void CLOG_PROTOCOL::LastMessage(TMSG_Beamformer* data)
 // -----------------------------------------------------------------------------
 void CLOG_PROTOCOL::LastMessage(TMSG_BeamformerExtended* data)
 {
-    memcpy(&last_MSG_VirtualChannel_Beamformer, data, sizeof(TMSG_BeamformerExtended));
+    memcpy(&last_MSG_VirtualChannel_BeamformerExtended, data, sizeof(TMSG_BeamformerExtended));
     sent_MSG_VirtualChannel_BeamformerExtended = true;
 }
 // -----------------------------------------------------------------------------

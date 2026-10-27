@@ -104,6 +104,15 @@ int result = 1;
    case EVCH_IdPASystem:
       sprintf(str, "(Error Code %d) '%s'",error_code, charEVCH_IdPASystem);
       break;
+   case EVCH_USER_MODE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEVCH_USER_MODE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EVCH_ACQUISITION_TYPE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEVCH_ACQUISITION_TYPE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EVCH_PinToChannelSize: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEVCH_PinToChannelSize); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default: result = 0; break;
    }
    return result;

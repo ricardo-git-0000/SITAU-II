@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result] = calllib(nlib,'ST2_SetAcqDistance', start_distance, end_distance, acquisition_time_mode);  
     if (result < 0)
-        errordlg(['   ST2_SetAcqDistance error:' int2str(result)])
+        errordlg(['   ST2_SetAcqDistance error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

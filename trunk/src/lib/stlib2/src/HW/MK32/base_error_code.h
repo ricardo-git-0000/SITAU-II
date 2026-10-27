@@ -65,4 +65,6 @@
 // ------ P R O T O T I P O   D E   F U N C I O N E S
 // =============================================================================
 
+int ST_GetBASEErrorCode(int error_code, char *str); // Permite consultar los errores de base desde el traductor general.
+
 #endif

@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result data] = calllib(nlib,'ST2_MC_GetBuffer_MatrixCapture', ptr_data, image_size, index_trigger_line);  
     if (result < 0)
-        errordlg(['   ST2_MC_GetBuffer_MatrixCapture() error:' int2str(result)])
+        errordlg(['   ST2_MC_GetBuffer_MatrixCapture() error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

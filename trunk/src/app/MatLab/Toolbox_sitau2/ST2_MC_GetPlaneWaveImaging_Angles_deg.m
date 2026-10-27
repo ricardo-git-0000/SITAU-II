@@ -17,7 +17,7 @@ else
         ptr = libpointer('singlePtr', 1:n_data);    
         [result angles] = calllib(nlib,'ST2_MC_GetPlaneWaveImaging_Angles_deg', ptr, n_data);  
         if (result < 0)
-            errordlg(['   ST2_MC_GetPlaneWaveImaging_Angles_deg error:' int2str(result)])
+            errordlg(['   ST2_MC_GetPlaneWaveImaging_Angles_deg error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
         end
     end    
 end

@@ -14,6 +14,6 @@ if result ~= 1
 else
     result = calllib(nlib,'ST2_SaveXMLFileConfig', file);  
     if (result < 0)
-        errordlg(['   ST2_SaveXMLFileConfig() error:' int2str(result)])
+        errordlg(['   ST2_SaveXMLFileConfig() error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

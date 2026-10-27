@@ -36,6 +36,13 @@ using namespace std;
 #include "api_pcie.h"
 #include "c_timeout.h"
 
+static string ErrorText(int error_code) // Consulta la misma descripcion que utiliza MATLAB.
+{ // Mantiene el buffer local para no compartir mensajes entre llamadas.
+    char description[4096] = { 0 }; // Reserva espacio para el catalogo de errores.
+    if (ST2_GetError(error_code, description) != 1) sprintf_s(description, sizeof(description), "(Error Code %d) Codigo de error no documentado", error_code); // Hace explicitos los codigos desconocidos.
+    return string(description); // Devuelve un mensaje independiente del buffer local.
+} // Fin del formateador de la aplicacion de consola.
+
 // ______________________________________________________________________
 // ------ T I P O S   D E   D A T O S
 // ======================================================================
@@ -138,7 +145,7 @@ void Demo_GEStatus(void)
             // Lectura del estado
             if ((result = ST2_GetStatus(&status_code, &rd_address, &wr_address, &n_overflows, &sitau_status, &trigger_source, &n_acquisitions, &ind_acquisitions, &size_buffer_command)) < 0)
             {
-               printf("\r\n Error Code (%d) - ST_GetStatus() ", result);
+               printf("\r\n %s - ST_GetStatus() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
             }
             printf("\r\n Status Code (0x%.16llX) - RD Addr (0x%.8X) - WR Addr (0x%.8X) - N. Overflows (%lu) - SITAU Status (%d) - Trig. Source (%d) - N. Acquisitions (%lu) - Ind. Acquisitions (%lu) - Buffer Size (%lu)", status_code, rd_address, wr_address, n_overflows, sitau_status, trigger_source, n_acquisitions, ind_acquisitions, size_buffer_command);
             timer_status->Start();
@@ -225,7 +232,7 @@ void Demo_LastImage(void)
 			
 			if ((result = ST2_MC_GetBuffer_LastMatrixCapture(ptr_data, image_size, &index_trg)) < 0)
 			{
-				printf("\r\n Error Code (%d) - ST2_GetBufferFP_LastImage() ", result);
+				printf("\r\n %s - ST2_GetBufferFP_LastImage() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
 				end_acquisition = true;
 			}
 			else if (result > 0) printf("\r\nImagen extraida del buffer: Index Trigger (%d) Samples Read (%d) --> (%d Samples/Image - %d Samples/FocalLaw - %d Samples/A-Scan - %d FocalLaws)", index_trg, result, image_size, focal_law_size, n_samples, n_focal_laws);
@@ -266,9 +273,9 @@ void Demo_PCIe_GetBufferData_Burst(bool sorted)
 
 	if ((result = ST2_LoadXMLFileConfig("SITAU2_PCIe_TEST.XML")) < 0)
 	{
-		snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - ST2_LoadXMLFileConfig() ", result);
-		printf(msg);
-		fprintf(f, msg);
+		snprintf(msg, sizeof(msg), "\r\n %s - ST2_LoadXMLFileConfig() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+		printf("%s", msg); // Imprime el mensaje como texto literal.
+		fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 		return;
 	}
 
@@ -296,8 +303,8 @@ void Demo_PCIe_GetBufferData_Burst(bool sorted)
 	if ((ptr_data = (short int *)malloc(burst_size * 2)) == NULL)
 	{
 		snprintf(msg, sizeof(msg), "\r\n Error malloc (%d Bytes)", burst_size * 2);
-		printf(msg);
-		fprintf(f, msg);
+		printf("%s", msg); // Imprime el mensaje como texto literal.
+		fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 		return;
 	}
 
@@ -306,9 +313,9 @@ void Demo_PCIe_GetBufferData_Burst(bool sorted)
 	else printf("\r\n (%d) Starting Acquisition (UNSORTED)... ", counter_start);
 	if ((result = ST2_Start(sorted ? 1 : 0)) < 0)
 	{
-		snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - ST2_Start() ", result);
-		printf(msg);
-		fprintf(f, msg);
+		snprintf(msg, sizeof(msg), "\r\n %s - ST2_Start() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+		printf("%s", msg); // Imprime el mensaje como texto literal.
+		fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 		return;
 	}
 	printf("OK");
@@ -339,9 +346,9 @@ void Demo_PCIe_GetBufferData_Burst(bool sorted)
 		{
 			if ((result = PCIe_GetBufferData_Burst(ptr_data, burst_size, 3000)) < 0)
 			{
-				snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - PCIe_GetBufferData_Burst() ", result);
-				printf(msg);
-				fprintf(f, msg);
+				snprintf(msg, sizeof(msg), "\r\n %s - PCIe_GetBufferData_Burst() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+				printf("%s", msg); // Imprime el mensaje como texto literal.
+				fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 				end_acquisition = true;
 			}
 			else
@@ -358,14 +365,14 @@ void Demo_PCIe_GetBufferData_Burst(bool sorted)
 					mbPerSeconds = fmc_size / (timer->Time() * 1000000) * counter_images * 2;
 
 					snprintf(msg, sizeof(msg), "\n%.2f GB/s - PCIe_GetBufferData_Burst(): %d acquired images - %d Bursts", mbPerSeconds, result, counter_burst);
-					printf(msg);
-					fprintf(f, msg);
+					printf("%s", msg); // Imprime el mensaje como texto literal.
+					fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 				}
 				else
 				{
 					snprintf(msg, sizeof(msg), "\nPCIe_GetBufferData_Burst(): TIMEOUT");
-					printf(msg);
-					fprintf(f, msg);
+					printf("%s", msg); // Imprime el mensaje como texto literal.
+					fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 				}
 			}
 		}
@@ -465,7 +472,7 @@ void Demo_PCIe_TestTransfer_FullBW(int sorted)
 		{
 			if ((result = PCIe_GetBufferAddress_Burst(&addr_data, &idx_burst, &timestamp, &n_images_buffer, 3000)) < 0)
 			{
-				printf("\n Error Code (%d) - PCIe_GetBufferAddress_Burst()\n", result);
+				printf("\n %s - PCIe_GetBufferAddress_Burst()\n", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
 				end_acquisition = true;
 			}
 			if (result > 0)
@@ -530,9 +537,9 @@ void Demo_PCIe_GetBufferAddress_Burst(bool sorted)
 
 	if ((result = ST2_LoadXMLFileConfig("SITAU2_PCIe_TEST.XML")) < 0)
 	{
-		snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - ST2_LoadXMLFileConfig() ", result);
-		printf(msg);
-		fprintf(f, msg);		
+		snprintf(msg, sizeof(msg), "\r\n %s - ST2_LoadXMLFileConfig() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+		printf("%s", msg); // Imprime el mensaje como texto literal.
+		fprintf(f, "%s", msg);		 // Guarda la descripcion sin interpretar caracteres de formato.
 		return;
 	}
   
@@ -545,9 +552,9 @@ void Demo_PCIe_GetBufferAddress_Burst(bool sorted)
 	else printf("\r\n (%d) Starting Acquisition (UNSORTED)... ", counter_start);
 	if ((result = ST2_Start(sorted ? 1 : 0)) < 0)
 	{
-		snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - ST2_Start() ", result);
-		printf(msg);
-		fprintf(f, msg);
+		snprintf(msg, sizeof(msg), "\r\n %s - ST2_Start() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+		printf("%s", msg); // Imprime el mensaje como texto literal.
+		fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 		return;
 	}
 	printf("OK");
@@ -566,9 +573,9 @@ void Demo_PCIe_GetBufferAddress_Burst(bool sorted)
 				else printf("\r\n (%d) Starting Acquisition (UNSORTED)... ", counter_start);
 				if ((result = ST2_Start(sorted ? 1 : 0)) < 0)
 				{
-					snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - ST2_Start() ", result);
-					printf(msg);
-					fprintf(f, msg);
+					snprintf(msg, sizeof(msg), "\r\n %s - ST2_Start() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+					printf("%s", msg); // Imprime el mensaje como texto literal.
+					fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 					return;
 				}
 				printf("OK");
@@ -580,9 +587,9 @@ void Demo_PCIe_GetBufferAddress_Burst(bool sorted)
 		{
 			if ((result = PCIe_GetBufferAddress_Burst(&addr_data, &idx_burst, &timestamp, &n_images_buffer, 2000)) < 0)
 			{
-				snprintf(msg, sizeof(msg), "\r\n Error Code (%d) - PCIe_GetBufferAddress_Burst() ", result);
-				printf(msg);
-				fprintf(f, msg);
+				snprintf(msg, sizeof(msg), "\r\n %s - PCIe_GetBufferAddress_Burst() ", ErrorText(result).c_str()); // Incluye el significado del codigo devuelto por la API.
+				printf("%s", msg); // Imprime el mensaje como texto literal.
+				fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 				end_acquisition = true;
 			}
 			else
@@ -595,14 +602,14 @@ void Demo_PCIe_GetBufferAddress_Burst(bool sorted)
 					mbPerSeconds = burst_size / (timer->Time() * 1000000) * counter_burst * 2;
 
 					snprintf(msg, sizeof(msg), "\n[%d] %.2f GB/s - PCIe_GetBufferAddress_Burst(): %d acquired images - %d Images/Burst - AddrData(0x%llX) - AddrTimeStamp[%d]", idx_burst, mbPerSeconds, result, n_images_buffer, addr_data, timestamp);
-					printf(msg);
-					fprintf(f, msg);
+					printf("%s", msg); // Imprime el mensaje como texto literal.
+					fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 				}
 				else
 				{
 					snprintf(msg, sizeof(msg), "\nPCIe_GetBufferAddress_Burst(): TIMEOUT");
-					printf(msg);
-					fprintf(f, msg);
+					printf("%s", msg); // Imprime el mensaje como texto literal.
+					fprintf(f, "%s", msg); // Guarda la descripcion sin interpretar caracteres de formato.
 				}
 			}
 		}
@@ -695,7 +702,7 @@ void Demo_PCIe_BurstAddres(void)
     {
       if ((n_acq_images = PCIe_GetBufferAddress_Burst_2(&address, timeout_ms)) < 0)
       {
-        printf("\r\n Error Code (%d) - PCIe_GetBuffer_BurstAddress() ", n_acq_images);
+        printf("\r\n %s - PCIe_GetBuffer_BurstAddress() ", ErrorText(n_acq_images).c_str()); // Incluye el significado del codigo devuelto por la API.
         end_acquisition = true;
       }
       else

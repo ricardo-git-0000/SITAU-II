@@ -144,10 +144,12 @@ int i;
    sys_.id_base_first = id_base_first;
    sys_.id_base_last = sys_.id_base_first + sys_.n_bases - 1;
 
-   //sys_.n_modules_base = FP_BASE_NUM_MOD;
-   //sys_.n_modules = sys_.n_bases * FP_BASE_NUM_MOD;
-   //sys_.id_mod_first = sys_.id_base_first * FP_BASE_NUM_MOD;
-   //sys_.id_mod_last = (sys_.id_base_last + 1) * FP_BASE_NUM_MOD - 1;
+   // En la arquitectura actual, cada base FPGA representa un módulo de 32 canales.
+   // Para el modo multiplexado, el switch anterior deja n_bases a 1.
+   sys_.n_modules_base = 1;
+   sys_.n_modules = sys_.n_bases * sys_.n_modules_base;
+   sys_.id_mod_first = sys_.id_base_first;
+   sys_.id_mod_last = sys_.id_mod_first + sys_.n_modules - 1;
 
    sys_.id_fl_first = 0;
    sys_.id_fl_last = 0;

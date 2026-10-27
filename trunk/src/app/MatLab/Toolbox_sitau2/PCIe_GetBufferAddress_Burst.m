@@ -20,6 +20,6 @@ if result ~= 1
 else
     [result address idx_burst timestamp n_img_buffer] = calllib(nlib,'PCIe_GetBufferAddress_Burst', ptr_address_data,  ptr_idx_burst, ptr_timestamp, ptr_n_img_buffer, timeout);  
     if (result < 0)
-        errordlg(['   PCIe_GetBufferAddress_Burst error:' int2str(result)])
+        errordlg(['   PCIe_GetBufferAddress_Burst error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

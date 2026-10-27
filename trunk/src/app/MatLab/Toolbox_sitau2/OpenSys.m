@@ -65,7 +65,7 @@ disp(['SITAU API v' lib_version]);
 
 error = calllib(nlib,'ST2_OpenSys', path, ip, tcp_port_cfg, tcp_port_acq, pcie_enabled);
 if (error < 0)
-    disp(['Error ST2_OpenSys(): ' int2str(error)])
+    disp(['Error ST2_OpenSys(): ' ST2_ErrorText(error, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     calllib(nlib,'ST2_CloseSys');
     return;
 end
@@ -76,7 +76,7 @@ firmware_uci_hw = repmat([' '], 1, 255);
 firmware_mk32_hw = repmat([' '], 1, 255);
 [error firmware_ethernet firmware_uci_sw firmware_uci_hw firmware_mk32_hw] = calllib(nlib, 'ST2_InfoFirmwareVersion', firmware_ethernet, firmware_uci_sw, firmware_uci_hw, firmware_mk32_hw);
 if (error < 0)
-    disp(['Error ST2_InfoFirmwareVersion():' int2str(error)])
+    disp(['Error ST2_InfoFirmwareVersion():' ST2_ErrorText(error, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     calllib(nlib,'ST2_CloseSys');
     return;
 end
@@ -95,7 +95,7 @@ if pcie_enabled == 1
     pcie_emul_signature = repmat([' '], 1, 255);
     [pcie_id pcie_olink_signature pcie_fuse_dma_signature pcie_emul_signature] = calllib(nlib, 'PCIe_GetSystemInfo', pcie_id, pcie_olink_signature, pcie_fuse_dma_signature, pcie_emul_signature);
     if (error < 0)
-        errordlg(['   ST2_InfoFirmwareVersion error:' int2str(error)])
+        errordlg(['   ST2_InfoFirmwareVersion error:' ST2_ErrorText(error, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
     disp(pcie_id);
     disp(pcie_olink_signature);

@@ -80,6 +80,9 @@ int result = 1;
 
    case ETCP_Checksum: sprintf(str, "Error Code ETCP(%d) '%s'",error_code, charETCP_Checksum); break;
 
+   case ETCP_WSAStartup: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charETCP_WSAStartup); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default: result = 0; break;
    }
    return result;

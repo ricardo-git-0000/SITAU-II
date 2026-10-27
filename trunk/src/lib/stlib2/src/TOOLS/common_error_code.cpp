@@ -70,6 +70,12 @@ int result = 1;
    case ECOM_IdThreadNULL:
       sprintf(str, "(Error Code %d) '%s'",error_code, charECOM_IdThreadNULL);
       break;
+   case ECOM_DataInconsistency: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charECOM_DataInconsistency); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case ECOM_PtrAccess_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charECOM_PtrAccess_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default:
       sprintf(str, "(Error Code %d) 'Unknown Error'",error_code);
       result = 0;

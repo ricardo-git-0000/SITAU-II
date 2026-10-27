@@ -912,18 +912,19 @@ try
 
           msg_ext->n_fl = sys_.base[0]->reg_.beamformer.n_fl;
           msg_ext->n_fl_parallel = sys_.base[0]->reg_.beamformer.n_fl_parallel;// == 2 ? 1 : sys_.base[b]->reg_.beamformer.n_fl_parallel;
-          for (msg_ext->t0_max = b = 0; b < sys_.base.size(); b++)
+          // El segundo mensaje comienza en id_first_base y usa sus posiciones 0..3.
+          for (msg_ext->t0_max = b = 0; b < sys_.base.size() - msg_ext->id_first_base && b < MAX_N_BASES_MSG; b++)
           {
               if (sys_.base[msg_ext->id_first_base + b]->reg_.beamformer.t0_max > msg_ext->t0_max) msg_ext->t0_max = sys_.base[msg_ext->id_first_base + b]->reg_.beamformer.t0_max;
           }
           msg_ext->n_lword = sys_.base[0]->reg_.beamformer.n_lword;
           msg_ext->shift_bits = sys_.base[0]->reg_.beamformer.shift_bits;
 
-          for (c = b = 0; b < sys_.base.size() && b < MAX_N_BASES_MSG; b++)
+          for (c = b = 0; b < sys_.base.size() - msg_ext->id_first_base && b < MAX_N_BASES_MSG; b++)
           {
               if (sys_.base[msg_ext->id_first_base + b] != NULL)
               {
-                  memcpy(msg_ext->base[msg_ext->id_first_base + b].bf_memory, sys_.base[msg_ext->id_first_base + b]->reg_.beamformer.bf_memory, FP_BASE_BEAMFORMER_MEMORY_SIZE * sizeof(u32));
+                  memcpy(msg_ext->base[b].bf_memory, sys_.base[msg_ext->id_first_base + b]->reg_.beamformer.bf_memory, FP_BASE_BEAMFORMER_MEMORY_SIZE * sizeof(u32));
               }
           }
       }
@@ -951,6 +952,7 @@ int CVirtualChannel::SET_TFMBackward(void)
     int b, c, result, connector_start_channel;
     int id_base_first = 0, id_base_last = 0;
     TMSG_Beamformer* msg = NULL;
+    TMSG_BeamformerExtended* msg_ext = NULL;
     //int acquiring = ST_Acquiring();
 
 #if !defined(_PA)
@@ -994,8 +996,42 @@ int CVirtualChannel::SET_TFMBackward(void)
                 }
             }
 
+            if (b < sys_.base.size())
+            {
+                if ((msg_ext = (TMSG_BeamformerExtended*)malloc(sizeof(TMSG_BeamformerExtended))) == NULL)
+                    return ELOG(charEVCH_NoMemory, EVCH_NoMemory);
+
+                msg_ext->id_first_base = b;
+                msg_ext->id_vch = cfg_.id;
+                msg_ext->n_acq_samples = cfg_.acq.n_acq_samples;
+                msg_ext->n_beamformed_samples = cfg_.acq.n_beamformed_samples;
+                msg_ext->beamforming_type = msg->beamforming_type;
+                msg_ext->n_fl = sys_.base[0]->reg_.tfm_backward.n_fl;
+                msg_ext->n_fl_parallel = cfg_.tfm_backward.parallel_lines;
+
+                // El mensaje extendido transporta las bases restantes en posiciones 0..3.
+                for (msg_ext->t0_max = b = 0; b < sys_.base.size() - msg_ext->id_first_base && b < MAX_N_BASES_MSG; b++)
+                {
+                    if (sys_.base[msg_ext->id_first_base + b]->reg_.tfm_backward.t0_max > msg_ext->t0_max)
+                        msg_ext->t0_max = sys_.base[msg_ext->id_first_base + b]->reg_.tfm_backward.t0_max;
+                }
+                msg_ext->n_lword = sys_.base[0]->reg_.tfm_backward.n_lword;
+                msg_ext->shift_bits = sys_.base[0]->reg_.tfm_backward.shift_bits;
+
+                for (c = b = 0; b < sys_.base.size() - msg_ext->id_first_base && b < MAX_N_BASES_MSG; b++)
+                {
+                    if (sys_.base[msg_ext->id_first_base + b] != NULL)
+                    {
+                        memcpy(msg_ext->base[b].bf_memory,
+                            sys_.base[msg_ext->id_first_base + b]->reg_.tfm_backward.bf_memory,
+                            FP_BASE_BEAMFORMER_MEMORY_SIZE * sizeof(u32));
+                    }
+                }
+            }
+
             //if (acquiring == 1 && (result = ST_Stop()) < 0) { RLOG(result); }
             if ((result = TCPSend_MSG_VirtualChannel_Beamformer(msg)) < 0) return RLOG(result);
+            if (msg_ext != NULL && (result = TCPSend_MSG_VirtualChannel_BeamformerExtended(msg_ext)) < 0) return RLOG(result);
             //if (acquiring == 1) ST_Start();
             update_tfm_backward_ = false;
         }
@@ -1003,6 +1039,7 @@ int CVirtualChannel::SET_TFMBackward(void)
     __finally
     {
         if (msg != NULL) free(msg);
+        if (msg_ext != NULL) free(msg_ext);
     }
     return EVCH_NONE;
 }

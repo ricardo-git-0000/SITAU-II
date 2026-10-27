@@ -55,7 +55,7 @@ bool is_frontend = false, multiplexed = false;
         GetData_AFE();
         GetData_PULSER();
         GetData_BEAMFORMER();
-        GetData_HardwareConfiguration();
+        if ((result = GetData_HardwareConfiguration()) < 0) return RLOG(result);
         GetData_FRONTEND();
         GetData_UCI();
         GetData_PASystemConfiguration();
@@ -75,13 +75,26 @@ bool is_frontend = false, multiplexed = false;
         //if (data_.sitau_hardware.base.size() == 0) data_.sitau_hardware.base.resize(4);
         if (data_.sitau_hardware.frontend.size() == 0)
         {
+            // En modo paralelo, cada base FPGA aporta MOD_MAX_CH canales.
+            int n_total_channels = data_.sitau_hardware.bases_number * MOD_MAX_CH;
+
             data_.sitau_hardware.frontend.resize(1);
+            // n_active_channels representa los canales de una base; el total se calcula con n_total_channels.
+            data_.sitau_hardware.frontend[0].n_active_channels = MOD_MAX_CH;
+            // Un valor cero identifica el modo paralelo; el multiplexado se tratará en una fase posterior.
+            data_.sitau_hardware.frontend[0].n_multiplexed_channels = 0;
+            data_.sitau_hardware.frontend[0].n_channels = n_total_channels;
             data_.sitau_hardware.frontend[0].connector.resize(1);
-            data_.sitau_hardware.frontend[0].id_base.resize(4);
-            data_.sitau_hardware.frontend[0].id_base[0] = 0;
-            data_.sitau_hardware.frontend[0].id_base[1] = 1;
-            data_.sitau_hardware.frontend[0].id_base[2] = 2;
-            data_.sitau_hardware.frontend[0].id_base[3] = 3;
+            // El frontend debe referenciar exactamente las bases indicadas por BASES_NUMBER.
+            data_.sitau_hardware.frontend[0].id_base.resize(data_.sitau_hardware.bases_number);
+            for (j = 0; j < data_.sitau_hardware.frontend[0].id_base.size(); j++)
+                data_.sitau_hardware.frontend[0].id_base[j] = j;
+            // El conector y sus mapas deben cubrir todos los canales de las bases seleccionadas.
+            data_.sitau_hardware.frontend[0].connector[0].n_total_channels = n_total_channels;
+            data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.resize(n_total_channels);
+            data_.sitau_hardware.frontend[0].connector[0].pin_disabled.resize(n_total_channels);
+            for (j = 0; j < n_total_channels; j++)
+                data_.sitau_hardware.frontend[0].connector[0].pin_to_channel[j] = j;
         }
 
         if (pa_system_.size() != data_.pa_system.size()) pa_system_.resize(data_.pa_system.size());
@@ -466,7 +479,10 @@ int CXML_SITAU_HW::GetData_HardwareConfiguration(void)
     {
         if (GetAttribute(&node.first_attribute(), pNameBASES_NUMBER, &n_bases)) {}
     }
-    if (n_bases < XML_DEF_N_BASES) n_bases = XML_DEF_N_BASES;
+    // En esta fase solo se soportan configuraciones paralelas de 4 u 8 bases.
+    if (n_bases != 4 && n_bases != 8) return ELOG(charEHW_BASE_Number, EHW_BASE_Number);
+    // Conservamos el valor leído para que el resto de la configuración lo herede.
+    data_.sitau_hardware.bases_number = n_bases;
     if (data_.sitau_hardware.base.size() != n_bases) data_.sitau_hardware.base.resize(n_bases);
     for (i = 0; i < data_.sitau_hardware.base.size(); i++)
     {
@@ -759,6 +775,8 @@ int CXML_SITAU_HW::ResetData(void)
 
    data_.sitau_hardware.beamformer.number = 1;
 
+   // Valor inicial usado antes de leer BASES_NUMBER desde SITAU.XML.
+   data_.sitau_hardware.bases_number = XML_DEF_N_BASES;
    data_.sitau_hardware.base.resize(XML_DEF_N_BASES);
    for (i = 0; i < data_.sitau_hardware.base.size(); i++)
    {
@@ -772,8 +790,9 @@ int CXML_SITAU_HW::ResetData(void)
    data_.sitau_hardware.frontend[0].version = "0";
    data_.sitau_hardware.frontend[0].serial_number = "";
    data_.sitau_hardware.frontend[0].n_active_channels = 32;
-   data_.sitau_hardware.frontend[0].n_multiplexed_channels = 256; //Si el XML no especifica, arrancamos el sistema con 256 por defecto
-   data_.sitau_hardware.frontend[0].n_channels = 256;
+   // El valor predeterminado corresponde al modo paralelo, no al multiplexado.
+   data_.sitau_hardware.frontend[0].n_multiplexed_channels = 0;
+   data_.sitau_hardware.frontend[0].n_channels = XML_DEF_N_BASES * MOD_MAX_CH;
    data_.sitau_hardware.frontend[0].n_active_channels = 32;
 
    data_.sitau_hardware.frontend[0].id_base.resize(1);
@@ -783,13 +802,13 @@ int CXML_SITAU_HW::ResetData(void)
    data_.sitau_hardware.frontend[0].connector[0].name = "PA PROBE";
    data_.sitau_hardware.frontend[0].connector[0].pin_to_channel_assignment = true;
    data_.sitau_hardware.frontend[0].connector[0].start_channel = 0;
-   data_.sitau_hardware.frontend[0].connector[0].n_total_channels = 256;
+   data_.sitau_hardware.frontend[0].connector[0].n_total_channels = XML_DEF_N_BASES * MOD_MAX_CH;
 
-   data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.resize(256);
+   data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.resize(XML_DEF_N_BASES * MOD_MAX_CH);
    for (i = 0; i < data_.sitau_hardware.frontend[0].connector[0].pin_to_channel.size(); i++)
       data_.sitau_hardware.frontend[0].connector[0].pin_to_channel[i] = i;
 
-   data_.sitau_hardware.frontend[0].connector[0].pin_disabled.resize(256);
+   data_.sitau_hardware.frontend[0].connector[0].pin_disabled.resize(XML_DEF_N_BASES * MOD_MAX_CH);
    for (i = 0; i < data_.sitau_hardware.frontend[0].connector[0].pin_disabled.size(); i++)
       data_.sitau_hardware.frontend[0].connector[0].pin_disabled[i] = 0;
 

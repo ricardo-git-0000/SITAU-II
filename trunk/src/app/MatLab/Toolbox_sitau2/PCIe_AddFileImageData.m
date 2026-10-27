@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result] = calllib(nlib,'PCIe_AddFileImageData', file, data, length(data));  
     if (result < 0)
-        errordlg(['   PCIe_AddFileImageData() error:' int2str(result)])
+        errordlg(['   PCIe_AddFileImageData() error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

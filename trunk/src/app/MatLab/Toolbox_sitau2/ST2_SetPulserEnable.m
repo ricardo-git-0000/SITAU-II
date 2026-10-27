@@ -14,7 +14,7 @@ if result ~= 1
 else
     result = calllib(nlib,'ST2_SetPulserEnable', data);  
     if (result < 0)
-        errordlg(['   ST2_SetPulserEnable error:' int2str(result)])
+        errordlg(['   ST2_SetPulserEnable error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end
 

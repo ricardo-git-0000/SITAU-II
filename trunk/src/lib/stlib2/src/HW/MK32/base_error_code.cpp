@@ -71,6 +71,15 @@ int result = 1;
    case EBASE_NUM_FocalLaw:
       sprintf(str, "(Error Code %d) '%s'",error_code, charEBASE_NUM_FocalLaw);
       break;
+   case EBASE_MODULE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBASE_MODULE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EBASE_BASE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBASE_BASE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EBASE_AMPLIACommand_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBASE_AMPLIACommand_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default: result = 0; break;
    }
    return result;

@@ -14,6 +14,6 @@ if result ~= 1
 else
     result = calllib(nlib,'ST2_SetProcessing', processing_type, n_signals, wait_prf);  
     if (result < 0)
-        errordlg(['   ST2_SetProcessing error:' int2str(result)])
+        errordlg(['   ST2_SetProcessing error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

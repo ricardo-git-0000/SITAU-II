@@ -94,7 +94,9 @@ vector<T_VCH_EmitterFocalLaw> focal_law;
    if ((result = LOAD_MaterialVelocity ((float)DCFG_VEL)) < 0) {RLOG(result);}
 
    if ((aperture = n_ch/4) > 32) aperture = 32;
-   if ((end_element = n_ch - 1) > 127) end_element = 127;
+   // El límite TFM por defecto debe seguir al número de canales del PA
+   // system; 127 solo era válido para una configuración fija de 128 canales.
+   if ((end_element = n_ch - 1) < 0) end_element = 0;
 
    if ((result = LOAD_PRFTime (1/DCFG_PRF)) < 0) {RLOG(result);}
    if ((result = LOAD_Pulser(DCFG_PUL_N, DCFG_PUL_W)) < 0) {RLOG(result);}
@@ -108,10 +110,10 @@ vector<T_VCH_EmitterFocalLaw> focal_law;
 
    //emi_elements.push_back(0);
    //for (i = 0; i < 128; i++) rec_elements.push_back(i);
-   //if ((result = TFM_LOAD_FMC_Forward(0, 127, 1)) < 0) return RLOG(result);
+   //if ((result = TFM_LOAD_FMC_Forward(0, end_element, 1)) < 0) return RLOG(result);
    if ((result = TFM_LOAD_Backward(0, 20, 32, 0)) < 0) return RLOG(result);
    cfg_.tfm.focal_laws_type = VCH_FP_FL_TYPE_FMC;
-   if ((result = TFM_LOAD_FMC_Forward(0, 127, 1)) < 0) return RLOG(result);
+   if ((result = TFM_LOAD_FMC_Forward(0, end_element, 1)) < 0) return RLOG(result);
 
    //if ((result = TFM_LOAD_FMC_Config(rec_elements, emi_elements, 0, 20, 32, 0)) < 0) { RLOG(result); }
 

@@ -14,6 +14,6 @@ if result ~= 1
 else
     result = calllib(nlib,'ST2_FUS_CentralFrequency');  
     if (result < 0)
-        errordlg(['   ST2_FUS_CentralFrequency error:' int2str(result)])
+        errordlg(['   ST2_FUS_CentralFrequency error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

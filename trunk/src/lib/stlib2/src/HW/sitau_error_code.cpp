@@ -47,6 +47,33 @@ int result = 1;
    case EHW_Status_FSM:
       sprintf(str, "(Error Code %d) '%s'",error_code, charEHW_Status_FSM);
       break;
+   case EHW_Parameter: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_Parameter); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_XML_Format: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, "Error de acceso a archivo o formato de SITAU.XML (EHW_File / EHW_XML_Format)"); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_PtrAccess_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_PtrAccess_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_BASE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_BASE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_NoMemory: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_NoMemory); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_NoXMLData: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_NoXMLData); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_DataInconsistency: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_DataInconsistency); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_IdEncoder: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_IdEncoder); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EHW_FRONTEND_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEHW_FRONTEND_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default: result = 0; break;
    }
    return result;

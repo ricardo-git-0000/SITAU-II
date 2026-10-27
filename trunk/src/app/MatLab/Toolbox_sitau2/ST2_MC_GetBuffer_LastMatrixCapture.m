@@ -17,6 +17,6 @@ else
     index_trigger_line = 0;
     [result data index_trigger_line] = calllib(nlib,'ST2_MC_GetBuffer_LastMatrixCapture', ptr_data, image_size, ptr_index_trigger_line);  
     if (result < 0)
-        errordlg(['   ST2_MC_GetBuffer_LastMatrixCapture error:' int2str(result)])
+        errordlg(['   ST2_MC_GetBuffer_LastMatrixCapture error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

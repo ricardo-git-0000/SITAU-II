@@ -17,7 +17,7 @@ else
     % ptr = libpointer('uint8Ptr', 1:300);
     [result, status] = calllib(nlib,'ST2_GetStatusFrame', ptr_status, size_frame);  
     if (result < 0)
-        errordlg(['   ST2_GetStatusFrame error:' int2str(result)])
+        errordlg(['   ST2_GetStatusFrame error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end
 

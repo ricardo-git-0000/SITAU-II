@@ -234,4 +234,6 @@
 // ------ P R O T O T I P O   D E   F U N C I O N E S
 // =============================================================================
 
+int PCIe_GetError(int error_code, char *str); // Permite consultar los errores PCIe desde ST2_GetError.
+
 #endif

@@ -190,7 +190,7 @@ int ST_LoadXMLFileConfigData(TXMLCFG_Config* xml_cfg)
 			{
 				if ((vch = new CVirtualChannel(0, 0, 0, "Default", gb_hw_format)) != NULL)
 				{
-					if ((result = vch->LoadXMLConfigData(xml_vch, xml_cfg->acq.n_bursts.Value(), xml_cfg->acq.n_images_per_burst.Value(), i)) < 0) return RLOG(result);
+					if ((result = vch->LoadXMLConfigData(xml_vch, xml_cfg->acq.n_bursts.Value(), xml_cfg->acq.n_images_per_burst.Value(), i)) < 0) { delete vch; return RLOG(result); } // Libera el canal rechazado y propaga el codigo original.
 					gb_vch_load_config.push_back(vch);
 					gb_vch_load_config_update = true;
 				}

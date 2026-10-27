@@ -35,6 +35,9 @@
 #include "tcp_error_code.h"
 #include "vch_error_code.h"
 #include "stlib2.h"
+#include "sitau_error_code.h" // Incorpora los errores de configuracion hardware.
+#include "st_encoder_error_code.h" // Incorpora el catalogo de encoders.
+#include "xml_err.h" // Incorpora los errores del parser XML.
 #include "c_log_file.h"
 
 // _____________________________________________________________________________
@@ -104,7 +107,7 @@ int result = 1;
       sprintf(str, "(Error Code %d) '%s'",error_code, charES2_SCAN);
       break;
    case ES2_INVALID_ACCESS:
-      sprintf(str, "(Error Code %d) '%s'",error_code, charES2_INVALID_LINES);
+      sprintf(str, "(Error Code %d) '%s'",error_code, charES2_INVALID_ACCESS); // Usa la descripcion de acceso, no la de lineas.
       break;
    case ES2_INVALID_LINES:
       sprintf(str, "(Error Code %d) '%s'",error_code, charES2_INVALID_LINES);
@@ -202,6 +205,24 @@ int result = 1;
    case ES2_TriggerSource:
       sprintf(str, "(Error Code %d) '%s'",error_code, charES2_TriggerSource);
       break;
+   case ES2_SYSTEM_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charES2_SYSTEM_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case ES2_MODULE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charES2_MODULE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case ES2_BASE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charES2_BASE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case ES2_IdConnector: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charES2_IdConnector); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case ES2_File: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charES2_File); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case ES2_Acquire: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charES2_Acquire); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default: result = 0; break;
    }
    return result;
@@ -213,12 +234,62 @@ int result = 1;
 // -----------------------------------------------------------------------------
 int ST_GetError (int error_code, char *str)
 {
+    if (str == NULL) return 0; // Evita escribir en un buffer inexistente.
+    switch (error_code) // Incluye las familias que no tienen traductor propio.
+    { // Los valores numericos permanecen compatibles.
+    case EXML_FILE: // Error definido en xml_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEXML_FILE); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EXML_Parameter: // Error definido en xml_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEXML_Parameter); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EXML_NoMemory: // Error definido en xml_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEXML_NoMemory); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EENC_IdEncoder: // Error definido en st_encoder_error_code.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEENC_IdEncoder); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EENC_Parameter: // Error definido en st_encoder_error_code.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEENC_Parameter); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EENC_NoMemory: // Error definido en st_encoder_error_code.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEENC_NoMemory); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EENC_DataInconsistency: // Error definido en st_encoder_error_code.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEENC_DataInconsistency); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EENC_FunctionNotAvailable: // Error definido en st_encoder_error_code.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEENC_FunctionNotAvailable); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case EENC_File: // Error definido en st_encoder_error_code.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charEENC_File); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case CFGHW_NO_BOARD: // Error definido en c_sitau_hw_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charCFGHW_NO_BOARD); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case CFGHW_BUFFER_OVERFLOW: // Error definido en c_sitau_hw_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charCFGHW_BUFFER_OVERFLOW); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case CFGHW_NO_MEM: // Error definido en c_sitau_hw_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charCFGHW_NO_MEM); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case CFGHW_EEPROM: // Error definido en c_sitau_hw_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charCFGHW_EEPROM); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    case CFGHW_FILE: // Error definido en c_sitau_hw_err.h.
+        sprintf(str, "(Error Code %d) '%s'", error_code, charCFGHW_FILE); // Devuelve la descripcion existente.
+        return 1; // Indica que el codigo esta reconocido.
+    default: break; // Consulta los restantes catalogos.
+    } // Fin de las familias auxiliares.
+    if (ST_GetBASEErrorCode(error_code, str) == 1) return 1; // Traduce errores de las bases.
+    if (ST_GetSITAUErrorCode(error_code, str) == 1) return 1; // Traduce errores de SITAU.XML y hardware.
     if (FL_GetErrorCode(error_code, str) == 1) return 1;
     if (ST_GetSTErrorCode(error_code, str) == 1) return 1;
     if (ST_GetVCHErrorCode(error_code, str) == 1) return 1;
     if (ST_GetTCPErrorCode(error_code, str) == 1) return 1;
     if (GetCommonErrorCode(error_code, str) == 1) return 1;
     if (ST_GetBufferErrorCode(error_code, str) == 1) return 1;
+    sprintf(str, "(Error Code %d) 'Codigo de error no documentado'", error_code); // Identifica un codigo desconocido sin inventar su significado.
     return 0;
 }
 // -----------------------------------------------------------------------------

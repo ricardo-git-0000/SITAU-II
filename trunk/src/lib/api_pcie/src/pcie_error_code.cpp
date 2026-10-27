@@ -97,7 +97,7 @@ int result = 1;
       sprintf(str, "(Error Code %d) '%s'",error_code, charEPCIE_SCAN);
       break;
    case EPCIE_INVALID_ACCESS:
-      sprintf(str, "(Error Code %d) '%s'",error_code, charEPCIE_INVALID_LINES);
+      sprintf(str, "(Error Code %d) '%s'",error_code, charEPCIE_INVALID_ACCESS); // Usa la descripcion de acceso, no la de lineas.
       break;
    case EPCIE_INVALID_LINES:
       sprintf(str, "(Error Code %d) '%s'",error_code, charEPCIE_INVALID_LINES);
@@ -195,6 +195,60 @@ int result = 1;
    case EPCIE_TriggerSource:
       sprintf(str, "(Error Code %d) '%s'",error_code, charEPCIE_TriggerSource);
       break;
+   case EPCIE_SYSTEM_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_SYSTEM_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_MODULE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_MODULE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_BASE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_BASE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_IdConnector: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_IdConnector); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_File: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_File); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_IMAGE_HANDLE_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_IMAGE_HANDLE_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_ACQUIRE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_ACQUIRE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_RecursiveRelease: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_RecursiveRelease); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_NO_THREAD_ACQ: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_NO_THREAD_ACQ); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_IMAGE_SIZE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_IMAGE_SIZE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_THREAD_ACQ: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_THREAD_ACQ); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_MUTEX_ACQUIRE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_MUTEX_ACQUIRE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_NO_THREAD_DMA: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_NO_THREAD_DMA); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_EVENT: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_EVENT); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_SET_EVENT: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_SET_EVENT); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_NO_THREAD_GE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_NO_THREAD_GE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_DISABLED: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_DISABLED); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EPCIE_GTX_BLOCKS: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_GTX_BLOCKS); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default: result = 0; break;
    }
    return result;

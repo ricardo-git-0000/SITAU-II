@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result] = calllib(nlib,'ST2_SetProbeConfig', n_element, pitch, frequency);  
     if (result < 0)
-        errordlg(['   ST2_SetProbeConfig error:' int2str(result)])
+        errordlg(['   ST2_SetProbeConfig error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

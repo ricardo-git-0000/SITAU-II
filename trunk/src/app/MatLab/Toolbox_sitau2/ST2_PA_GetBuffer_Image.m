@@ -15,6 +15,6 @@ else
     ptr_n_data = libpointer('ulongPtr', 1:1);
     [result data n_data] = calllib(nlib,'ST2_PA_GetBuffer_Image', ptr_data, image_size, ptr_n_data, index_trg, index_aux);  
     if (result < 0)
-        errordlg(['   ST2_PA_GetBuffer_Image error:' int2str(result)])
+        errordlg(['   ST2_PA_GetBuffer_Image error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

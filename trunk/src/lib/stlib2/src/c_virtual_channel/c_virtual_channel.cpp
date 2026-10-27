@@ -250,7 +250,7 @@ void CVirtualChannel::UpdateConfig(void)
 // -----------------------------------------------------------------------------
 int CVirtualChannel::Setup(int id_pa_sys, int id_connector, AnsiString name)
 {
-int result;
+int result, n_channels;
 
    cfg_.name = name;
 
@@ -264,7 +264,10 @@ int result;
    cfg_.fp_focal_laws_type = VCH_FP_FL_TYPE_FMC;
 
    cfg_.specimen = new CFL_SpecimenUI(1540);
-   cfg_.pa_probe = new CFL_PAUI(VCH_MAX_LINES, 0.3, 0, 10, 0); // ESTE 128 esta hardcodeado, hay que cambiarlo por el número de canales del sistema
+   // VCH_MAX_LINES es la capacidad máxima del modelo de datos, no el número
+   // de canales configurado en SITAU.XML. La cantidad efectiva se ajusta
+   // después de asociar el virtual channel con el PA system.
+   cfg_.pa_probe = new CFL_PAUI(VCH_MAX_LINES, 0.3, 0, 10, 0);
    cfg_.probe_aperture_samples = 0;
 
    cfg_.scan = new CFL_ScanUI(cfg_.pa_probe, cfg_.specimen);
@@ -296,7 +299,9 @@ int result;
    cfg_.tfm.frame_size = 0;
    cfg_.tfm.n_lines = 0;
    cfg_.tfm.emi_start_element = 0;
-   cfg_.tfm.emi_end_element = VCH_MAX_LINES - 1; //Deberia de ser VCH_MAX_LINES - 1
+   // El límite efectivo de emisión TFM se ajusta al número de canales real
+   // después de ejecutar HardwareSetup().
+   cfg_.tfm.emi_end_element = VCH_MAX_LINES - 1;
    cfg_.tfm.emi_step_element = 1;
    cfg_.tfm.pwic_start_angle = -15; 
    cfg_.tfm.pwic_step_angle = 1;
@@ -323,6 +328,15 @@ int result;
    cfg_.tgc_type = 0;
 
    if ((result = HardwareSetup(id_pa_sys, id_connector)) < 0) return RLOG(result);
+
+   // BASES_NUMBER determina el número real de canales del sistema TCP
+   // (4 bases = 128 canales, 8 bases = 256 canales). El XML de la sonda
+   // puede proporcionar posteriormente un valor explícito, pero el valor
+   // inicial debe ser coherente con el hardware configurado.
+   if ((n_channels = GET_ChannelsNumber()) < 0) return RLOG(n_channels);
+   if ((result = cfg_.pa_probe->SetConfig(n_channels, cfg_.pa_probe->GetPitch(), cfg_.pa_probe->GetFrequency(), 0, 0)) < 0)
+      return RLOG(result);
+   cfg_.tfm.emi_end_element = n_channels - 1;
 
    if ((result = LOAD_DefaultConfig()) < 0) return RLOG(result);
 
@@ -825,7 +839,8 @@ try
           msg_ext->id_first_base = b;
           msg_ext->n_bases = sys_.base.size();
 
-          for (c = b = 0; b < sys_.base.size() && b < MAX_N_BASES_MSG; b++)
+          // El mensaje extendido transporta las bases restantes en posiciones 0..3.
+          for (c = b = 0; b < sys_.base.size() - msg_ext->id_first_base && b < MAX_N_BASES_MSG; b++)
           {
               if (sys_.base[msg_ext->id_first_base + b] != NULL)
               {

@@ -85,6 +85,21 @@ int result = 1;
    case EBUF_DisabledDataFormat:
       sprintf(str, "(Error Code %d) '%s'",error_code, charEBUF_DisabledDataFormat);
       break;
+   case EBUF_MODULE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBUF_MODULE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EBUF_BASE_Number: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBUF_BASE_Number); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EBUF_CONFIG_NULL: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBUF_CONFIG_NULL); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EBUF_IdVirtualChannel: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBUF_IdVirtualChannel); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
+   case EBUF_IdBASE: // Traduce el codigo definido en el catalogo existente.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEBUF_IdBASE); // Incluye codigo y descripcion.
+      break; // Finaliza la traduccion de este codigo.
    default:
       sprintf(str, "(Error Code %d) 'Unknown Error'",error_code);
       result = 0;

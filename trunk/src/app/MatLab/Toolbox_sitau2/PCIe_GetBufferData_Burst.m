@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result data] = calllib(nlib,'PCIe_GetBufferData_Burst', ptr_data, image_size, timeout);  
     if (result < 0)
-        errordlg(['   PCIe_GetBufferData_Burst error:' int2str(result)])
+        errordlg(['   PCIe_GetBufferData_Burst error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

@@ -14,6 +14,6 @@ if result ~= 1
 else
     [result] = calllib(nlib,'ST2_SetTriggerSource', data);  
     if (result < 0)
-        errordlg(['   ST2_SetTriggerSource error:' int2str(result)])
+        errordlg(['   ST2_SetTriggerSource error:' ST2_ErrorText(result, nlib)]) % Muestra el codigo junto a su descripcion de la DLL.
     end
 end

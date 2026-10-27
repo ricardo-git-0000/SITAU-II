@@ -132,7 +132,22 @@ int ST2_SetTemporaryFilesPath(char *path)
 // -----------------------------------------------------------------------------
 int ST2_GetError(int error_code, char *str)
 {
-	return ST_GetError(error_code, str);
+	if (str == NULL) return 0; // Rechaza un buffer de salida inexistente.
+	char sitau_description[4096] = { 0 }, pcie_description[4096] = { 0 }; // Consulta ambos catalogos sin sobrescribir el resultado del otro.
+	int sitau_found = ST_GetError(error_code, sitau_description); // Incluye SITAU, TCP, XML, bases y demas familias.
+	int pcie_found = PCIe_GetError(error_code, pcie_description); // Incluye los errores propios de api_pcie.
+	if (sitau_found == 1 && pcie_found == 1) // Los codigos -101 a -119 estan compartidos por TCP y PCIe.
+	{ // No atribuye una causa unica cuando el numero es ambiguo.
+		char *sitau_text = strchr(sitau_description, '\''), *pcie_text = strchr(pcie_description, '\''); // Localiza la descripcion sin el prefijo numerico.
+		char *sitau_end = strrchr(sitau_description, '\''), *pcie_end = strrchr(pcie_description, '\''); // Localiza las comillas finales del formato existente.
+		if (sitau_text != NULL && sitau_end > sitau_text) { *sitau_end = 0; sitau_text++; } else sitau_text = sitau_description; // Extrae el texto TCP sin asumir un buffer vacio.
+		if (pcie_text != NULL && pcie_end > pcie_text) { *pcie_end = 0; pcie_text++; } else pcie_text = pcie_description; // Extrae el texto PCIe para mostrar ambas posibilidades.
+		sprintf(str, "(Error Code %d) 'Codigo compartido. TCP: %s / PCIe: %s'", error_code, sitau_text, pcie_text); // Expone la ambiguedad heredada sin renumerar errores.
+		return 1; // El codigo se reconoce aunque su origen requiera contexto.
+	} // Fin de la gestion de codigos compartidos.
+	if (pcie_found == 1) { strcpy(str, pcie_description); return 1; } // Devuelve un error exclusivo de PCIe.
+	strcpy(str, sitau_description); // Conserva la descripcion SITAU o el aviso de codigo no documentado.
+	return sitau_found; // Mantiene el contrato documentado: 1 reconocido, 0 desconocido.
 }
 // -----------------------------------------------------------------------------
 /**
