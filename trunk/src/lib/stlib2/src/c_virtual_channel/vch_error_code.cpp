@@ -110,6 +110,9 @@ int result = 1;
    case EVCH_ACQUISITION_TYPE: // Traduce el codigo definido en el catalogo existente.
       sprintf(str, "(Error Code %d) '%s'", error_code, charEVCH_ACQUISITION_TYPE); // Incluye codigo y descripcion.
       break; // Finaliza la traduccion de este codigo.
+   case EVCH_GTXGeometry: // Traduce errores detectados al calcular el bloque durante la carga.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEVCH_GTXGeometry); // Incluye el codigo y la causa.
+      break; // Finaliza este caso.
    case EVCH_PinToChannelSize: // Traduce el codigo definido en el catalogo existente.
       sprintf(str, "(Error Code %d) '%s'", error_code, charEVCH_PinToChannelSize); // Incluye codigo y descripcion.
       break; // Finaliza la traduccion de este codigo.

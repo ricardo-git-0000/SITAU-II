@@ -1,6 +1,6 @@
 # Catálogo de errores SITAU / PCIe
 
-Actualizado el 19/10/2026 a partir de los encabezados del código fuente. El manual `SITAU-II SDK r4.pdf`, página impresa 23, documenta `ST2_GetError`: devuelve 1 si reconoce el código y 0 si no lo reconoce. Los significados numéricos de esta tabla proceden de las constantes y descripciones del proyecto; no se atribuyen a una tabla inexistente del manual.
+Actualizado el 28/10/2026 a partir de los encabezados del código fuente. El manual `SITAU-II SDK r4.pdf`, página impresa 23, documenta `ST2_GetError`: devuelve 1 si reconoce el código y 0 si no lo reconoce. Los significados numéricos de esta tabla proceden de las constantes y descripciones del proyecto; no se atribuyen a una tabla inexistente del manual.
 
 La salida de MATLAB utiliza `codigo: descripcion`. Las descripciones existentes se conservan en su idioma original. Un código desconocido se identifica explícitamente, sin asignarle el texto del último error.
 
@@ -8,13 +8,13 @@ La salida de MATLAB utiliza `codigo: descripcion`. Las descripciones existentes 
 
 `EVCH_PinToChannelSize = -1523`: el mapa explícito y activo, después de la ampliación admitida de 128 a 256, no coincide con el número efectivo de elementos de sonda. Para sonda completa el número efectivo es `BASES_NUMBER * 32`. No debe confundirse con el número de leyes focales o de bloques de adquisición. Un mapa omitido utiliza el mapa automático y `pin_to_channel_assignment=1` selecciona el modo consecutivo.
 
-La carga devuelve el error antes de aplicar la nueva configuración del canal. No se añade una restauración transaccional de todos los ajustes globales: después de corregir un XML rechazado, volver a abrir el sistema antes de adquirir. Un patrón de 128 inválido no se amplía y, en una configuración de 256, se rechaza por este error de tamaño. Esta tarea no añade una validación general de duplicados/índices para mapas completos.
+La carga devuelve el error antes de aplicar la nueva configuración del canal. No se añade una restauración transaccional de todos los ajustes globales: después de corregir un XML rechazado, volver a abrir el sistema antes de adquirir. Un patrón de 128 inválido no se amplía y, en una configuración de 256, se rechaza por este error de tamaño. La ruta PCIe añade validación de duplicados e índices para mapas completos mediante `-172`; la ruta TCP conserva su comportamiento.
 
 ## Compatibilidad y ambigüedad heredada
 
 `EHW_File` y `EHW_XML_Format` comparten **-3003**. Se conservan sus números para mantener compatibilidad y el traductor devuelve una descripción combinada; el código numérico por sí solo no permite distinguir ambas causas. Los errores auxiliares del sistema operativo o de terceros que no estén en este catálogo se muestran como no documentados.
 
-Los códigos **-101 a -119** también se solapan entre TCP y PCIe. `ST2_GetError` muestra ambas descripciones precedidas por «Codigo compartido», sin elegir una causa arbitrariamente. El número por sí solo no identifica la capa que falló. Se han auditado 268 descripciones correspondientes a 248 números distintos.
+Los códigos **-101 a -119** también se solapan entre TCP y PCIe. `ST2_GetError` muestra ambas descripciones precedidas por «Codigo compartido», sin elegir una causa arbitrariamente. El número por sí solo no identifica la capa que falló. Con las fases de parametrización PCIe se han auditado 275 descripciones correspondientes a 255 números distintos. `-171` queda reservado por compatibilidad y ya no bloquea el arranque de 128 canales.
 
 ## Códigos y descripciones
 
@@ -120,7 +120,13 @@ Los códigos **-101 a -119** también se solapan entre TCP y PCIe. `ST2_GetError
 | -165 | `EPCIE_SET_EVENT` | SetEvent() function return error. |
 | -166 | `EPCIE_NO_THREAD_GE` | Error, SITAU GE Thread is not running. |
 | -167 | `EPCIE_DISABLED` | Error, SITAU PCIe interface disabled. |
-| -168 | `EPCIE_GTX_BLOCKS` | Error, el número de bloques gtx es superior a 256. |
+| -168 | `EPCIE_GTX_BLOCKS` | PCIe: numero de bloques GTX por rafaga superior al limite de software actual (512). |
+| -169 | `EPCIE_Geometry` | PCIe: se requiere sonda completa paralela de 128/256 canales, 4/8 modulos, mapa completo y dimensiones positivas. |
+| -170 | `EPCIE_GeometrySize` | PCIe: muestras o leyes por bloque exceden la cabecera o la capacidad GTX del bloque. |
+| -171 | `EPCIE_GeometryPending` | PCIe 128: geometria validada; arranque pendiente de adaptar DMA y gestor de imagenes en fase 2. TCP sigue disponible. |
+| -172 | `EPCIE_ChannelMap` | PCIe: pin_to_channel debe ser una permutacion completa de los canales configurados. |
+| -173 | `EPCIE_BlockLayout` | PCIe: cabecera, longitud DMA o limites de la ley incompatibles con la geometria configurada. |
+| -174 | `EPCIE_EmulatorGeometry` | PCIe: el emulador del driver requiere ocho tramas; cuatro tramas solo estan habilitadas para adquisicion real. |
 | -601 | `CFGHW_NO_BOARD` | Error: la tarjeta no existe |
 | -602 | `CFGHW_BUFFER_OVERFLOW` | Error: Buffer overflow |
 | -603 | `CFGHW_NO_MEM` | Error en la reserva de memoria dinámica |
@@ -209,6 +215,7 @@ Los códigos **-101 a -119** también se solapan entre TCP y PCIe. `ST2_GetError
 | -1521 | `EVCH_USER_MODE` | Error, función no disponible en este modo de usuario. Ver función ST_SetUserMode() |
 | -1522 | `EVCH_ACQUISITION_TYPE` | Error, tipo de adquisición incorrecto (MC, PA, TFM) |
 | -1523 | `EVCH_PinToChannelSize` | pin_to_channel: longitud incompatible con los elementos configurados (BASES_NUMBER x 32 para sonda completa); se admite un patron valido de 128 para 256. |
+| -1524 | `EVCH_GTXGeometry` | GTX: muestras, canales o rafaga invalidos; una ley debe caber en el bloque y los contadores deben ser representables. |
 | -1701 | `EBASE_Parameter` | Error: Rango de datos no válido |
 | -1702 | `EBASE_NoMemory` | Error en la reserva de memoria dinámica |
 | -1703 | `EBASE_File` | Error accessing file |

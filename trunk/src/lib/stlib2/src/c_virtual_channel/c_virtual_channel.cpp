@@ -394,15 +394,27 @@ unsigned long size_header_img_pa;
            cfg_.fp_focal_law[i].frame_size = (cfg_.fp_focal_law[i].image_size + size_header_img_pa) / 2;
            cfg_.fp_acquisition_size += (unsigned long)cfg_.fp_focal_law[i].image_size;
        }
-       cfg_.gtx_nfl_blocks = (GTX_SIZE_BLOCK - GTX_SIZE_HEADER) / (cfg_.acq.n_acq_samples * n_ch * 2);
-       if (UCIP.n_images_burst * n_fl < cfg_.gtx_nfl_blocks) cfg_.gtx_nfl_blocks = UCIP.n_images_burst * n_fl;
-       else if (UCIP.pause_after_burst > 0)
-       {
-           gtx_nfl_blocks = cfg_.gtx_nfl_blocks;
-           while ((UCIP.n_images_burst * n_fl) % gtx_nfl_blocks) gtx_nfl_blocks--;
-           cfg_.gtx_nfl_blocks = gtx_nfl_blocks;
-       }
-       cfg_.gtx_n_blocks_burst = UCIP.n_images_burst * n_fl / cfg_.gtx_nfl_blocks;
+       const unsigned long long law_bytes = static_cast<unsigned long long>(cfg_.acq.n_acq_samples) * (n_ch > 0 ? n_ch : 0) * 2ULL; // Evita overflow previo a la division.
+       const unsigned long long burst_laws = static_cast<unsigned long long>(UCIP.n_images_burst) * n_fl; // Mantiene el producto de rafaga en 64 bits.
+       cfg_.gtx_nfl_blocks = 0; // Invalida el resultado anterior antes de calcular.
+       cfg_.gtx_n_blocks_burst = 0; // No deja contadores residuales tras una carga fallida.
+       if (!law_bytes || law_bytes > GTX_SIZE_BLOCK - GTX_SIZE_HEADER || !burst_laws || burst_laws > 2147483647ULL) // Comprueba los divisores y la capacidad del formato legacy.
+       { // TCP no necesita dimensiones GTX representables para adquirir.
+           if (UCIP.status_pcie) return ELOG(charEVCH_GTXGeometry, EVCH_GTXGeometry); // PCIe debe fallar durante la carga, antes de dividir por cero.
+       } // Conserva GTX inactivo para configuraciones TCP fuera de capacidad.
+       else // Solo calcula y divide con dimensiones positivas y representables.
+       { // El resto de la configuracion sigue compartido entre TCP y PCIe.
+           cfg_.gtx_nfl_blocks = static_cast<int>((GTX_SIZE_BLOCK - GTX_SIZE_HEADER) / law_bytes); // Al menos una ley cabe en el bloque.
+           if (UCIP.status_pcie && cfg_.gtx_nfl_blocks > 1024) cfg_.gtx_nfl_blocks = 1024; // El campo PCIe de leyes menos uno tiene diez bits.
+           if (burst_laws < static_cast<unsigned long long>(cfg_.gtx_nfl_blocks)) cfg_.gtx_nfl_blocks = static_cast<int>(burst_laws); // No reserva mas leyes que la rafaga.
+           else if (UCIP.pause_after_burst > 0) // Una pausa exige terminar en un limite de bloque.
+           { // Busca un divisor positivo de la rafaga.
+               gtx_nfl_blocks = cfg_.gtx_nfl_blocks; // El candidato inicial nunca es cero.
+               while (gtx_nfl_blocks > 1 && burst_laws % gtx_nfl_blocks) --gtx_nfl_blocks; // El uno siempre es divisor y evita modulo por cero.
+               cfg_.gtx_nfl_blocks = gtx_nfl_blocks; // Publica las leyes por bloque compatibles con la pausa.
+           } // Fin del ajuste de rafaga.
+           cfg_.gtx_n_blocks_burst = static_cast<int>((burst_laws + cfg_.gtx_nfl_blocks - 1) / cfg_.gtx_nfl_blocks); // Incluye el ultimo bloque parcial sin overflow.
+       } // Fin del calculo GTX protegido.
     }
     return ES2_NONE;
 }

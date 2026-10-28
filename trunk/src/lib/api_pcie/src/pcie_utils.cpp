@@ -1,3 +1,4 @@
+#include "pcie_layout.h" // Comparte la ordenacion comprobada con las pruebas sinteticas.
 // _____________________________________________________________________________
 // ------ L I B R E R I A S   P R O P I A S   D E L   C O M P I L A D O R
 // =============================================================================
@@ -341,27 +342,9 @@ int GetImageSorted(short int *src_data, unsigned long n_data, short int *data, u
 
 */
 // -----------------------------------------------------------------------------
-int GetFocalLawSorted(short int *ptr_focal_law, unsigned long size_fl, short int *data, unsigned long n_ascan, unsigned long n_samples, unsigned short *pin_to_channel)
-{
-	int result = EPCIE_NONE;
-	unsigned long i_data, i_fl_data, i_ascan, i_ascan_assign, i_sample, i_line_block;
-
-	if (ptr_focal_law == nullptr) return ELOG(charEPCIE_PARAMETER, EPCIE_PARAMETER);
-	if (data == nullptr) return ELOG(charEPCIE_PARAMETER, EPCIE_PARAMETER);
-	for (i_data = i_ascan = 0; i_ascan < n_ascan; i_ascan++)
-	{
-		if (pin_to_channel != nullptr) i_ascan_assign = *(pin_to_channel + i_ascan);
-		else i_ascan_assign = i_ascan;
-		i_ascan_assign = i_ascan_assign < n_ascan ? i_ascan_assign : n_ascan - 1;
-
-		for (i_sample = 0; i_sample < n_samples; i_sample++, i_data++)
-		{
-			i_line_block = i_ascan_assign / N_CHANNELS_MODULE;
-			if (n_ascan > N_CHANNELS_MODULE) i_fl_data = i_sample * N_CHANNELS_MODULE + i_ascan_assign + i_line_block * N_CHANNELS_MODULE * (n_samples - 1);
-			else i_fl_data = i_sample * n_ascan + i_ascan_assign;
-			if (i_fl_data >= size_fl) i_fl_data = size_fl - 1;
-			*(data + i_data) = *((short int*)ptr_focal_law + i_fl_data);
-		}
-	}
-	return result;
-}
+int GetFocalLawSorted(short int *ptr_focal_law, unsigned long size_fl, short int *data, unsigned long n_ascan, unsigned long n_samples, unsigned short *pin_to_channel) // Conserva la firma historica usada por el buffer.
+{ // El llamante comprueba la capacidad real del mapa antes de esta interfaz legacy.
+    const int result = PCIe_SortLaw(ptr_focal_law, size_fl, data, size_fl, n_ascan, n_samples, pin_to_channel, pin_to_channel ? n_ascan : 0); // Usa limites explicitos sin recortar indices.
+    if (result < 0) return RLOG(result); // Propaga el fallo para que no se publique una imagen incorrecta.
+    return EPCIE_NONE; // Ley copiada por completo.
+} // Fin del adaptador de ordenacion.

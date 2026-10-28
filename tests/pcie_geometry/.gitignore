@@ -1,0 +1,4 @@
+generated/
+*.exe
+*.obj
+*.pdb

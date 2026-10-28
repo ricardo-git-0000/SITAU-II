@@ -1,3 +1,4 @@
+#include "pcie_layout.h" // Comparte recorridos y diagnosticos con las pruebas sin hardware.
 // ____________________________________________________________________________
 // ------ L I B R E R I A S   P R O P I A S   D E L   C O M P I L A D O R
 // ============================================================================
@@ -75,6 +76,25 @@ bool gb_pcie_continuous = false;
 @return Ver códigos de error
 */
 // -----------------------------------------------------------------------------
+int PCIe_ResolveGeometry(T_PCIeGeometry &geometry) // Consulta una sola vez cada dimension de stlib2 para esta adquisicion.
+{ // No abre dispositivos, reserva buffers ni conserva una geometria global obsoleta.
+    geometry = T_PCIeGeometry(); // Invalida la salida tambien si falla un getter.
+    const int acquisition_type = ST_GetAcquisitionType(); // El contrato de esta entrega es MC paralelo.
+    if (acquisition_type < 0) return RLOG(acquisition_type); // Conserva errores del getter.
+    if (acquisition_type != 0) return ELOG(charEPCIE_Geometry, EPCIE_Geometry); // ACQUISITION_TYPE_MC=0; PA y TFM requieren otro contrato.
+    int channel_count, module_count, probe_elements, map_size, samples_per_channel, focal_laws_per_image, focal_laws_per_block, result; // Usa variables locales para construir una instantanea validada.
+    if ((channel_count = ST_GetChannelsNumber()) < 0) return RLOG(channel_count); // Reutiliza los canales efectivos derivados de SITAU.XML.
+    if ((module_count = ST_GetModulesNumber()) < 0) return RLOG(module_count); // Distingue canales multiplexados de modulos fisicos.
+    if ((probe_elements = ST_GetProbeElementNumber()) < 0) return RLOG(probe_elements); // Limita esta entrega a sonda completa.
+    if ((map_size = ST_GetProbePinToChannelSize(0)) < 0) return RLOG(map_size); // Comprueba la longitud resuelta tras la ampliacion de stlib2.
+    if ((samples_per_channel = ST_MC_GetAScanDataNumber(0)) < 0) return RLOG(samples_per_channel); // Consulta las muestras del canal virtual cero.
+    if ((focal_laws_per_image = ST_GetFocalLawNumber(0)) < 0) return RLOG(focal_laws_per_image); // Consulta las leyes de la imagen.
+    if ((focal_laws_per_block = ST_PCIe_GetFocalLawsBlockNumber()) < 0) return RLOG(focal_laws_per_block); // Consulta las leyes por bloque calculadas por stlib2.
+    result = PCIe_BuildGeometry(channel_count, module_count, probe_elements, map_size, samples_per_channel, focal_laws_per_image, focal_laws_per_block, geometry); // Centraliza formulas y limites comprobables sin hardware.
+    if (result < 0) return RLOG(result); // Propaga el codigo de geometria o capacidad al catalogo MATLAB.
+    return EPCIE_NONE; // La fase 2 consumira tambien los tamanos de transporte calculados.
+} // La salida permanece local al arranque que la solicita.
+
 int PCIe_Open(void)
 {
 int result, n_fl;
@@ -325,56 +345,41 @@ int PCIe_IsRunning(void)
 @return Ver códigos de error
 */
 // -----------------------------------------------------------------------------
-int PCIe_SetBuffers_mod(int n_samples, int n_focal_laws_image, int n_images_buffer, int n_images_total, int n_focal_laws_block)
-{
-	int result = 0, n_hw_img = 0, frame_len = 0, hw_image_len = 0;
-	int n_blocks_buf = 0, n_blocks_acq_total = 0, n_beats_frames = 0, n_seq_frames = 0;
-	size_t size_block = 0;
-
-	if (n_samples != gb_pcie_n_samples || n_focal_laws_block != gb_pcie_n_focal_laws_block || gb_pcie_n_images_buffer != n_images_buffer)
-	{
-		if (!gb_pcie_enabled) return ELOG(charEPCIE_DISABLED, EPCIE_DISABLED);
-		if (gb_driver_enabled && gb_drv_handle == nullptr) return ELOG(charEPCIE_DRV_NULL, EPCIE_DRV_NULL);
-
-		n_blocks_buf = n_images_buffer;// RoundUp32(((float)n_images_buffer * (float)n_focal_laws_image / (float)n_focal_laws_block));
-		n_beats_frames = n_samples * N_CHANNELS_MODULE * N_BYTES_SAMPLES / N_BYTES_BEAT;
-		n_blocks_acq_total = RoundUp32(((float)n_images_total * (float)n_focal_laws_image / (float)n_focal_laws_block));
-		// Falta controla si hay espacio suficiente en memoria y si la adquisición es 
-		// demasiado rápida para trabajar en tiempo real
-		//printf("n_images_buffer = %d, n_focal_laws_image = %d, n_focal_laws_block = %d, n_blocks_buf = %d, n_blocks_acq_total = %d\n", n_images_buffer, n_focal_laws_image, n_focal_laws_block, n_blocks_buf, n_blocks_acq_total);
-
-		if (gb_driver_enabled)
-		{
-			if ((size_block = gb_drv_handle->calc_hw_image_size(n_beats_frames, n_focal_laws_block)) == 0) return ELOG(charEPCIE_PARAMETER, EPCIE_PARAMETER);
-			if (gb_pcie_buffer_n_blocks_buf != n_blocks_buf || gb_pcie_buffer_size_block != size_block)
-			{
-				if ((result = gb_drv_handle->destroy_dma_buffers()) < 0) return RLOG(result);
-				if ((result = gb_drv_handle->create_dma_buffers(n_blocks_buf, size_block)) < 0) return RLOG(result);
-				//gb_pcie_buffer_n_blocks_buf = n_blocks_buf;
-			}
-		}
-
-		gb_pcie_n_samples = n_samples;
-		gb_pcie_n_images_buffer = n_images_buffer;
-		//gb_n_focal_laws_image = n_focal_laws_image;
-		//gb_n_images = n_images_total;
-
-		// Tamaño y numero de boques del buffer
-		gb_pcie_buffer_n_blocks_buf = n_blocks_buf;
-		gb_pcie_buffer_size_block = size_block;
-
-		//gb_size_block = size_block;
-
-		// Numero de boques total de la adquisición
-		gb_pcie_n_blocks_acq_total = n_blocks_acq_total; // NOTA: gb_n_blocks_acq_total >= gb_pcie_buffer_n_blocks_buf, dependiendo del tamaño de memoria disponible
-
-		gb_pcie_n_beats_frames = n_beats_frames;
-		gb_pcie_n_focal_laws_block = n_focal_laws_block;
-
-		if (gb_pcie_buffer_n_blocks_buf != gb_ptr_blocks.size()) gb_ptr_blocks.resize(gb_pcie_buffer_n_blocks_buf);
-	}
-	return EPCIE_NONE;
-}
+int PCIe_SetGeometryBuffers(const T_PCIeGeometry &geometry, int buffer_blocks, int total_images) // Recalcula todos los parametros en cada arranque parado.
+{ // Evita una cache parcial al alternar 128 y 256 con las mismas muestras.
+    if (!gb_pcie_enabled) return ELOG(charEPCIE_DISABLED, EPCIE_DISABLED); // Exige transporte PCIe.
+    if (buffer_blocks <= 0 || total_images < 0) return ELOG(charEPCIE_Geometry, EPCIE_Geometry); // Cero imagenes conserva el modo continuo.
+    const unsigned long long total_laws = static_cast<unsigned long long>(total_images) * geometry.focal_laws_per_image; // Calcula sin overflow de int.
+    const unsigned long long total_blocks = (total_laws + geometry.focal_laws_per_block - 1) / geometry.focal_laws_per_block; // Redondea hacia arriba el ultimo bloque.
+    if (total_blocks > 2147483647ULL) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // Respeta los contadores legacy de adquisicion.
+    if (buffer_blocks < (geometry.focal_laws_per_image + geometry.focal_laws_per_block - 1) / geometry.focal_laws_per_block + 1) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // La reserva debe permitir completar una imagen que cruza bloques.
+    int result; // Propaga fallos antes de publicar la nueva configuracion.
+    if (gb_driver_enabled) // La simulacion no necesita un driver real.
+    { // Reconfigura y reserva solo con DMA detenido.
+        if (!gb_drv_handle) return ELOG(charEPCIE_DRV_NULL, EPCIE_DRV_NULL); // Comprueba el propietario del buffer.
+        if ((result = gb_drv_handle->set_transport_modules(geometry.module_count)) < 0) return RLOG(result); // Reserva y lectura comparten cuatro u ocho tramas.
+        if (gb_drv_handle->calc_hw_image_size(geometry.beats_per_module, geometry.focal_laws_per_block) != geometry.block_size_bytes) return ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // Contrasta unidades antes de reservar.
+        if ((result = gb_drv_handle->destroy_dma_buffers()) < 0) return RLOG(result); // Descarta memoria y FIFO de la configuracion anterior.
+        if ((result = gb_drv_handle->create_dma_buffers(buffer_blocks, static_cast<size_t>(geometry.block_size_bytes))) < 0) return RLOG(result); // Reserva exactamente la longitud que leera DMA.
+    } // No conserva una cache dependiente de la instancia del driver.
+    gb_pcie_n_samples = geometry.samples_per_channel; // Publica dimensiones tras reservar correctamente.
+    gb_pcie_n_images_buffer = buffer_blocks; // Conserva el significado historico: numero de bloques DMA.
+    gb_pcie_buffer_n_blocks_buf = buffer_blocks; // Actualiza umbrales de pausa.
+    gb_pcie_buffer_size_block = static_cast<size_t>(geometry.block_size_bytes); // Capacidad fisica por bloque.
+    gb_pcie_n_blocks_acq_total = static_cast<int>(total_blocks); // Actualiza incluso si solo cambia el numero de imagenes.
+    gb_pcie_n_beats_frames = geometry.beats_per_module; // Mantiene el formato de cabecera por modulo.
+    gb_pcie_n_focal_laws_block = geometry.focal_laws_per_block; // Mantiene el formato de cabecera por bloque.
+    gb_ptr_blocks.assign(buffer_blocks, nullptr); // Elimina punteros residuales de otra adquisicion.
+    return EPCIE_NONE; // Configuracion completa para este arranque.
+} // Fin de reserva por geometria.
+int PCIe_SetBuffers_mod(int n_samples, int n_focal_laws_image, int n_images_buffer, int n_images_total, int n_focal_laws_block) // Conserva la firma historica.
+{ // Los clientes antiguos tambien deben coincidir con stlib2.
+    T_PCIeGeometry geometry = T_PCIeGeometry(); // Obtiene el contrato actual.
+    int result = PCIe_ResolveGeometry(geometry); // Valida topologia y capacidades.
+    if (result < 0) return RLOG(result); // Propaga fallo de configuracion.
+    if (n_samples != geometry.samples_per_channel || n_focal_laws_image != geometry.focal_laws_per_image || n_focal_laws_block != geometry.focal_laws_per_block) return ELOG(charEPCIE_Geometry, EPCIE_Geometry); // Rechaza argumentos obsoletos.
+    return PCIe_SetGeometryBuffers(geometry, n_images_buffer, n_images_total); // Reutiliza la ruta parametrizada.
+} // Fin del adaptador historico.
 // -----------------------------------------------------------------------------
 /**
 
@@ -408,6 +413,8 @@ int PCIe_Start(int thread_acq_enabled, int time_sleep, int priority, int sorted,
 			timer_thread = new C_Timeout(5000);
 			timer_thread->Start();
 			while (!ThrAcq_IsRunning() && !timer_thread->Timeout());
+			if ((result = ThrAcq_Error()) < 0) return RLOG(result); // No arranca DMA si fallo la reserva del buffer de usuario.
+			if (!ThrAcq_IsRunning()) return ELOG(charEPCIE_NoBuffer, EPCIE_NoBuffer); // Rechaza timeout de inicializacion antes de transmitir.
 		}
 		else if (gb_buffer_data != nullptr) gb_buffer_data->Clear();
 		else return ELOG(charEPCIE_BUFFER_NULL, EPCIE_BUFFER_NULL);
@@ -467,6 +474,8 @@ int PCIe_Start_1(int thread_acq_enabled, int time_sleep, int priority, int sorte
 			timer_thread = new C_Timeout(5000);
 			timer_thread->Start();
 			while (!ThrAcq_IsRunning() && !timer_thread->Timeout());
+			if ((result = ThrAcq_Error()) < 0) return RLOG(result); // No arranca DMA si fallo la reserva del buffer de usuario.
+			if (!ThrAcq_IsRunning()) return ELOG(charEPCIE_NoBuffer, EPCIE_NoBuffer); // Rechaza timeout de inicializacion antes de transmitir.
 		}
 		gb_last_acquierd_header.header_struct.ch_id_last.bits.last_block = 1;
 		//if ((result = gb_drv_handle->close_dev_files()) < 0) return RLOG(result);
@@ -671,7 +680,7 @@ int PCIe_CheckPCIeHeader_fast(void *ptr_block)
 	{
 		snprintf(gb_log_msg, gb_log_msg == NULL ? 0 : SIZE_MSG_LOG, "ERROR HEADER: Bad Magic Number\nExpected magic number: %08X, received %08X", HEADER_MAGIC_NUMBER, new_header_structed_p->header_struct.magic_number);
 		ELOG(gb_log_msg, EPCIE_USER);
-    return 0;
+    return ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // No acepta una cabecera corrupta.
 	}
 	if (!gb_last_acquierd_header.header_struct.ch_id_last.bits.last_block)  //Aquí se comprueba en realidad que esta es la PRIMERA TRAMA DE UN ENVÍO!!! Se hace mirando si la última trama recibida tuvo el LAST a 1! Puede que este método no sea el mejor y se cambie en el futuro
 	{
@@ -787,42 +796,18 @@ int PCIe_CheckPCIeHeader_fast(void *ptr_block)
 @return Ver códigos de error
 */
 // -----------------------------------------------------------------------------
-void PCIe_CheckPCIeBlockSaw(void *ptr_block, unsigned long long *channel_errors)
-{
-	T_block_header *header_structed_p;
-	int header_errors = 0;
-	int n_samples_per_channel;
-	int num_focal_laws;
-	unsigned short channel_count[N_CHANNELS_MODULE*N_MODULES];
-	unsigned short* sample_ptr;
-	int focal_law_index, module_index, channel_module_index, sample_index, channel_offset;
-
-	if (!gb_pcie_enabled) return;
-	header_structed_p = (T_block_header *)(ptr_block);
-	sample_ptr = (unsigned short*)(&header_structed_p[1]);
-	n_samples_per_channel = ((header_structed_p->header_struct.block_beats_word.bits.block_beats + 1)*N_BYTES_BEAT) / N_CHANNELS_MODULE / N_BYTES_SAMPLES;
-	num_focal_laws = header_structed_p->header_struct.block_focal_laws_word.bits.block_focal_laws + 1;
-
-	if (header_structed_p->header_struct.ch_id_last.bits.last_block)
-		return;
-	//Estos bucles se pueden paralelizar si se separa por cada agente el array channel_errors y luego se suman. Aparte habría que calcular la posición de comienzo de cada agente, pero es sencillo
-	//Los mejores bucles para paralelizar son los dos primeros.
-	//Aunque la mejor opción en CPU probablemente sea dividir por bloques recibidos, a nivel de esta función 
-	for (focal_law_index = 0; focal_law_index < num_focal_laws; focal_law_index++)
-		for (module_index = 0; module_index < N_MODULES; module_index++)
-			for (sample_index = 0; sample_index < n_samples_per_channel; sample_index++)
-				for (channel_module_index = 0; channel_module_index < N_CHANNELS_MODULE; channel_module_index++)
-				{
-					channel_offset = module_index * N_CHANNELS_MODULE;
-					if (sample_index == 0)
-						channel_count[channel_module_index + channel_offset] = *sample_ptr;
-					else if ((*sample_ptr != (++++++++channel_count[channel_module_index + channel_offset])))
-						channel_errors[channel_module_index + channel_offset]++;
-					sample_ptr++;
-				}
-
-	return;
-}
+void PCIe_CheckPCIeBlockSaw(void *ptr_block, unsigned long long *channel_errors) // Adaptador legacy: el llamante garantiza la capacidad de ambos punteros.
+{ // La funcion pura PCIe_CheckSaw permite diagnosticos internos con limites explicitos.
+    T_PCIeGeometry geometry = T_PCIeGeometry(); // Usa la configuracion actual para dimensionar el diagnostico.
+    int result = PCIe_ResolveGeometry(geometry); // No deduce ocho modulos del nombre del patron.
+    if (result < 0) { RLOG(result); return; } // No interpreta memoria con una geometria invalida.
+    if (!ptr_block || !channel_errors || gb_pcie_buffer_size_block != geometry.block_size_bytes) { ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); return; } // Exige un bloque de la adquisicion configurada.
+    const T_block_header *header = static_cast<const T_block_header *>(ptr_block); // Solo consulta la cabecera tras comprobar punteros.
+    if (header->header_struct.magic_number != HEADER_MAGIC_NUMBER || header->header_struct.block_beats_word.bits.block_beats + 1 != geometry.beats_per_module || header->header_struct.block_focal_laws_word.bits.block_focal_laws + 1 != geometry.focal_laws_per_block) { ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); return; } // Contrasta dimensiones antes del recorrido.
+    const unsigned int valid_laws = header->header_struct.ch_id_last.bits.last_block ? header->header_struct.image_focal_law_word.bits.image_focal_law_total : geometry.focal_laws_per_block; // No recorre relleno del ultimo bloque.
+    result = PCIe_CheckSaw(reinterpret_cast<const short *>(header + 1), static_cast<size_t>((geometry.block_size_bytes - 32) / 2), geometry, valid_laws, channel_errors, geometry.channel_count); // El contrato legacy exige tantos contadores como canales.
+    if (result < 0) { RLOG(result); } // Registra fallos porque la firma historica devuelve void.
+} // Fin del diagnostico compatible.
 // -----------------------------------------------------------------------------
 /**
 
@@ -831,14 +816,22 @@ void PCIe_CheckPCIeBlockSaw(void *ptr_block, unsigned long long *channel_errors)
 @return Ver códigos de error
 */
 // -----------------------------------------------------------------------------
-int PCIe_image_manager_init(int fifo_pointers, int focal_laws_per_image, int focal_laws_per_block, int frame_length)
-{
-	if (!gb_pcie_enabled) return ELOG(charEPCIE_DISABLED, EPCIE_DISABLED);
-	//if (gb_drv_handle == nullptr) return ELOG(charEPCIE_DRV_NULL, EPCIE_DRV_NULL);
-	if (gb_image_handle == nullptr) gb_image_handle = new CImageHandle(gb_drv_handle, fifo_pointers, focal_laws_per_image, focal_laws_per_block, frame_length);
-	else gb_image_handle->image_manager_init(gb_drv_handle, fifo_pointers, focal_laws_per_image, focal_laws_per_block, frame_length);
-	return EPCIE_NONE;
-}
+int PCIe_InitGeometryManager(int fifo_pointers, const T_PCIeGeometry &geometry) // Inicializa el gestor con el mismo contrato que DMA.
+{ // Se llama despues de parar la adquisicion y reservar buffers.
+    if (!gb_pcie_enabled) return ELOG(charEPCIE_DISABLED, EPCIE_DISABLED); // Exige PCIe.
+    if (fifo_pointers <= 0 || (geometry.focal_laws_per_image + geometry.focal_laws_per_block - 1) / geometry.focal_laws_per_block + 1 > fifo_pointers) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // Reserva margen para una imagen que cruza bloques.
+    if (!gb_image_handle) gb_image_handle = new CImageHandle(gb_drv_handle, fifo_pointers, geometry); // El gestor conserva una copia de la geometria.
+    else gb_image_handle->image_manager_init(gb_drv_handle, fifo_pointers, geometry); // Reinicia indices al cambiar de adquisicion.
+    return EPCIE_NONE; // Gestor preparado.
+} // Fin de inicializacion parametrizada.
+int PCIe_image_manager_init(int fifo_pointers, int focal_laws_per_image, int focal_laws_per_block, int frame_length) // Conserva la firma historica.
+{ // Comprueba que el cliente usa la configuracion actual.
+    T_PCIeGeometry geometry = T_PCIeGeometry(); // Construye la instantanea.
+    int result = PCIe_ResolveGeometry(geometry); // Reutiliza validaciones.
+    if (result < 0) return RLOG(result); // Propaga fallos.
+    if (focal_laws_per_image != geometry.focal_laws_per_image || focal_laws_per_block != geometry.focal_laws_per_block || frame_length != geometry.samples_per_channel) return ELOG(charEPCIE_Geometry, EPCIE_Geometry); // No mezcla dimensiones.
+    return PCIe_InitGeometryManager(fifo_pointers, geometry); // Delega en la implementacion comun.
+} // Fin del adaptador.
 // -----------------------------------------------------------------------------
 /**
 

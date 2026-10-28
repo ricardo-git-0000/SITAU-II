@@ -49,7 +49,7 @@ typedef unsigned char u8;
 
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define N_CHANNELS_MODULE	32
-#define N_MODULES			8   //8 x 32  = 256 canales
+// El numero de modulos efectivos procede de T_PCIeGeometry; no existe un N_MODULES fijo.
 #define N_BYTES_BEAT		32
 #define N_BYTES_SAMPLES		2
 

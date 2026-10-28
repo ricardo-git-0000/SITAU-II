@@ -220,7 +220,7 @@
 #define charEPCIE_DISABLED   "Error, SITAU PCIe interface disabled."
 
 #define EPCIE_GTX_BLOCKS      (pcie_error_code_start - 68)
-#define charEPCIE_GTX_BLOCKS 	"Error, el número de bloques gtx es superior a 256."
+#define charEPCIE_GTX_BLOCKS "PCIe: numero de bloques GTX por rafaga superior al limite de software actual (512)." // Describe el guard existente; el maximo de firmware requiere verificacion.
 
 // _____________________________________________________________________________
 // ------ T I P O S   D E   D A T O S
@@ -234,6 +234,19 @@
 // ------ P R O T O T I P O   D E   F U N C I O N E S
 // =============================================================================
 
+#define EPCIE_Geometry (pcie_error_code_start - 69) // -169: dimensiones o topologia PCIe incompatibles.
+#define charEPCIE_Geometry "PCIe: se requiere sonda completa paralela de 128/256 canales, 4/8 modulos, mapa completo y dimensiones positivas." // Identifica los requisitos de esta fase.
+#define EPCIE_GeometrySize (pcie_error_code_start - 70) // -170: dimensiones fuera de la capacidad del protocolo.
+#define charEPCIE_GeometrySize "PCIe: muestras o leyes por bloque exceden la cabecera o la capacidad GTX del bloque." // Distingue capacidad de configuracion inconsistente.
+#define EPCIE_GeometryPending (pcie_error_code_start - 71) // -171: reservado por compatibilidad; ya no se emite desde ST2_Start.
+#define charEPCIE_GeometryPending "PCIe 128: geometria validada; arranque pendiente de adaptar DMA y gestor de imagenes en fase 2. TCP sigue disponible." // Explica la limitacion temporal.
+
+#define EPCIE_ChannelMap (pcie_error_code_start - 72) // -172: mapa PCIe incompleto, duplicado o fuera de rango.
+#define charEPCIE_ChannelMap "PCIe: pin_to_channel debe ser una permutacion completa de los canales configurados." // Describe el contrato de ordenacion.
+#define EPCIE_BlockLayout (pcie_error_code_start - 73) // -173: bloque recibido incompatible con la adquisicion.
+#define charEPCIE_BlockLayout "PCIe: cabecera, longitud DMA o limites de la ley incompatibles con la geometria configurada." // Evita entregar datos truncados.
+#define EPCIE_EmulatorGeometry (pcie_error_code_start - 74) // -174: emulador de formato fijo.
+#define charEPCIE_EmulatorGeometry "PCIe: el emulador del driver requiere ocho tramas; cuatro tramas solo estan habilitadas para adquisicion real." // No modifica el contrato del kernel.
 int PCIe_GetError(int error_code, char *str); // Permite consultar los errores PCIe desde ST2_GetError.
 
 #endif

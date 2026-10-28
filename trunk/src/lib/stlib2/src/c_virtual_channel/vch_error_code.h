@@ -83,6 +83,8 @@
 #define EVCH_ACQUISITION_TYPE      (vch_error_code_start - 22)
 #define charEVCH_ACQUISITION_TYPE 	"Error, tipo de adquisición incorrecto (MC, PA, TFM)"
 
+#define EVCH_GTXGeometry (vch_error_code_start - 24) // -1524: dimensiones que no permiten un bloque GTX valido.
+#define charEVCH_GTXGeometry "GTX: muestras, canales o rafaga invalidos; una ley debe caber en el bloque y los contadores deben ser representables." // Evita divisiones por cero y overflow durante la carga.
 #define EVCH_PinToChannelSize (vch_error_code_start - 23) // -1523: mapa incompatible con los elementos/bloques configurados.
 #define charEVCH_PinToChannelSize "pin_to_channel: longitud incompatible con los elementos configurados (BASES_NUMBER x 32 para sonda completa); se admite un patron valido de 128 para 256." // Describe el error sin cambiar los codigos existentes.
 

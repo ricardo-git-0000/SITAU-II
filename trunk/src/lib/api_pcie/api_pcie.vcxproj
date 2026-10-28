@@ -45,6 +45,8 @@
     <ClInclude Include="src\fuse\sw_fifo.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\pcie.h" />
+    <ClInclude Include="src\pcie_layout.h" /> <!-- Operaciones acotadas de ordenacion y punteros PCIe. -->
+    <ClInclude Include="src\pcie_geometry.h" /> <!-- Incluye la geometria pura para revision y pruebas sin driver. -->
     <ClInclude Include="src\pcie_error_code.h" />
     <ClInclude Include="src\pcie_tad.h" />
     <ClInclude Include="src\pcie_thread_acq.h" />

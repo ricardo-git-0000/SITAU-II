@@ -17,6 +17,7 @@
 #include "pcie.h"
 #include "api_pcie.h"
 #include "c_timeout.h"
+#include "pcie_layout.h" // Comparte la validacion de permutaciones con la ordenacion.
 #include "pcie_thread_acq.h"
 #include "stlib2.h"
 
@@ -25,6 +26,22 @@
 // ======================================================================
 
 vector<unsigned short> gb_pin_to_channel;
+static int PCIe_RefreshChannelMap(void) // Carga la asignacion completa sin conservar restos del mapa anterior.
+{ // Esta validacion solo se invoca para PCIe.
+    gb_pin_to_channel.clear(); // Un fallo impide reutilizar silenciosamente otro mapa.
+    const int channels = ST_GetChannelsNumber(); // Obtiene el numero efectivo tras cargar SITAU.XML.
+    if (channels < 0) return RLOG(channels); // Propaga errores de configuracion.
+    if (channels != 128 && channels != 256) return ELOG(charEPCIE_Geometry, EPCIE_Geometry); // Alcance paralelo de esta entrega.
+    const int map_size = ST_GetProbePinToChannelSize(0); // No acepta que el getter trunque un mapa mayor.
+    if (map_size < 0) return RLOG(map_size); // Propaga el error original.
+    if (map_size != channels) return ELOG(charEPCIE_ChannelMap, EPCIE_ChannelMap); // Comprueba la longitud efectiva.
+    vector<unsigned short> channel_map(channels); // Reserva una copia temporal completa.
+    const int copied = ST_GetProbePinToChannel(channel_map.data(), channels, 0); // El retorno es la cantidad copiada, no solo un estado.
+    if (copied < 0) return RLOG(copied); // Conserva los errores de stlib2.
+    if (copied != channels || PCIe_ValidateMap(channel_map.data(), channel_map.size(), channels) < 0) return ELOG(charEPCIE_ChannelMap, EPCIE_ChannelMap); // Rechaza longitud, rango o duplicados.
+    gb_pin_to_channel.swap(channel_map); // Publica el mapa solamente cuando todas las comprobaciones pasan.
+    return EPCIE_NONE; // No duplica la ampliacion 128 a 256 ya realizada por stlib2.
+} // Fin de carga del mapa PCIe.
 
 // _____________________________________________________________________________
 // ------ System Functions
@@ -191,7 +208,8 @@ int ST2_LoadXMLFileConfig(char *file)
 
 	// CARGA LA CONFIGURACIÖN DESDE EL ARCHIVO XML
 
-	if ((result = ST_LoadXMLFileConfig(file)) < 0) return RLOG(result);
+	if (gb_pcie_enabled && (ThrAcq_IsRunning() || (gb_drv_handle && gb_drv_handle->dma_is_running()))) return ELOG(charEPCIE_Geometry, EPCIE_Geometry); // Exige parar antes de cambiar dimensiones o mapa.
+	if ((result = ST_LoadXMLFileConfig(file)) < 0) return RLOG(result); // Conserva la carga TCP y los errores del parser.
 
 	// INICIALIZA EL ENLACE PCIe
 	//if (gb_pcie_enabled)
@@ -224,6 +242,7 @@ int ST2_LoadXMLFileConfig(char *file)
 		if (n_ch == 0) return ELOG(charEPCIE_DataInconsistency, EPCIE_DataInconsistency);
 		gb_pin_to_channel.resize(n_ch);
 		if ((result = ST_GetProbePinToChannel(&gb_pin_to_channel[0], (int)gb_pin_to_channel.size(), 0)) < 0) return RLOG(result);
+		if (gb_pcie_enabled && (result = PCIe_RefreshChannelMap()) < 0) return RLOG(result); // Comprueba tambien el numero copiado y su contenido tras cargar XML.
 	}
 	return EPCIE_NONE;
 }
@@ -526,7 +545,11 @@ int ST2_Start(int data_sorted)
 	// INICIALIZA EL ENLACE PCIe
 	if (gb_pcie_enabled)
 	{
-		if (ST_PCIe_GetBlocksBurstNumber() > 512) return ELOG(charEPCIE_GTX_BLOCKS, EPCIE_GTX_BLOCKS);
+		T_PCIeGeometry geometry = T_PCIeGeometry(); // Resuelve la geometria despues de parar y antes de abrir DMA.
+		if ((result = PCIe_ResolveGeometry(geometry)) < 0) return RLOG(result); // Rechaza dimensiones y topologias incompatibles antes de reservar recursos.
+		if ((result = PCIe_RefreshChannelMap()) < 0) return RLOG(result); // Valida el mapa actual antes de reservar y arrancar DMA.
+		if ((result = ST_PCIe_GetBlocksBurstNumber()) < 0) return RLOG(result); // No interpreta un error del getter como numero valido de bloques.
+		if (result > 512) return ELOG(charEPCIE_GTX_BLOCKS, EPCIE_GTX_BLOCKS); // Conserva el limite previo; su discrepancia documental queda pendiente.
 
 		if (gb_pcie_closed)
 		{
@@ -535,15 +558,15 @@ int ST2_Start(int data_sorted)
 			gb_pcie_closed = 0;
 		}
 
-		if ((n_samples = ST_MC_GetAScanDataNumber(0)) < 0) return RLOG(n_samples);
+		n_samples = geometry.samples_per_channel; // Utiliza las muestras ya validadas para el arranque.
 		if ((n_images = ST_GetAcquisitionsNumber()) < 0) return RLOG(n_images);
 		if ((bursts_number = ST_GetBurstsNumber()) < 0) return RLOG(bursts_number);
 		if ((images_burst_number = ST_GetAcquisitionsBurstNumber()) < 0) return RLOG(images_burst_number);
-		if ((n_focal_laws = ST_GetFocalLawNumber(0)) < 0) return RLOG(n_focal_laws);
-		if ((n_focal_laws_block = ST_PCIe_GetFocalLawsBlockNumber()) < 0) return RLOG(n_focal_laws_block);
+		n_focal_laws = geometry.focal_laws_per_image; // Reutiliza las leyes de la configuracion validada.
+		n_focal_laws_block = geometry.focal_laws_per_block; // Evita recalcular las dimensiones del bloque en otra capa.
 
-		if ((result = PCIe_SetBuffers_mod(n_samples, n_focal_laws, images_ddr_number, n_images, n_focal_laws_block)) < 0) return RLOG(result);
-		if ((result = PCIe_image_manager_init(dma_blocks_number, n_focal_laws, n_focal_laws_block, n_samples)) < 0) return RLOG(result);
+		if ((result = PCIe_SetGeometryBuffers(geometry, images_ddr_number, n_images)) < 0) return RLOG(result); // Reserva con la instantanea validada.
+		if ((result = PCIe_InitGeometryManager(dma_blocks_number, geometry)) < 0) return RLOG(result); // El gestor usa el mismo salto que la lectura DMA.
 		if ((result = PCIe_Start(1, 0, 2, data_sorted, 1, images_burst_number, bursts_number, thread_dma_enabled, thread_olink_enabled)) < 0) return RLOG(result);
 		//if ((result = PCIe_EnableRx(1)) < 0) return RLOG(result);
 	}

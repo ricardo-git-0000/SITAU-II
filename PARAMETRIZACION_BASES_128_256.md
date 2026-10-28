@@ -407,3 +407,123 @@ En esta actualización se necesitan ambas DLL. Las instrucciones anteriores de r
 - Se añadió una comprobación de regresión estática al test del catálogo. No sustituye a una compilación C++.
 - El usuario quiere depurar: utilizar **Debug | x64**, primero en stlib2 y después en api_pcie, conservando v143 y v141 respectivamente. Release no es necesario para corregir este error. Mantener los PDB correspondientes a las DLL para depurar.
 - El asistente no ejecuta compilaciones de Visual Studio; la comprobación de compilación queda a cargo del usuario.
+
+## Plan de parametrización PCIe — 128 y 256 canales
+
+Estado: fases 1–3 implementadas en fuentes. Fase 4: pruebas sintéticas y procedimiento de integración preparados; compilación, ejecución C++ y validación física pendientes del usuario. Esta sección agrupa el diseño, los criterios de aceptación y las limitaciones; las futuras iteraciones actualizarán el estado de cada fase, sin registrar cada ejecución como un diario.
+
+### Objetivo y alcance
+
+Seleccionar 4 u 8 bases mediante `BASES_NUMBER` en `SITAU.XML`, sin recompilar ni editar constantes al cambiar de equipo. Reutilizar la configuración resuelta por stlib2 (`ST_GetChannelsNumber()`), sin introducir otro número de módulos en el XML de adquisición. Primera entrega: modo paralelo, canal virtual 0 y sonda completa de 128/256 elementos. Sondas parciales, multiplexado y otros modos requieren un contrato explícito y no se consideran automáticamente soportados.
+
+Las pruebas Noise/RF realizadas con `pcie_enabled=0` no validan la ruta PCIe. El usuario ha confirmado la aparición del error de longitud del mapa en MATLAB; eso tampoco verifica DMA ni el orden físico de canales PCIe.
+
+### Resultado del estudio inicial (antes de la implementación)
+
+La parametrización está incompleta en varias capas, no solamente en `N_MODULES`:
+
+| Área y referencia de código | Estado observado | Trabajo necesario |
+|---|---|---|
+| `api_pcie/src/pcie_tad.h:52` | `N_MODULES=8`; 32 canales por módulo | Eliminar su uso como dimensión efectiva. Mantener separadas las constantes físicas y los valores de configuración. |
+| `api_pcie/src/c_image_handle.cpp:86,249` | Cada ley focal ocupa `frame_length * 32 * 8` muestras; ese valor determina los punteros dentro del bloque | Pasar al gestor la geometría validada del transporte; comprobar desplazamientos y límites antes de entregar punteros. |
+| `api_pcie/src/pcie.cpp:328` (`PCIe_SetBuffers_mod`) | Calcula beats por módulo, pero no incluye el número de canales en la condición que decide recalcular buffers | Recalcular al cambiar la geometría y los demás parámetros que afectan a la adquisición, incluso con las mismas muestras y leyes. |
+| `api_pcie/src/fuse/fuse.cpp:1339–1355,1531` | `FRAMES_PER_PACKAGE=8` interviene en tamaño DMA, cálculo de separación del emulador y tamaño de lectura en `dma_start` | Unificar el tamaño usado al reservar y al leer; cambiar solo la reserva dejaría la lectura incorrecta. |
+| `api_pcie/src/fuse/fuse.cpp:1409` | El comprobador del patrón del emulador recorre ocho tramas | Mantenerlo coherente con el formato que realmente genera el emulador. |
+| `api_pcie/src/xdma_driver/libxdma/fuse_emul.c:227,254` | El emulador del driver también calcula ocho tramas y programa registros de longitud | Verificar si es contrato fijo del emulador/FPGA. No modificar el driver ni su protocolo sin evidencia de necesidad. |
+| `api_pcie/src/pcie.cpp:790` | El diagnóstico `PCIe_CheckPCIeBlockSaw` reserva y recorre 8 × 32 canales | Adaptar contador y recorrido; su interfaz no recibe la capacidad del bloque ni del array de errores, por lo que necesita una vía interna con límites conocidos. No se ha localizado una llamada activa en los fuentes de api_pcie revisados. |
+| `api_pcie/src/pcie_thread_acq.cpp:176,193` y `pcie.cpp:870,936` | El buffer de usuario y funciones de lectura ya usan `ST_GetChannelsNumber()` | Conservar esta parametrización y hacerla coherente con el tamaño del transporte. |
+| `api_pcie/src/pcie_utils.cpp:343` | Ordena por grupos de 32, pero recorta índices inválidos al último canal o muestra | Validar longitudes e índices y devolver error; evitar que el recorte oculte un mapa/configuración incorrectos. |
+| `api_pcie/src/stlib2/stlib2_wrapper.cpp:74,223` | Reserva el mapa con el número de canales y solo comprueba retorno negativo del getter | Comprobar también cuántas entradas se copiaron: el getter puede devolver menos sin error. Evitar entradas residuales al recargar configuraciones. |
+| `stlib2/src/c_virtual_channel/c_virtual_channel.cpp:397–405` | Las leyes por bloque GTX ya se calculan con canales dinámicos | Verificar consistencia con PCIe y proteger divisores/productos: una ley que no cabe puede producir cero leyes por bloque. |
+
+Flujo relevante: `ST2_OpenSys` abre recursos → `ST2_LoadXMLFileConfig` carga parámetros/mapa → `ST2_Start` obtiene muestras y leyes, prepara buffers y gestor de imágenes → `fuse::dma_start` calcula el tamaño de lectura → `GetOneImage_Pointers` separa leyes → `C_PCIBuffer::Add` copia u ordena → MATLAB obtiene la imagen. La configuración PCIe debe resolverse después de disponer de la configuración válida, y permanecer estable durante la adquisición.
+
+### Contrato de transporte confirmado
+
+El usuario confirma que el sistema de 128 canales envía cuatro tramas y el de 256 envía ocho, una por módulo. Se adopta este contrato para la adquisición real: no hay ocho posiciones fijas con relleno en el equipo de 128. La confirmación procede del usuario, no de una captura realizada por el asistente. El encabezado `T_block_header` no aporta un contador explícito de bases. El cálculo actual trata `block_beats + 1` como beats por módulo y `block_focal_laws + 1` como leyes por bloque; sus unidades, alineación y orden se comprobarán en las pruebas de integración. No se debe confundir el número de tramas con el de enlaces físicos.
+
+- Canales de transporte = canales efectivos; módulos y tramas por ley = canales / 32: cuatro para 128 y ocho para 256.
+- La reserva DMA, el tamaño de lectura y el salto entre leyes deben utilizar el mismo número de módulos resuelto desde stlib2. No se necesita una opción adicional de relleno en el XML.
+- Esta confirmación describe la adquisición real. El formato del generador de pruebas del driver/FPGA se revisará por separado antes de sustituir sus constantes de ocho tramas; no se presupone que dicho emulador sea configurable.
+
+Para transporte compacto y muestras de 16 bits, con `S` muestras/canal, `C` canales y `L` leyes por bloque: muestras por ley = `S*C`; bytes por ley = `S*C*2`; bytes por bloque = `32 + L*S*C*2`. Los 32 bytes iniciales corresponden al encabezado actual. Los beats por módulo siguen siendo `S*32*2/32 = 2*S`; el ancho del bus de 256 bits es 32 bytes y no es el número de canales. Ejemplo con S=1024 y L=2: 524320 bytes para 128 canales y 1048608 para 256, sujeto a confirmar alineación/relleno del protocolo.
+
+### Diseño recomendado
+
+Resolver una única geometría por adquisición, con nombres como `channel_count`, `module_count`, `transport_channel_count`, `samples_per_channel`, `focal_laws_per_block` y `block_size_bytes`. Validar primero y pasar esos valores a las clases internas, en vez de consultar globals en cada bucle o releer el XML desde el driver. Conservar las firmas públicas ST2 y los prototipos MATLAB cuando sea posible; revisar los wrappers históricos `fuse_api.cpp` y `api_pcie_old.h` antes de alterar firmas internas que puedan estar expuestas.
+
+Validar 128/256 en el alcance inicial, multiplicidad de 32, valores positivos, capacidad del bloque y productos sin desbordamiento antes de reservar o leer. Usar aritmética de tamaño apropiada, respetando los límites DWORD de las lecturas Windows. Validar el mapa por número efectivo de entradas y rango, y su unicidad cuando deba ser una permutación. La ampliación 128→256 ya resuelta por stlib2 no se duplica en api_pcie. Si se pide una sonda parcial, rechazar explícitamente el caso no soportado o diseñar su proyección; no rellenar silenciosamente el resto con ceros.
+
+Mantener separados: bases del equipo, grupos de canales, leyes focales, bloques GTX, buffers DMA y enlaces físicos. También hay una discrepancia heredada entre el límite `>512` en `ST2_Start` y el mensaje de `EPCIE_GTX_BLOCKS` que dice 256; se resolverá contra el límite real, sin cambiarlo por asociación con los canales. Los errores nuevos deberán tener números no ambiguos y descripción, aprovechando el catálogo existente.
+
+### Fases propuestas y criterios de cierre
+
+| Fase | Cambios previstos | Prueba y criterio de aceptación | Estado |
+|---|---|---|---|
+| 1. Contrato y geometría | Aplicar el contrato confirmado de una trama por módulo; definir unidades y resolver/validar la geometría desde stlib2 antes del arranque. Definir rechazo de modos fuera de alcance. | Cálculos y límites con casos válidos e inválidos; contrastar bytes por bloque y orden de tramas durante integración. | Implementada en fuentes; pruebas estáticas correctas; compilación y pruebas C++ pendientes |
+| 2. DMA y gestor de imágenes | Parametrizar conjuntamente `pcie.cpp`, `c_image_handle.*` y la ruta necesaria de `fuse.*`; actualizar cachés, reinicialización y comprobaciones de capacidad. Mantener el protocolo del driver salvo necesidad demostrada. | Bloques sintéticos con varias leyes, imágenes repartidas entre bloques, último bloque parcial y vuelta del FIFO; ningún puntero fuera del bloque. Regresión de 256 y cambio 128→256→128 tras parada/reapertura. | Implementada en fuentes; pruebas C++ y hardware pendientes |
+| 3. Mapa, ordenación y diagnósticos | Validar el número copiado por el getter, límites en `GetFocalLawSorted`, mapas y diagnóstico saw; revisar patrón y tamaño del emulador sin confundirlo con simulación MATLAB. | Datos identificables por canal/muestra/ley: orden correcto en límites 31/32, 63/64, 127/128 y 255; modo ordenado y bruto; mapas omitido, consecutivo, permutado, duplicado, corto y fuera de rango. | Implementada en fuentes; pruebas C++ y hardware pendientes |
+| 4. Integración y validación física | Añadir pruebas PCIe reproducibles, errores y ejemplos para seleccionar transporte/configuración; comprobar arranque, parada y recarga; consolidar documentación. | Noise/RF TCP siguen funcionando; pruebas PCIe reales 4/8 bases con adquisición finita/continua, ráfagas, pausas, varios tamaños de muestra y reinicios, sin fugas ni pérdida/mezcla de canales. Comparación TCP/PCIe con señal o patrón controlado. | Preparación completada; cierre pendiente de compilación y pruebas físicas |
+
+Cada iteración debe entregar un conjunto coherente que preserve el funcionamiento de 256 canales; no desplegar aislado el cambio de salto entre leyes con una lectura DMA que todavía presuponga otro formato. Las comprobaciones del mapa mínimas necesarias para consumir datos válidos se adelantarán a la fase 2 si son precondición de esa ruta; la fase 3 completa su cobertura.
+
+### Estrategia de pruebas y entregas
+
+Las pruebas sintéticas deben ejercitar los cálculos y recorridos C++ de producción mediante un adaptador o fuente DMA simulada; una réplica matemática en Python sirve como comprobación auxiliar, pero no certifica el binario. La simulación existente de `TThread_Acq::Acquire` evita `GetOneImage_Pointers` cuando el driver está desactivado y genera datos artificiales en `C_PCIBuffer::Add`: por eso no detecta por sí sola el error del salto fijo de 256. Se necesitan al menos dos leyes para detectar dicho salto.
+
+La matriz mínima combina 4/8 bases, ordenación activada/desactivada, mapa válido/inválido, una y varias leyes, límites de bloque y ciclo abrir→cargar→arrancar→parar→cerrar. Añadir cambios de configuración con igual número de muestras para detectar cachés obsoletas, y casos que excedan capacidad o dejen cero leyes por bloque. La validación física queda separada de la simulación y debe registrar versión de firmware/driver y configuración usada.
+
+Las modificaciones se concentran en api_pcie, con una consulta adicional en stlib2 para verificar módulos físicos. No se propone recompilar ni reinstalar el driver de kernel en las primeras fases sin necesidad confirmada. El usuario realizará las compilaciones Visual Studio (stlib2 v143 cuando cambie; api_pcie y pcie_vc v141; inicialmente Debug x64), desplegará DLL/PDB coincidentes y ejecutará las pruebas físicas. El asistente revisará fuentes, preparará pruebas y actualizará este informe por fase. No se ha compilado esta implementación.
+
+### Fase 1 — Configuración común y validación previa al arranque
+
+Este apartado describe la primera entrega. Las limitaciones temporales y tareas pendientes que menciona se actualizan en el apartado de fases 2–4 al final.
+
+Se añade `pcie_geometry.h`, con `T_PCIeGeometry` y la función pura `PCIe_BuildGeometry`. Reúne canales, módulos, muestras, leyes por imagen/bloque, beats por módulo, salto entre leyes y bytes por bloque. Usa productos de 64 bits con límites previos; la salida queda a cero si hay error. Se elige un objeto local por arranque frente a una caché global para evitar dimensiones residuales al cambiar de equipo.
+
+`PCIe_ResolveGeometry`, en `pcie.cpp`, consulta una vez cada dimensión de stlib2, después de parar la adquisición y antes de abrir nuevos recursos DMA en `ST2_Start`. El arranque reutiliza las muestras y leyes ya validadas. La ruta TCP no invoca esta nueva validación. El cambio no añade ningún parámetro al XML ni altera la interfaz pública ST2 o los prototipos MATLAB.
+
+Se añade la exportación `ST_GetModulesNumber()` a stlib2 y a su cabecera de importación en api_pcie. Devuelve los módulos físicos del canal virtual 0: es necesaria porque `ST_GetChannelsNumber()` devuelve canales totales y un sistema multiplexado también puede declarar 128/256 canales sobre un único módulo. Se exige `module_count == channel_count / 32`, sonda completa, longitud completa del mapa y dimensiones positivas. La validación detallada del contenido del mapa y del número efectivamente copiado permanece en fase 3.
+
+Límites: 65536 beats por módulo (campo de 16 bits menos uno), 1024 leyes por bloque (campo de 10 bits menos uno), y tamaño total máximo `GTX_SIZE_BLOCK = (1<<23)-32` bytes, coherente con el cálculo existente de stlib2 que descuenta la cabecera de ese máximo. No se confunden los 256 bits del bus con canales. Las pruebas estáticas verifican que la copia del límite GTX coincide con `st_reg.h`. No se corrige aún el riesgo previo de división por cero durante la carga de una configuración que no deje ninguna ley por bloque en stlib2; esta protección de arranque no sustituye aquella revisión pendiente.
+
+Nuevos códigos sin colisiones: `-169` para geometría/topología incompatible, `-170` para capacidad del formato/bloque y `-171` para el arranque PCIe de 128 todavía pendiente de adaptar. Se incorporan al traductor y a `doc/CODIGOS_ERROR.md`.
+
+**Limitación deliberada de esta fase:** el cálculo reconoce cuatro tramas, pero no se permite arrancar PCIe de 128 con los consumidores DMA actuales de ocho. Devuelve `-171` antes de abrir DMA. Se mantiene el arranque de 256 para configuraciones válidas del alcance indicado; debe verificarse tras compilar. La fase 2 conectará la geometría a reserva, lectura y punteros, y retirará este bloqueo únicamente cuando esas capas sean coherentes. El soporte TCP de 128 no se bloquea. Los emuladores y el driver no se modifican en esta fase.
+
+Pruebas entregadas en `tests/pcie_geometry/`: comprobación estática de integración, orden de validación, exportaciones y límites (ejecutada correctamente); prueba C++ que llama a la función real, con casos 128/256, transición de configuraciones, multiplexado, sonda parcial, mapa corto, dimensiones cero/negativas, límites de cabecera/GTX y extremos de int (pendiente de compilar y ejecutar). La regresión estática de errores también pasa: 271 descripciones y sin nuevas colisiones. Ninguna comprobación realizada aquí ejecuta las DLL nuevas ni el hardware.
+
+Para usar esta fase, el usuario debe compilar **primero stlib2 y después api_pcie**, en Debug x64, actualizar la biblioteca de enlace que consume api_pcie y desplegar ambas DLL/PDB. La nueva api_pcie requiere la nueva exportación de stlib2: no mezclarla con una stlib2 anterior. Para la prueba C++ independiente y las comprobaciones estáticas, consultar `tests/pcie_geometry/README.md`. No se han sustituido DLL, creado commits ni subido cambios como parte de esta fase.
+
+
+### Fases 2–4 — Transporte compacto, validación y pruebas de integración
+
+**Estado de esta entrega:** implementación de fases 2 y 3 completada en fuentes; fase 4 preparada para validación. No se han compilado las DLL ni ejecutado las pruebas C++ o el hardware. Las comprobaciones Python son estáticas y no certifican adquisición real. El procedimiento detallado y los comandos están en `tests/pcie_geometry/README.md`.
+
+#### Fase 2: una configuración para reserva, lectura y gestor
+
+- `ST2_Start` pasa la misma `T_PCIeGeometry` a `PCIe_SetGeometryBuffers` y `PCIe_InitGeometryManager`. Los adaptadores históricos conservan sus firmas y contrastan los argumentos con stlib2. No se modifica la interfaz ST2 ni los prototipos MATLAB.
+- `fuse` conserva el número de módulos de cada adquisición; tanto la reserva como `dma_start` calculan cuatro tramas para 128 y ocho para 256. Comprueba que la longitud de lectura coincide con la capacidad reservada y rechaza transferencias incompletas. Se retira el bloqueo temporal `-171` del arranque real; el código queda reservado por compatibilidad.
+- Se elimina la caché parcial: cada arranque parado recalcula todos los contadores y reconstruye buffers/FIFO. Esta elección prioriza coherencia al cambiar 128→256→128 o solo el número de imágenes frente al ahorro de reservas. Se revisan capacidad de DMA, productos de 32/64 bits, fallos de memoria y propagación de errores de inicialización del buffer de usuario.
+- El gestor conserva la geometría, calcula el salto con canales efectivos y comprueba cabecera, secuencia, canal virtual cero y límites antes de entregar cada puntero. Se corrigen ocupación del FIFO, avance cuando una imagen necesita varios bloques y decremento de la última imagen. El vector de punteros se reinicializa también al reducir el número de leyes.
+- El último bloque puede contener menos leyes útiles que su capacidad nominal. **El contrato implementado conserva la longitud física completa del bloque**, como la ruta anterior, y usa el contador de leyes válidas para excluir relleno. Una lectura físicamente más corta se rechaza con `-173`; confirmar este punto con una captura o registro de hardware antes de dar por cerrada la integración.
+
+#### Fase 3: mapa, diagnóstico y carga segura
+
+- El mapa PCIe se valida al cargar la configuración y de nuevo antes del arranque: tamaño declarado, número realmente copiado, rango y unicidad. Se publica mediante una copia temporal solo después de validar; se mantiene la ampliación 128→256 de stlib2 sin duplicarla. Esta validación adicional se aplica a PCIe y exige sonda completa. La recarga con adquisición PCIe activa se rechaza: parar antes de cargar otro XML.
+- `GetFocalLawSorted` utiliza la función pura `PCIe_SortLaw`, con capacidades comprobadas. Se elimina el recorte silencioso al último canal/muestra. Los fallos de copia, ordenación o liberación se propagan al hilo de adquisición.
+- El diagnóstico saw usa canales dinámicos y un recorrido con capacidades explícitas (`PCIe_CheckSaw`). El adaptador histórico `void*` se conserva, pero su llamante debe garantizar la capacidad real de los punteros porque esa firma no permite descubrirla.
+- Se mantiene el driver/kernel y su emulador fijo de ocho tramas. Se rechaza arrancar o comprobar ese emulador con transporte de cuatro tramas (`-174`). La simulación MATLAB sin hardware es una ruta distinta y no prueba DMA. Se corrige también la posición de escritura de leyes simuladas para no sobrescribir siempre la primera.
+- El cálculo GTX de stlib2 usa productos de 64 bits y evita divisores cero. Con PCIe, una ley que no cabe, una ráfaga inválida o contadores no representables producen `-1524`; se limita el campo de leyes por bloque a 1024. TCP no se rechaza por dimensiones GTX que no utiliza. Se conserva el límite de software de 512 bloques por ráfaga y se corrige su mensaje; el máximo físico del firmware continúa pendiente de contrastar.
+- Alcance explícito: adquisición MC paralela, canal virtual 0, sonda completa, 4/8 módulos. PA, TFM, multiplexado y sondas parciales no se presentan como soportados por esta adaptación.
+
+Nuevos códigos: `-172` mapa PCIe inválido, `-173` bloque/longitud incompatible, `-174` emulador incompatible y `-1524` geometría GTX inválida durante carga. El catálogo alcanza 275 descripciones y 255 códigos distintos, conservando las 20 colisiones heredadas.
+
+#### Fase 4: pruebas entregadas y criterio de cierre
+
+- `test_pcie_geometry.cpp` ejecuta las funciones de producción de geometría, mapa, ordenación, límites de punteros y saw, incluyendo longitudes cortas, duplicados, índices fuera de rango, límites numéricos y destinos con centinelas.
+- `prepare_manager_test.py` extrae la declaración y la implementación actuales de `CImageHandle`; solo sustituye las dependencias externas. `test_pcie_stream.cpp` las ejecuta con una fuente DMA simulada y cabeceras de producción. Cubre 128/256, varias leyes por imagen, imágenes compartiendo bloques, cruces de bloque, FIFO circular, último bloque parcial, liberación final y cabeceras/estado DMA inválidos. Estos ejecutables quedan pendientes de compilar y ejecutar por el usuario.
+- Se ejecutan las comprobaciones estáticas de geometría/integración y catálogo de errores. La preparación del adaptador no equivale a una ejecución del gestor.
+- La validación física debe ejecutar Noise/RF con PCIe real, 4/8 bases, modos bruto/ordenado, adquisición finita/continua, ráfagas con y sin pausa, varias muestras/leyes y ciclos abrir→cargar→arrancar→parar→cerrar. Registrar firmware, driver, DLL y XML utilizados; verificar orden físico mediante una señal identificable y comparar con TCP. Tras un error de carga, cerrar y reabrir antes de reintentar.
+
+Para compilar: **stlib2 (v143) → actualizar su `.lib`/DLL usada por api_pcie → api_pcie (v141)**, ambos Debug x64; también pcie_vc si se usa la consola. Desplegar las dos DLL y PDB coincidentes con MATLAB cerrado. No se han recompilado ni reemplazado binarios, modificado el driver, creado commits ni hecho push en esta entrega.

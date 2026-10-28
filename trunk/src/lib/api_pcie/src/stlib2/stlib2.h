@@ -98,6 +98,7 @@ int _TYPE ST_MC_GetAScanNumber(void);
 int _TYPE ST_MC_GetMatrixCaptureSize(void);
 int _TYPE ST_MC_GetSingleImageSize(void);
 int _TYPE ST_GetChannelsNumber(void);
+int _TYPE ST_GetModulesNumber(void); // Consulta los modulos fisicos del canal virtual cero, sin releer el XML.
 int _TYPE ST_GetMaxAcquisitionsNumber(void);
 int _TYPE ST_SetMaxAcquisitionsNumber(void);
 int _TYPE ST_CurrentIndexFocalLaw(void);

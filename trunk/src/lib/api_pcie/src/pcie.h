@@ -14,6 +14,7 @@ using namespace std;
 // ======================================================================
 
 #include <fuse.h>
+#include "pcie_geometry.h" // Comparte la geometria sin alterar la interfaz publica ST2.
 
 // _____________________________________________________________________________
 // ------ C O N S T A N T S
@@ -42,6 +43,9 @@ typedef struct T_PtrImage
 } T_PtrImage;
 
 
+int PCIe_SetGeometryBuffers(const T_PCIeGeometry &geometry, int buffer_blocks, int total_images); // Usa una unica geometria por arranque.
+int PCIe_InitGeometryManager(int fifo_pointers, const T_PCIeGeometry &geometry); // Comparte el formato exacto de DMA con el gestor.
+int PCIe_ResolveGeometry(T_PCIeGeometry &geometry); // Resuelve y valida la configuracion del canal virtual cero antes de abrir DMA.
 int PCIe_Open(void);
 int PCIe_Close(void);
 int PCIe_GetStatus(unsigned long long *status_mask);

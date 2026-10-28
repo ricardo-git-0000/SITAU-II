@@ -17,6 +17,7 @@ using namespace std;
 
 #include "fuse.h"
 #include "pcie_tad.h"
+#include "pcie_layout.h" // Comparte limites y saltos comprobados con las pruebas.
 
 // _____________________________________________________________________________
 // ------ T I P O S   D E   D A T O S
@@ -31,6 +32,7 @@ class CImageHandle
 {
 private:
 
+	T_PCIeGeometry geometry_; // Instantanea estable durante toda la adquisicion.
 	fuse *fuse_pcie_drv_;
 	unsigned long current_block_read_;
 	unsigned long current_block_fred_;
@@ -64,9 +66,9 @@ public:
 
    int focal_law_mode_;
 
-   CImageHandle(fuse *fuse_pcie_drv, int fifo_pointers, int focal_laws_per_image, int focal_laws_per_block, int frame_length);
+   CImageHandle(fuse *fuse_pcie_drv, int fifo_pointers, const T_PCIeGeometry &geometry); // Recibe la geometria validada de la adquisicion.
    ~CImageHandle();
-   void image_manager_init(fuse *p_fuse_pcie_drv, int fifo_pointers, int p_focal_laws_per_image, int p_focal_laws_per_block, int frame_length);
+   void image_manager_init(fuse *p_fuse_pcie_drv, int fifo_pointers, const T_PCIeGeometry &geometry); // Recibe la geometria validada de la adquisicion.
    int FreeOneImage_Pointers(unsigned long *image_index_fred);
    int GetOneImage_Pointers(short int **focal_laws_pointers, unsigned long *p_current_image_index, T_block_header **last_block_header, bool paused=false);
    bool LastImageRead(void) { return last_image_read_; }

@@ -414,6 +414,12 @@ int ST_MC_GetFocalLaw_AScanNumber (int id_focal_law)
 
 */
 // -----------------------------------------------------------------------------
+int ST_GetModulesNumber(void) // Expone la topologia fisica para validar la geometria PCIe.
+{ // Usa el mismo canal virtual cero que ST_GetChannelsNumber.
+   if (gb_virtual_channel.empty() || gb_virtual_channel[0] == NULL) return ELOG(charES2_IdVirtualChannel, ES2_IdVirtualChannel); // Rechaza un sistema sin canal configurado.
+   return gb_virtual_channel[0]->GET_MODULENumber(); // Propaga el resultado de la configuracion hardware ya cargada.
+} // No modifica la configuracion ni el transporte TCP.
+
 int ST_GetChannelsNumber(void)
 {
 int result = 1;

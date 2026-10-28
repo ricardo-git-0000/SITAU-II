@@ -249,6 +249,24 @@ int result = 1;
    case EPCIE_GTX_BLOCKS: // Traduce el codigo definido en el catalogo existente.
       sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_GTX_BLOCKS); // Incluye codigo y descripcion.
       break; // Finaliza la traduccion de este codigo.
+   case EPCIE_Geometry: // Traduce la validacion de geometria PCIe.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_Geometry); // Incluye el numero y su descripcion especifica.
+      break; // Conserva el contrato de codigo reconocido.
+   case EPCIE_GeometrySize: // Traduce la validacion de geometria PCIe.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_GeometrySize); // Incluye el numero y su descripcion especifica.
+      break; // Conserva el contrato de codigo reconocido.
+   case EPCIE_ChannelMap: // Traduce errores de permutacion del mapa.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_ChannelMap); // Devuelve codigo y causa.
+      break; // Termina este caso.
+   case EPCIE_BlockLayout: // Traduce bloques incompletos o inconsistentes.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_BlockLayout); // Devuelve codigo y causa.
+      break; // Termina este caso.
+   case EPCIE_EmulatorGeometry: // Explica la limitacion del generador del driver.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_EmulatorGeometry); // Devuelve codigo y causa.
+      break; // Termina este caso.
+   case EPCIE_GeometryPending: // Traduce la validacion de geometria PCIe.
+      sprintf(str, "(Error Code %d) '%s'", error_code, charEPCIE_GeometryPending); // Incluye el numero y su descripcion especifica.
+      break; // Conserva el contrato de codigo reconocido.
    default: result = 0; break;
    }
    return result;

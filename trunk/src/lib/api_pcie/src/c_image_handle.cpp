@@ -34,9 +34,9 @@ CImageHandle *gb_image_handle = nullptr;
 @return Ver códigos de error
 */
 // -----------------------------------------------------------------------------
-CImageHandle::CImageHandle(fuse *fuse_pcie_drv, int fifo_pointers, int focal_laws_per_image, int focal_laws_per_block, int frame_length)
+CImageHandle::CImageHandle(fuse *fuse_pcie_drv, int fifo_pointers, const T_PCIeGeometry &geometry) // Recibe la geometria validada de la adquisicion.
 {
-	image_manager_init(fuse_pcie_drv, fifo_pointers, focal_laws_per_image, focal_laws_per_block, frame_length);
+	image_manager_init(fuse_pcie_drv, fifo_pointers, geometry); // Conserva exactamente las dimensiones de DMA.
 }
 // -----------------------------------------------------------------------------
 /**
@@ -58,15 +58,15 @@ CImageHandle::~CImageHandle(void)
 @return Ver códigos de error
 */
 // -----------------------------------------------------------------------------
-void CImageHandle::image_manager_init(fuse *p_fuse_pcie_drv, int fifo_pointers, int p_focal_laws_per_image, int p_focal_laws_per_block, int frame_length)
+void CImageHandle::image_manager_init(fuse *p_fuse_pcie_drv, int fifo_pointers, const T_PCIeGeometry &geometry) // Recibe la geometria validada de la adquisicion.
 {
 	current_block_read_ = 0;
 	current_block_fred_ = 0;
 	current_image_read_ = 0;
 	current_image_fred_ = 0;
 	current_block_focal_law_not_read_ = 0;
-	current_block_focal_law_not_fred_ = p_focal_laws_per_block;
-	num_valid_focal_laws_last_block_ = p_focal_laws_per_block;
+	current_block_focal_law_not_fred_ = geometry.focal_laws_per_block; // Reinicia liberacion por bloque.
+	num_valid_focal_laws_last_block_ = geometry.focal_laws_per_block; // El ultimo bloque puede reducirlo tras validar su cabecera.
 
 	fifo_read_index_ = 0;
 	fifo_fred_index_ = 0;
@@ -81,9 +81,10 @@ void CImageHandle::image_manager_init(fuse *p_fuse_pcie_drv, int fifo_pointers, 
 	last_image_fred_ = false;
 	last_image_index_ = 0;
 	last_block_index_ = 0;
-	focal_laws_per_image_ = p_focal_laws_per_image;
-	focal_laws_per_block_ = p_focal_laws_per_block;
-	num_shorts_per_focal_law_ = frame_length * N_CHANNELS_MODULE * N_MODULES;
+	geometry_ = geometry; // Copia el contrato sin consultar globals durante la lectura.
+	focal_laws_per_image_ = geometry.focal_laws_per_image; // Conserva las leyes por imagen.
+	focal_laws_per_block_ = geometry.focal_laws_per_block; // Conserva las leyes por bloque.
+	num_shorts_per_focal_law_ = static_cast<unsigned long>(geometry.shorts_per_focal_law); // Usa 128 o 256 canales efectivos.
 	paused_ = false;
 	request_continue_ = false;
 }
@@ -124,7 +125,7 @@ int CImageHandle::FreeOneImage_Pointers(unsigned long *image_index_fred)
 					printf("\r\n%s", gb_log_msg);
 					return -1;
 				}
-				current_images_unfred_ = 0;
+				// El decremento comun libera la ultima imagen sin provocar underflow unsigned.
 				int kk = gb_drv_handle->dma_buffer_leakage();
 				if (kk > 0)
 				{ ELOG(charEPCIE_BUFFER_LEAKAGE, EPCIE_BUFFER_LEAKAGE); }
@@ -136,7 +137,7 @@ int CImageHandle::FreeOneImage_Pointers(unsigned long *image_index_fred)
 			current_block_focal_law_not_fred_ = 0;
 			fuse_pcie_drv_->free_dma_buffer(blocks_fifo_[fifo_fred_index_]); //Liberamos el buffer!
 
-			if (calc_used_fifo_blocks())
+			if (calc_used_fifo_blocks() > 1) // Tras liberar el bloque actual debe existir otro retenido.
 			{
 				if ((fifo_fred_index_ + 1) >= fifo_size_)
 					fifo_fred_index_ = 0;
@@ -192,6 +193,9 @@ int CImageHandle::GetOneImage_Pointers(short int **p_focal_laws_pointers, unsign
 	unsigned short index_block_focal_law;
 	unsigned long next_image_read_index, next_block_read_index;
 
+	if (last_image_read_) return 0; // No espera otro bloque despues del final de adquisicion.
+	if (!p_focal_laws_pointers || !fuse_pcie_drv_) return ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // Exige destino y fuente validos.
+	if (fuse_pcie_drv_->dma_get_sw_err(0)) return ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // Propaga una lectura DMA fallida en vez de esperar indefinidamente.
 	if (focal_laws_per_image_ <= current_block_focal_law_not_read_)
 		num_blocks_to_read = 0;
 	else
@@ -246,7 +250,12 @@ int CImageHandle::GetOneImage_Pointers(short int **p_focal_laws_pointers, unsign
 
 			block_data_start_ptr = (short int *)&((blocks_fifo_[fifo_read_index_])[1]);
 			for (index_block_focal_law; current_block_focal_law_not_read_ > 0 && (index_block_focal_law < focal_laws_per_block_) && (focal_law_sent_index < focal_laws_per_image_); current_block_focal_law_not_read_--, index_block_focal_law++, focal_law_sent_index++)
-				p_focal_laws_pointers[focal_law_sent_index] = &block_data_start_ptr[num_shorts_per_focal_law_ * index_block_focal_law];
+            { // Comprueba la ley completa antes de exponer su puntero.
+                size_t offset_shorts = 0; // Desplazamiento relativo al payload del bloque.
+                const unsigned int valid_laws = last_block_read_ ? num_valid_focal_laws_last_block_ : focal_laws_per_block_; // Excluye relleno del ultimo bloque.
+                if ((result = PCIe_LawOffset(geometry_, static_cast<size_t>(geometry_.block_size_bytes), valid_laws, index_block_focal_law, offset_shorts)) < 0) return RLOG(result); // Rechaza desplazamientos fuera de capacidad.
+                p_focal_laws_pointers[focal_law_sent_index] = block_data_start_ptr + offset_shorts; // Publica solamente una ley completa y comprobada.
+            } // Fin de entrega de esta ley.
 		}
 		else
 		{
@@ -279,11 +288,21 @@ int CImageHandle::GetOneImage_Pointers(short int **p_focal_laws_pointers, unsign
 				ELOG("Error! No había buffers cuando se nos prometío que habría!", EPCIE_USER);
 				return 0;
 			}
+            T_block_header *received_header = blocks_fifo_[next_fifo_read_index]; // La lectura DMA garantiza el tamano fisico completo.
+            const unsigned int valid_laws = received_header->header_struct.ch_id_last.bits.last_block ? received_header->header_struct.image_focal_law_word.bits.image_focal_law_total : focal_laws_per_block_; // Leyes utiles del bloque recibido.
+            size_t checked_offset = 0; // Comprueba que incluso la ultima ley cabe en la reserva.
+            if (received_header->header_struct.magic_number != HEADER_MAGIC_NUMBER || received_header->header_struct.block_beats_word.bits.block_beats + 1 != geometry_.beats_per_module || received_header->header_struct.block_focal_laws_word.bits.block_focal_laws + 1 != focal_laws_per_block_ || received_header->header_struct.ch_id_last.bits.channel_id != 0 || received_header->header_struct.block_index != next_block_read_index || received_header->header_struct.image_index != next_image_read_index || received_header->header_struct.image_focal_law_word.bits.image_focal_law_index != focal_law_sent_index || (!received_header->header_struct.ch_id_last.bits.last_block && received_header->header_struct.image_focal_law_word.bits.image_focal_law_total != focal_laws_per_image_) || (received_header->header_struct.ch_id_last.bits.last_block && (valid_laws + focal_law_sent_index) % focal_laws_per_image_ != 0) || PCIe_LawOffset(geometry_, static_cast<size_t>(geometry_.block_size_bytes), valid_laws, valid_laws ? valid_laws - 1 : 0, checked_offset) < 0) // Comprueba formato, secuencia y ultimo bloque sin depender del modo de diagnostico.
+            { // El bloque rechazado todavia no pertenece a la FIFO del gestor.
+                fuse_pcie_drv_->free_dma_buffer(received_header); // Devuelve la memoria al productor.
+                blocks_fifo_[next_fifo_read_index] = nullptr; // No conserva un puntero rechazado.
+                return ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // Detiene la adquisicion con una causa traducible.
+            } // Fin de validacion de bloque.
 			if (test_block_header)
 			{
 				if ((result = PCIe_CheckPCIeHeader_fast((void *)blocks_fifo_[next_fifo_read_index])) < 0)
 				{
-					//PCIe_InitBoard();
+					fuse_pcie_drv_->free_dma_buffer(received_header); // Devuelve tambien los bloques rechazados por el verificador historico.
+					blocks_fifo_[next_fifo_read_index] = nullptr; // Evita retener una referencia libre.
 					return RLOG(result);
 				}
 				if (blocks_fifo_[next_fifo_read_index]->header_struct.image_index != next_image_read_index)
@@ -317,7 +336,7 @@ int CImageHandle::GetOneImage_Pointers(short int **p_focal_laws_pointers, unsign
 			else
 				current_block_focal_law_not_read_ = focal_laws_per_block_;
 
-			current_block_read_ = next_block_read_index;
+			current_block_read_ = next_block_read_index++; // Avanza por cada bloque, incluso si una imagen necesita varios.
 		}
 	}
 	current_image_read_ = next_image_read_index;
@@ -351,8 +370,7 @@ int CImageHandle::GetOneImage_Pointers(short int **p_focal_laws_pointers, unsign
 int CImageHandle::calc_used_fifo_blocks(void)
 {
 	int used_fifo_blocks;
-	if (fifo_read_index_ >= fifo_fred_index_) used_fifo_blocks = fifo_fred_index_ - fifo_read_index_;
-	else used_fifo_blocks = fifo_read_index_ + 1 + fifo_size_ - fifo_fred_index_;
+	used_fifo_blocks = (!first_image_read_ || last_image_fred_) ? 0 : static_cast<int>(current_block_read_ - current_block_fred_ + 1); // Cuenta tambien el bloque retenido hasta liberar su ultima ley.
 	return used_fifo_blocks;
 }
 // -----------------------------------------------------------------------------
@@ -366,7 +384,6 @@ int CImageHandle::calc_used_fifo_blocks(void)
 int CImageHandle::calc_free_fifo_blocks(void)
 {
 	int free_fifo_blocks;
-	if (fifo_read_index_ >= fifo_fred_index_)	free_fifo_blocks = (fifo_size_ - fifo_read_index_) + fifo_fred_index_;
-	else free_fifo_blocks = fifo_fred_index_ - fifo_read_index_;
+	free_fifo_blocks = static_cast<int>(fifo_size_) - calc_used_fifo_blocks(); // Distingue FIFO llena y vacia cuando coinciden los indices.
 	return free_fifo_blocks;
 }

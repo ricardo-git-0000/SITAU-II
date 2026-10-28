@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <new> // Permite reservas comprobadas sin excepciones de bad_alloc.
 
 #include <fuse_pcie_soc_hw.h>
 
@@ -1336,11 +1337,19 @@ int fuse::get_pcie_info(uint16_t &subsys_id, uint8_t &rev_id) {
 // *** HW IMAGE SUPPORT FUNCTIONS ***
 // **********************************
 
-#define FRAMES_PER_PACKAGE  8
+#define EMULATOR_FRAMES_PER_PACKAGE 8 // El kernel y el generador FPGA conservan su contrato de ocho tramas.
 #define HEADER_LEN          1
 
-size_t fuse::calc_hw_image_size(int frame_len, int image_len) const {
-  size_t image_size = (image_len * FRAMES_PER_PACKAGE * frame_len * iperf_beat_size) + HEADER_LEN * iperf_beat_size;
+int fuse::set_transport_modules(int module_count) { // Configura la lectura real sin alterar el emulador.
+  if ((module_count != 4 && module_count != 8) || dma_is_running()) return EPCIE_Geometry; // Prohibe reinterpretar buffers en vuelo.
+  transport_modules_ = module_count; // Conserva la topologia hasta el siguiente arranque parado.
+  return EPCIE_NONE; // Configuracion aplicada.
+} // Fin de seleccion de transporte.
+size_t fuse::calc_hw_image_size(int frame_len, int image_len) const { // Tamano comun para reserva y lectura.
+  if (frame_len <= 0 || frame_len > 65536 || image_len <= 0 || image_len > 1024) return 0; // Acota campos del formato.
+  const uint64_t bytes = 32ULL + static_cast<uint64_t>(image_len) * transport_modules_ * frame_len * 32ULL; // Una trama de beats por modulo y ley.
+  if (bytes > ((1ULL << 23) - 32ULL)) return 0; // Respeta GTX y la longitud DWORD de ReadFile.
+  size_t image_size = static_cast<size_t>(bytes); // Conversion segura tras validar.
   return image_size;
 }
 
@@ -1352,7 +1361,7 @@ int fuse::calc_hw_image_gap(int frame_len, int image_len, uint64_t BW) const {
     gap_cycles = 0;
   }
   else {
-    image_size = (image_len * FRAMES_PER_PACKAGE * frame_len * iperf_beat_size) + HEADER_LEN * iperf_beat_size;
+    image_size = (static_cast<size_t>(image_len) * EMULATOR_FRAMES_PER_PACKAGE * frame_len * iperf_beat_size) + HEADER_LEN * iperf_beat_size; // El gap pertenece exclusivamente al emulador fijo.
     gap_cycles = (int)(image_size * ((iperf_clk_freq / BW) - (1.0 / iperf_beat_size)));
   }
   return gap_cycles;
@@ -1381,7 +1390,9 @@ int fuse::get_hw_image_info(const void *img, int *id, int *frame_len, int *image
 #define WORD32_PER_BEAT (SYS_FUSE_DMA_RX_AXIS_DWIDTH/32)
 #endif
 
-int fuse::hw_image_check(const void *img) {
+int fuse::hw_image_check(const void *img) { // El patron del emulador tiene ocho tramas.
+  if (transport_modules_ != EMULATOR_FRAMES_PER_PACKAGE) return EPCIE_EmulatorGeometry; // No recorre ocho tramas sobre un bloque de cuatro.
+  if (!img) return EPCIE_BlockLayout; // Evita desreferenciar un bloque ausente.
   const uint32_t *data, *p;
   const fuse_header_t *hdr = (const fuse_header_t *)img;
   int pkt, frm, beat, word;
@@ -1406,7 +1417,7 @@ int fuse::hw_image_check(const void *img) {
   i = 0;
   pattern.word32 = 0;
   for (pkt = 0; pkt < n_packets; pkt++) {
-    for (frm = 0; frm < FRAMES_PER_PACKAGE; frm++) {
+    for (frm = 0; frm < EMULATOR_FRAMES_PER_PACKAGE; frm++) { // El patron del kernel sigue siendo fijo.
       for (beat = 0; beat < n_beats; beat++) {
         for (word = 0; word < WORD32_PER_BEAT; word++) {
           pattern.fields.word_idx = word;
@@ -1431,7 +1442,10 @@ int fuse::hw_image_check(const void *img) {
 // ***************************************
 
 int fuse::create_dma_buffers(int n_buffers, size_t size) {
-  dma_buffers = new dma_buffer_t[n_buffers];
+  if (dma_is_running() || dma_buffers) return EPCIE_Geometry; // No pierde reservas anteriores ni sustituye memoria en uso.
+  if (n_buffers <= 0 || size < 32 || size > ((1ULL << 23) - 32ULL)) return EPCIE_GeometrySize; // Valida capacidad antes de reservar.
+  dma_buffers = new (std::nothrow) dma_buffer_t[n_buffers](); // Inicializa punteros para poder limpiar una reserva parcial.
+  if (!dma_buffers) return EPCIE_NO_MEMORY; // Propaga falta de memoria sin publicar buffers incompletos.
   int i;
   n_dma_buffers = n_buffers;
   dma_buffer_size = size;
@@ -1440,15 +1454,19 @@ int fuse::create_dma_buffers(int n_buffers, size_t size) {
 
   for (i = 0; i < n_dma_buffers; i++) {
 #ifdef DMA_BUF_NEW_OP
-    dma_buffers[i] = new (std::align_val_t(alignment)) uint8_t[size];
+    dma_buffers[i] = _aligned_malloc(size, alignment); // Usa el mismo asignador alineado que destroy_dma_buffers.
 #else
     dma_buffers[i] = static_cast<dma_buffer_t> (_aligned_malloc(size, alignment));
 #endif
+    if (!dma_buffers[i]) { destroy_dma_buffers(); return EPCIE_NO_MEMORY; } // Libera reservas parciales antes de devolver fallo.
   }
   return 0;
 }
 
-int fuse::destroy_dma_buffers() {
+int fuse::destroy_dma_buffers() { // No deja referencias FIFO a memoria liberada.
+  if (dma_is_running()) return EPCIE_Geometry; // El propietario debe parar antes de liberar.
+  ififo.flush(); // Descarta buffers libres antiguos.
+  ofifo.flush(); // Descarta buffers recibidos de la adquisicion anterior.
   int i;
   if (dma_buffers != nullptr) {
     for (i = 0; i < n_dma_buffers; i++) {
@@ -1513,6 +1531,9 @@ int fuse::dma_start(hw_size_t n_hw_img, int hw_frame_len, int hw_image_len) {
   if (!running) {
     ret = 0;
     if (n_hw_img) {
+      const size_t read_size = calc_hw_image_size(hw_frame_len, hw_image_len); // Usa la misma topologia que la reserva.
+      if (!read_size || read_size != dma_buffer_size || !dma_buffers || n_dma_buffers <= 0) return EPCIE_BlockLayout; // No lee mas bytes que la capacidad reservada.
+      dma_get_sw_err(1); // Limpia el error de la adquisicion anterior solo al iniciar otra valida.
       // Inicializa la fifo de entrada:
       ififo.flush();
       if (ififo.size() != n_dma_buffers) {
@@ -1528,7 +1549,7 @@ int fuse::dma_start(hw_size_t n_hw_img, int hw_frame_len, int hw_image_len) {
 
       dma_acq_cfg.n_hw_img = (n_hw_img < 0) ? -n_hw_img : n_hw_img;
       dma_acq_cfg.cont_mode = (n_hw_img < 0) ? 1 : 0;
-      dma_acq_cfg.hw_img_size = calc_hw_image_size(hw_frame_len, hw_image_len);
+      dma_acq_cfg.hw_img_size = read_size; // Longitud contrastada con la reserva antes de activar el hilo.
       dma_acq_cfg.cmd = DMA_CMD_START;
       ok = ::SetEvent(dma_acq_cfg.start_event);
     }
@@ -1597,7 +1618,8 @@ int fuse::dma_get_status(fuse_status_t &status, int clear) {
 //-----
 
 
-int fuse::emul_run(int n_hw_img, int hw_frame_len, int hw_img_len, int gap, uint32_t mode) {
+int fuse::emul_run(int n_hw_img, int hw_frame_len, int hw_img_len, int gap, uint32_t mode) { // No reprograma un protocolo de kernel desconocido.
+  if (transport_modules_ != EMULATOR_FRAMES_PER_PACKAGE) return EPCIE_EmulatorGeometry; // Rechaza emulacion de cuatro tramas explicitamente.
   hw_img_conf_t  emul_cfg;
   int ret;
 
@@ -1889,6 +1911,12 @@ inline hw_size_t fuse::read_hw_images(hw_size_t n_hw_img, size_t hw_img_size, in
     }
     while(!ok);
 
+    if (n_bytes != hw_img_size) { // No publica datos antiguos cuando ReadFile devuelve un bloque corto.
+      InterlockedOr8(&m_dma_read_err, 1); // Expone el fallo mediante el estado DMA existente.
+      ififo.nb_put(buffer); // Devuelve la reserva que no se ha entregado al consumidor.
+      ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // Registra la causa concreta junto al codigo.
+      return EPCIE_BlockLayout; // Finaliza esta lectura; requiere parada y nuevo arranque.
+    } // Fin de comprobacion de longitud fisica.
     // 3. Analyze the received data
     if (m_verbose) {
       int hw_img_id;

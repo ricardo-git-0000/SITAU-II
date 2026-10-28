@@ -188,7 +188,7 @@ void TThread_Acq::ThreadFunction(void)
 	   return;
    }
    n_images = result;
-   if (focal_laws_pointers_.size() < n_fl) focal_laws_pointers_.resize(n_fl);
+   focal_laws_pointers_.assign(n_fl, nullptr); // Elimina leyes residuales al reducir la imagen en una recarga.
 
    if ((gb_buffer_data = CBufferScan_Resize (gb_buffer_data, n_burst_buffer, n_images_blocks_, n_fl, n_ch, n_samples, sizeof(short int), sorted_, &error_, "PCIE Buffer Data")) == NULL)
    {
@@ -196,6 +196,7 @@ void TThread_Acq::ThreadFunction(void)
 	   end_ = true;
 	   return;
    }
+   if (error_ < 0) { end_ = true; return; } // No adquiere sobre un buffer cuyo constructor o Resize fallo.
    gb_buffer_data->MovingAverage_KernelSize(gb_moving_average_kernel_size);
    gb_buffer_data->FileLogEnabled(false);
    if ((data_int = ST_XML_GetDataLogger_PCIeUserBuffer()) >= 0) gb_buffer_data->DataLogger(data_int);
@@ -318,11 +319,11 @@ T_block_header *Block_header_p = NULL;
 				//if ((result = gb_buffer_data->Add(focal_laws_pointers_, current_image_index, Block_header_p->header_struct.ch_id_last.bits.timestamp_present == 1 ? Block_header_p->header_struct.tail : 0xFFFFFFFF)) < 0)
 				if ((result = gb_buffer_data->Add(focal_laws_pointers_, current_image_index, time_stamp_)) < 0)
 				{
-					RLOG_THR(FILE_LOG_THR_ACQ, result);
+					return RLOG_THR(FILE_LOG_THR_ACQ, result); // Detiene la adquisicion si falla la copia, ordenacion o liberacion.
 				}
 				if ((result = PCIe_FreeOneImage_Pointers(nullptr)) < 0)
 				{
-					RLOG_THR(FILE_LOG_THR_ACQ, result);
+					return RLOG_THR(FILE_LOG_THR_ACQ, result); // Detiene la adquisicion si falla la copia, ordenacion o liberacion.
 				}
 				if (time_stamped_ && current_image_index == idx_image_timestamped_)
 				{
@@ -337,7 +338,7 @@ T_block_header *Block_header_p = NULL;
 				LOG_Info(FILE_LOG_THR_ACQ,str);
 				if ((result = gb_buffer_data->Add(focal_laws_pointers_, current_image_index, no_hw_image_index_)) < 0)
 				{
-					RLOG_THR(FILE_LOG_THR_ACQ, result);
+					return RLOG_THR(FILE_LOG_THR_ACQ, result); // Detiene la adquisicion si falla la copia, ordenacion o liberacion.
 				}
 			}
 			n_images_read_++;

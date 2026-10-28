@@ -366,6 +366,12 @@ int C_PCIBuffer::Resize (unsigned long n_blocks, unsigned long n_images_blocks, 
 	FILE *f = nullptr;
 	time_t t = time(nullptr);
 
+    if (!n_blocks || !n_images_blocks || !n_fl || !n_ascan || !n_samples || data_size != sizeof(short)) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // Rechaza dimensiones nulas antes de reservar.
+    const uint64 law_samples = static_cast<uint64>(n_ascan) * n_samples; // El producto se hace antes en 64 bits.
+    if (law_samples > 0xFFFFFFFFULL / n_fl) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // image_size_ debe caber en unsigned long de Windows.
+    const uint64 image_samples = law_samples * n_fl; // Producto ya acotado.
+    if (image_samples > 0xFFFFFFFFULL / n_images_blocks || static_cast<uint64>(n_images_blocks) * n_blocks > 0xFFFFFFFFULL) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // Protege bloque e indices de imagen.
+    if (image_samples * n_images_blocks > (static_cast<size_t>(-1) - 100ULL) / n_blocks / data_size || static_cast<uint64>(n_images_blocks) * n_blocks > static_cast<size_t>(-1) / sizeof(unsigned long)) return ELOG(charEPCIE_GeometrySize, EPCIE_GeometrySize); // Comprueba por division antes de multiplicar bytes, incluido el margen legacy y los indices.
 	n_fl_ = n_fl;
 	n_samples_ = n_samples;
 	n_ascan_ = n_ascan;
@@ -386,12 +392,15 @@ int C_PCIBuffer::Resize (unsigned long n_blocks, unsigned long n_images_blocks, 
 
 	moving_average_image_.resize(fl_size_);
 
-	if ((buffer_images_ = (short int *)realloc((short int *)buffer_images_, size_ + 100)) == nullptr)
-		return ELOG(charEPCIE_NO_MEMORY, EPCIE_NO_MEMORY);
-	if ((buffer_current_image_index_ = (unsigned long *)realloc((unsigned long *)buffer_current_image_index_, n_images_ * sizeof(unsigned long))) == nullptr)
-		return ELOG(charEPCIE_NO_MEMORY, EPCIE_NO_MEMORY);
-	if ((buffer_time_stamp_ = (unsigned long *)realloc((unsigned long *)buffer_time_stamp_, n_images_ * sizeof(unsigned long))) == nullptr)
-		return ELOG(charEPCIE_NO_MEMORY, EPCIE_NO_MEMORY);
+    short *image_buffer = static_cast<short *>(realloc(buffer_images_, static_cast<size_t>(size_ + 100))); // No pierde el puntero anterior si falla realloc.
+    if (!image_buffer) return ELOG(charEPCIE_NO_MEMORY, EPCIE_NO_MEMORY); // El llamante detendra el arranque fallido.
+    buffer_images_ = image_buffer; // Publica la reserva valida.
+    unsigned long *index_buffer = static_cast<unsigned long *>(realloc(buffer_current_image_index_, static_cast<size_t>(n_images_) * sizeof(unsigned long))); // Multiplica en size_t.
+    if (!index_buffer) return ELOG(charEPCIE_NO_MEMORY, EPCIE_NO_MEMORY); // Conserva la reserva anterior para su destruccion.
+    buffer_current_image_index_ = index_buffer; // Actualiza indices tras reservar.
+    unsigned long *timestamp_buffer = static_cast<unsigned long *>(realloc(buffer_time_stamp_, static_cast<size_t>(n_images_) * sizeof(unsigned long))); // Evita overflow intermedio de 32 bits.
+    if (!timestamp_buffer) return ELOG(charEPCIE_NO_MEMORY, EPCIE_NO_MEMORY); // Conserva la propiedad de la memoria anterior.
+    buffer_time_stamp_ = timestamp_buffer; // Completa las reservas de usuario.
 
 	//if ((f = fopen("BufferCFG.txt", "wt")) != nullptr)
 	//{
@@ -516,6 +525,7 @@ int C_PCIBuffer::Add(vector<short int *> &focal_laws_pointers, unsigned long cur
 			if (i_img + fl_size_ > image_size_) return i;
 			if (gb_driver_enabled)
 			{
+				if (gb_pin_to_channel.size() != n_ascan_) return ELOG(charEPCIE_ChannelMap, EPCIE_ChannelMap); // No permite que la ordenacion lea un mapa corto.
 				if (sorted_)
 				{
 					if ((result = GetFocalLawSorted(focal_laws_pointers[i], fl_size_, ptr_data + i_img, n_ascan_, n_samples_, &gb_pin_to_channel[0])) < 0)
@@ -530,7 +540,7 @@ int C_PCIBuffer::Add(vector<short int *> &focal_laws_pointers, unsigned long cur
 			{
 				short int kk = (short int)focal_laws_pointers[i];
 				for (unsigned long j = 0; j < fl_size_; j++)
-					*(ptr_data + j) = kk;
+					*(ptr_data + i_img + j) = kk; // Escribe la ley simulada en su posicion, no siempre sobre la primera.
 			}
 			if (f_wr_ != nullptr && i == 0) FileLog(f_wr_, (short int *)(ptr_data + i_img), idx_next_image_rd_locked_ == 0xFFFFFFFFFFFFFFFF ? -1 : idx_next_image_rd_locked_, idx_next_image_wr_, i, fl_size_ * sizeof(unsigned short));
 		}
