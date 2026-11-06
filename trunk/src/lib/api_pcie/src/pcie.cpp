@@ -47,7 +47,8 @@ int gb_pcie_buffer_n_blocks_buf = 0; // Número de bloques recibidos por PCIe con
 int gb_pcie_n_blocks_acq_total = -1; // Número total de bloques a adquirir con su cabecera, cuando se completa este número finaliza la adquisición
 
 int gb_pcie_n_beats_frames = 0;
-int gb_pcie_n_focal_laws_block = 0;
+int gb_pcie_n_focal_laws_block = 0; // Leyes reales por bloque, sin duplicacion de transporte.
+static int gb_pcie_transport_units_per_law = 0; // Factor fijado por la geometria de cada arranque, nunca por una cabecera.
 
 int gb_check_pcie_header = 1;
 
@@ -368,7 +369,8 @@ int PCIe_SetGeometryBuffers(const T_PCIeGeometry &geometry, int buffer_blocks, i
     gb_pcie_buffer_size_block = static_cast<size_t>(geometry.block_size_bytes); // Capacidad fisica por bloque.
     gb_pcie_n_blocks_acq_total = static_cast<int>(total_blocks); // Actualiza incluso si solo cambia el numero de imagenes.
     gb_pcie_n_beats_frames = geometry.beats_per_module; // Mantiene el formato de cabecera por modulo.
-    gb_pcie_n_focal_laws_block = geometry.focal_laws_per_block; // Mantiene el formato de cabecera por bloque.
+    gb_pcie_n_focal_laws_block = geometry.focal_laws_per_block; // Conserva la capacidad real para DMA y secuencia.
+    gb_pcie_transport_units_per_law = geometry.transport_units_per_law; // Actualiza tambien al volver de 256 a 128.
     gb_ptr_blocks.assign(buffer_blocks, nullptr); // Elimina punteros residuales de otra adquisicion.
     return EPCIE_NONE; // Configuracion completa para este arranque.
 } // Fin de reserva por geometria.
@@ -674,7 +676,9 @@ int PCIe_CheckPCIeHeader_fast(void *ptr_block)
 	if (!gb_pcie_enabled) return ELOG(charEPCIE_DISABLED, EPCIE_DISABLED);
 	if (gb_check_pcie_header == 0) return EPCIE_NONE;
 
-	new_header_structed_p = (T_block_header *)(ptr_block);
+	new_header_structed_p = (T_block_header *)(ptr_block); // Lee sin reescribir la cabecera de transporte.
+    unsigned int received_real_laws = 0; // El total y los indices de imagen permanecen en leyes reales.
+    if (!new_header_structed_p || PCIe_DecodeBlockLaws(new_header_structed_p->header_struct.block_focal_laws_word.bits.block_focal_laws, gb_pcie_transport_units_per_law, received_real_laws) < 0 || received_real_laws != static_cast<unsigned int>(gb_pcie_n_focal_laws_block)) return ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); // Rechaza medias leyes y capacidades distintas de la configurada.
 
 	if (new_header_structed_p->header_struct.magic_number != HEADER_MAGIC_NUMBER)
 	{
@@ -694,7 +698,7 @@ int PCIe_CheckPCIeHeader_fast(void *ptr_block)
 		}
 
 		prev_image_index = gb_last_acquierd_header.header_struct.image_index;
-		prev_block_focal_laws = gb_last_acquierd_header.header_struct.block_focal_laws_word.bits.block_focal_laws;
+		prev_block_focal_laws = static_cast<unsigned long>(gb_pcie_n_focal_laws_block - 1); // La cabecera previa ya fue validada; avanza en leyes reales, codificadas menos uno.
 		prev_image_focal_law_total = gb_last_acquierd_header.header_struct.image_focal_law_word.bits.image_focal_law_total;
 		prev_image_focal_law_index = gb_last_acquierd_header.header_struct.image_focal_law_word.bits.image_focal_law_index;
 
@@ -729,7 +733,7 @@ int PCIe_CheckPCIeHeader_fast(void *ptr_block)
 		}
 		if (new_header_structed_p->header_struct.ch_id_last.bits.last_block)
 		{
-			if (new_header_structed_p->header_struct.image_focal_law_word.bits.image_focal_law_total > (gb_last_acquierd_header.header_struct.block_focal_laws_word.bits.block_focal_laws+1))
+			if (new_header_structed_p->header_struct.image_focal_law_word.bits.image_focal_law_total > static_cast<unsigned int>(gb_pcie_n_focal_laws_block)) // El ultimo bloque declara leyes validas reales.
 			{
 				snprintf(gb_log_msg, gb_log_msg == NULL ? 0 : SIZE_MSG_LOG, "ERROR HEADER (last block): Valid Image Focal Laws in Last Block (Expected less than maximum %d, Received %d)", gb_last_acquierd_header.header_struct.block_focal_laws_word.bits.block_focal_laws, new_header_structed_p->header_struct.image_focal_law_word.bits.image_focal_law_total);
 				return ELOG(gb_log_msg, EPCIE_USER);
@@ -803,7 +807,8 @@ void PCIe_CheckPCIeBlockSaw(void *ptr_block, unsigned long long *channel_errors)
     if (result < 0) { RLOG(result); return; } // No interpreta memoria con una geometria invalida.
     if (!ptr_block || !channel_errors || gb_pcie_buffer_size_block != geometry.block_size_bytes) { ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); return; } // Exige un bloque de la adquisicion configurada.
     const T_block_header *header = static_cast<const T_block_header *>(ptr_block); // Solo consulta la cabecera tras comprobar punteros.
-    if (header->header_struct.magic_number != HEADER_MAGIC_NUMBER || header->header_struct.block_beats_word.bits.block_beats + 1 != geometry.beats_per_module || header->header_struct.block_focal_laws_word.bits.block_focal_laws + 1 != geometry.focal_laws_per_block) { ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); return; } // Contrasta dimensiones antes del recorrido.
+    unsigned int received_real_laws = 0; // El diagnostico usa la misma conversion que el gestor.
+    if (PCIe_DecodeBlockLaws(header->header_struct.block_focal_laws_word.bits.block_focal_laws, geometry.transport_units_per_law, received_real_laws) < 0 || header->header_struct.magic_number != HEADER_MAGIC_NUMBER || header->header_struct.block_beats_word.bits.block_beats + 1 != geometry.beats_per_module || received_real_laws != static_cast<unsigned int>(geometry.focal_laws_per_block)) { ELOG(charEPCIE_BlockLayout, EPCIE_BlockLayout); return; } // Contrasta dimensiones antes del recorrido.
     const unsigned int valid_laws = header->header_struct.ch_id_last.bits.last_block ? header->header_struct.image_focal_law_word.bits.image_focal_law_total : geometry.focal_laws_per_block; // No recorre relleno del ultimo bloque.
     result = PCIe_CheckSaw(reinterpret_cast<const short *>(header + 1), static_cast<size_t>((geometry.block_size_bytes - 32) / 2), geometry, valid_laws, channel_errors, geometry.channel_count); // El contrato legacy exige tantos contadores como canales.
     if (result < 0) { RLOG(result); } // Registra fallos porque la firma historica devuelve void.

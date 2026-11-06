@@ -24,6 +24,8 @@
 		<Parameter pName="delay_sync_time" pValue="0.000" />
 		<Parameter pName="trigger_source" pValue="0" />
         <Parameter pName="pause_after_burst" pValue="0" />	
+	    <Parameter pName="burst_number" pValue="150" /> <!-- Contador comun GE/PCIe leido por la DLL. -->
+	    <Parameter pName="images_per_burst_number" pValue="250" /> <!-- Contador comun GE/PCIe leido por la DLL. -->
 	</ACQUISITION>
 	<VirtualChannel>
 		<UT_PARAMETERS>
@@ -57,8 +59,6 @@
         </PROBE>
 		<MC_FOCAL_LAW>
 			<Parameter pName="mc_focal_law_type" pValue="1" />
-			<Parameter pName="mc_burst_number" pValue="150" />			
-			<Parameter pName="mc_burst_images_number" pValue="250" />
 			<Parameter pName="mc_pwic_start_angle" pValue="-12.000" />
 			<Parameter pName="mc_pwic_end_angle" pValue="12.000" />
 			<Parameter pName="mc_pwic_step_angle" pValue="3.000" />

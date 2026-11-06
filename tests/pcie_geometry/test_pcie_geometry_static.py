@@ -42,3 +42,14 @@ assert 'PCIe_SortLaw' in utils and 'i_fl_data = size_fl - 1' not in utils  # No 
 gtx = read(root / 'trunk/src/lib/stlib2/src/c_virtual_channel/c_virtual_channel.cpp')  # Revisa la division anterior al arranque.
 assert 'if (!law_bytes' in gtx and 'gtx_nfl_blocks > 1 && burst_laws % gtx_nfl_blocks' in gtx  # Protege capacidad cero y divisor del ajuste de rafaga.
 print('PASS: integracion estatica DMA, FIFO, mapa, ordenacion y GTX; C++/hardware pendientes.')  # Delimita la evidencia obtenida.
+
+assert '(UCIP.status_pcie && n_bases == 8) ? 2 : 1' in gtx and '(UCIP.status_pcie && msg->n_bases == 8) ? 2 : 1' in gtx  # Solo adapta PCIe de ocho modulos.
+assert 'msg->gtx_n_focal_law = cfg_.gtx_nfl_blocks * transport_units_per_law;' in gtx  # Duplica el mensaje sin sobrescribir el contador real.
+assert '1024 / transport_units_per_law' in header and '1024 / transport_units_per_law' in gtx  # Las dos DLL acotan el mismo campo.
+assert 'geometry.focal_laws_per_image = focal_laws_per_image;' in header  # Conserva las leyes reales de imagen.
+assert 'PCIe_DecodeBlockLaws' in manager and 'received_real_laws != static_cast<unsigned int>(focal_laws_per_block_)' in manager  # Comprueba conversion antes de entregar punteros.
+pcie = read(api / 'pcie.cpp')  # Inspecciona las rutas complementarias de recepcion.
+assert pcie.count('PCIe_DecodeBlockLaws(') == 2 and 'gb_pcie_transport_units_per_law = geometry.transport_units_per_law;' in pcie  # Verificador y saw comparten el contrato.
+assert 'prev_block_focal_laws = static_cast<unsigned long>(gb_pcie_n_focal_laws_block - 1);' in pcie  # Avanza la secuencia en leyes reales.
+assert 'generated/checker.inc' in read(root / 'tests/pcie_geometry/test_pcie_stream.cpp')  # El harness ejecuta tambien el verificador real.
+print('PASS: contrato estatico 4+4; imagenes y bytes conservados. C++/hardware pendientes.')  # Explicita el alcance.

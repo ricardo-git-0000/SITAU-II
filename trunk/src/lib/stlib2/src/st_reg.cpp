@@ -229,8 +229,7 @@ int result;
 // -----------------------------------------------------------------------------
 int ST_ResetScan (void)
 {
-   ST_VirtualChannelsDefault();
-   return ES2_NONE;
+   return ST_VirtualChannelsDefault(); // Propaga tambien el fallo de memoria al reiniciar el scan.
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -2502,7 +2501,7 @@ int result = ES2_NONE, n_vch;
    //if ((result = ST_BufferCreate()) < 0) return RLOG(result);
    n_vch = (int)gb_virtual_channel.size();
    if (n_vch <= 0) return ELOG(charES2_DataInconsistency, ES2_DataInconsistency);
-   if (gb_buffer_hw == NULL) gb_buffer_hw = new CBufferHW(SIZE_BUFFER_HW);
+   if ((result = ST_EnsureHWBuffer()) < 0) return RLOG(result); // Propaga el fallo de memoria antes de usar el buffer.
    if (gb_fp_buffer_acq == NULL) gb_fp_buffer_acq = new CBufferAcq();
    if (gb_pa_buffer_acq == NULL) gb_pa_buffer_acq = new CBufferAcq();
    if (gb_tfm_buffer_acq == NULL) gb_tfm_buffer_acq = new CBufferAcq();

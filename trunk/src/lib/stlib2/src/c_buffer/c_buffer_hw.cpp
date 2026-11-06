@@ -6,10 +6,14 @@
 // ------ L I B R E R I A S   P R O P I A S   D E L   P R O Y E C T O
 // =============================================================================
 
+#include <cstdlib> // Declara std::free para el liberador del buffer.
+#include <memory> // Libera reservas parciales si falla la construccion.
+#include <new> // Traduce bad_alloc a un codigo de error de la biblioteca.
 #include "c_buffer_hw.h"
 #include "c_log_file.h"
 #include "utils.h"
 #include "buffer_error_code.h"
+#include "buffer_mc_data.h" // Declara SIZE_BUFFER_HW para la construccion comun.
 #include "c_acq_data.h"
 #include "sitau_hw.h"
 #include "stlib2.h"
@@ -22,7 +26,27 @@
 // ------ V A R I A B L E S   G L O B A L E S
 // =============================================================================
 
+namespace { // Mantiene el liberador como detalle interno de este archivo.
+struct HWBufferDeleter // Evita decltype(&free), que provoca C1001 en esta compilacion.
+{ // Liberador sin punteros a funciones de la biblioteca CRT.
+    void operator()(short* data) const noexcept { std::free(data); } // Empareja la reserva malloc con free.
+}; // Fin del liberador del buffer.
+} // Fin del espacio de nombres interno.
+
 CBufferHW *gb_buffer_hw = NULL;
+int ST_EnsureHWBuffer(void) // Punto comun de construccion para no dejar excepciones de memoria escapar a MATLAB.
+{ // Solo publica un buffer completamente construido.
+    if (gb_buffer_hw != NULL) return EBUF_NONE; // Conserva el buffer ya existente.
+    try // Incluye la reserva del objeto y las reservas de su constructor.
+    { // Comienza la construccion protegida.
+        gb_buffer_hw = new CBufferHW(SIZE_BUFFER_HW); // Una excepcion deja el puntero global a NULL.
+    } // Fin de la construccion.
+    catch (const std::bad_alloc&) // Atiende especificamente el fallo de memoria recuperable.
+    { // Devuelve el error existente en el catalogo.
+        return ELOG(charEBUF_NoMemory, EBUF_NoMemory); // -703: fallo de reserva, sin exit ni aborto del proceso.
+    } // Fin de la conversion de excepcion.
+    return EBUF_NONE; // El llamante puede continuar con el buffer valido.
+} // Fin de creacion controlada.
 vector<short int> vresult_buf;
 vector<long> gb_buffer_frame;
 unsigned long gb_last_acq_counter = 0;
@@ -41,11 +65,13 @@ CBufferHW::CBufferHW (unsigned long size)
 {
 	if ((buffer = (short *)malloc (sizeof(short) * (size * 2))) == NULL)
 	{
-		ELOG(charEBUF_NoMemory,EBUF_NoMemory);
-		exit(1);
+		throw std::bad_alloc(); // ST_EnsureHWBuffer captura el fallo sin terminar MATLAB.
 	}
-	plock = new CCriticalSection("CBuffer_HW (lock)");
-   plock_img_ = new CCriticalSection("CBuffer_HW (img)");
+	std::unique_ptr<short, HWBufferDeleter> buffer_guard(buffer); // Protege malloc mientras se construye el objeto.
+	std::unique_ptr<CCriticalSection> lock_guard(new CCriticalSection("CBuffer_HW (lock)")); // Libera el primer lock si falla el segundo.
+	std::unique_ptr<CCriticalSection> image_lock_guard(new CCriticalSection("CBuffer_HW (img)")); // Protege el lock de imagen durante la inicializacion.
+	plock = lock_guard.get(); // Permite inicializar los contadores bajo el lock habitual.
+	plock_img_ = image_lock_guard.get(); // Mantiene la proteccion hasta completar el constructor.
 	mc_wr_img_ = NULL;
 	mc_rd_img_ = NULL;
 	pa_wr_img_ = NULL;
@@ -73,6 +99,9 @@ CBufferHW::CBufferHW (unsigned long size)
    logname_acq_size_ = "LogAcqBufferSize.txt";
    logname_acq_number_ = "LogAcqBufferNumber.txt";
    gb_index_fl_acq = 0;
+   buffer_guard.release(); // El destructor del objeto completo pasa a liberar el buffer.
+   lock_guard.release(); // Transfiere el lock al objeto construido.
+   image_lock_guard.release(); // Transfiere el lock de imagen al objeto construido.
 }
 // -----------------------------------------------------------------------------
 /**

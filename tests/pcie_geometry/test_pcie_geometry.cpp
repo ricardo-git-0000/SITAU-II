@@ -28,6 +28,19 @@ int main() // Ejecutable independiente que debe compilar el usuario.
     check(PCIe_BuildGeometry(128, 4, 128, 128, 1024, 3, 32, geometry) == EPCIE_GeometrySize); // Rechaza el siguiente bloque que supera la capacidad.
     check(PCIe_BuildGeometry(256, 8, 256, 256, 2147483647, 3, 2147483647, geometry) == EPCIE_GeometrySize); // Rechaza extremos de int antes de multiplicarlos.
     check(PCIe_BuildGeometry(128, 4, 128, 128, 4, 65536, 2, geometry) == EPCIE_GeometrySize); // El contador de leyes de imagen tiene 16 bits.
+    check(PCIe_BuildGeometry(256, 8, 256, 256, 4, 3, 512, geometry) == 0 && geometry.transport_units_per_block == 1024 && geometry.focal_laws_per_image == 3); // El limite de transporte no duplica la imagen.
+    check(PCIe_BuildGeometry(256, 8, 256, 256, 4, 3, 513, geometry) == EPCIE_GeometrySize); // Rechaza 1026 unidades antes de truncar el campo.
+    check(PCIe_BuildGeometry(128, 4, 128, 128, 4, 3, 1024, geometry) == 0 && geometry.transport_units_per_block == 1024); // Conserva el limite original de cuatro modulos.
+    for (int factor : {1, 2}) // Prueba todas las combinaciones representables de la cabecera.
+        for (unsigned int encoded = 0; encoded < 1024; ++encoded) // Incluye los extremos y unidades impares.
+        { // Comprueba el decodificador de produccion, no una copia.
+            unsigned int laws = 999; // Detecta resultados residuales tras un rechazo.
+            const int result = PCIe_DecodeBlockLaws(encoded, factor, laws); // Convierte unidades menos uno a leyes reales.
+            check((encoded + 1) % factor ? (result == EPCIE_BlockLayout && laws == 0) : (result == 0 && laws * factor == encoded + 1)); // Solo admite leyes completas.
+        } // Fin de barrido del campo de diez bits.
+    unsigned int invalid_laws = 99; // Verifica entradas que no proceden de un campo binario valido.
+    check(PCIe_DecodeBlockLaws(1024, 2, invalid_laws) == EPCIE_BlockLayout && invalid_laws == 0); // No acepta valores de once bits.
+    check(PCIe_DecodeBlockLaws(3, 0, invalid_laws) == EPCIE_BlockLayout && invalid_laws == 0); // No divide con geometria sin inicializar.
     for (int channels : {128, 256}) // Comprueba las dos topologias con datos y mapas reales.
     { // Los buffers tienen una ley de cuatro muestras por canal.
         check(PCIe_BuildGeometry(channels, channels / 32, channels, channels, 4, 3, 2, geometry) == 0); // Reutiliza geometria valida.

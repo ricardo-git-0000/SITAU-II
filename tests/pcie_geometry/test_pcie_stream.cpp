@@ -32,7 +32,19 @@ int gb_pcie_buffer_n_blocks_buf = 4; // Provoca varias vueltas de la FIFO pequen
 char gb_log_msg[SIZE_MSG_LOG] = {}; // Recibe mensajes del gestor sin abrir archivos.
 int PCIe_GetFreeBlocksNumber() { return 4; } // Evita pausas automaticas en la fuente sintetica.
 void ThrGE_Pause(int) {} // La pausa fisica queda fuera de este test.
-int PCIe_CheckPCIeHeader_fast(void *) { return 0; } // Las validaciones obligatorias del gestor siguen ejecutandose.
+bool gb_pcie_enabled = true; // Activa la comprobacion real del protocolo.
+int gb_check_pcie_header = 1; // No omite el verificador de secuencia.
+int gb_pcie_n_focal_laws_block = 0; // Capacidad real de cada escenario.
+int gb_pcie_transport_units_per_law = 0; // Factor de transporte de la geometria actual.
+T_block_header gb_last_acquierd_header = {}; // Conserva la cabecera original entre bloques.
+#include "generated/checker.inc" // Ejecuta el verificador real junto con el gestor.
+void configure_header_check(const T_PCIeGeometry &g) // Reinicia el contrato al cambiar de equipo.
+{ // Reproduce la inicializacion del arranque sin acceder al driver.
+    gb_pcie_n_focal_laws_block = g.focal_laws_per_block; // Mantiene leyes reales.
+    gb_pcie_transport_units_per_law = g.transport_units_per_law; // Usa uno para 128 y dos para 256.
+    gb_last_acquierd_header = T_block_header(); // Elimina la cabecera del escenario anterior.
+    gb_last_acquierd_header.header_struct.ch_id_last.bits.last_block = 1; // Marca el proximo bloque como inicio de adquisicion.
+} // Fin del reinicio del verificador.
 int PCIe_GetPtrBlocks(int *count, void **target, int) // Entrega un bloque real al gestor real.
 { // Registra propiedad hasta FreeOneImage_Pointers.
     *count = gb_drv_handle->next < gb_drv_handle->ready.size() ? 1 : 0; // Modela ausencia de datos sin inventar bloques.
@@ -56,7 +68,7 @@ void populate(fuse &driver, const T_PCIeGeometry &g, int images) // Fabrica el t
         header->header_struct.magic_number = HEADER_MAGIC_NUMBER; // Firma correcta.
         header->header_struct.block_index = block; // Secuencia de bloques desde cero.
         header->header_struct.block_beats_word.bits.block_beats = g.beats_per_module - 1; // Campo codificado menos uno.
-        header->header_struct.block_focal_laws_word.bits.block_focal_laws = g.focal_laws_per_block - 1; // Capacidad nominal constante.
+        header->header_struct.block_focal_laws_word.bits.block_focal_laws = g.transport_units_per_block - 1; // Dos unidades por ley real en 256; una en 128.
         header->header_struct.image_index = first / g.focal_laws_per_image; // Imagen de la primera ley del bloque.
         header->header_struct.image_focal_law_word.bits.image_focal_law_index = first % g.focal_laws_per_image; // Posicion inicial dentro de la imagen.
         header->header_struct.ch_id_last.bits.last_block = block == blocks - 1; // Marca solo el final de adquisicion.
@@ -74,6 +86,7 @@ void scenario(int channels, int image_laws, int block_laws) // Repite la misma r
     T_PCIeGeometry g = {}; // Configuracion limpia en cada escenario.
     require(PCIe_BuildGeometry(channels, channels / 32, channels, channels, 4, image_laws, block_laws, g) == 0, "geometry"); // Usa el constructor real.
     fuse driver; // Nueva fuente sin estado de la adquisicion anterior.
+    configure_header_check(g); // Prepara el verificador real para esta adquisicion.
     populate(driver, g, 5); // Genera datos con y sin ultimo bloque parcial.
     gb_drv_handle = &driver; // Conecta el adaptador con la clase real.
     CImageHandle manager(&driver, 4, g); // FIFO pequena para detectar sobrescrituras y vueltas.
@@ -101,10 +114,11 @@ void scenario(int channels, int image_laws, int block_laws) // Repite la misma r
 } // Fin de escenario.
 void rejected_blocks() // Ejercita los rechazos del gestor real antes de entregar punteros.
 { // Cada caso arranca con una fuente nueva.
-    for (int fault = 0; fault < 7; ++fault) // Corrompe magic, beats, leyes, secuencia, ultimo bloque y estado DMA.
+    for (int channels : {128, 256}) // Repite los rechazos con factor uno y dos.
+    for (int fault = 0; fault < 7; ++fault) // Incluye contador impar de unidades en 256.
     { // La configuracion esperada siempre sigue siendo valida.
         T_PCIeGeometry g = {}; // Instantanea independiente.
-        require(PCIe_BuildGeometry(128, 4, 128, 128, 4, 1, 2, g) == 0, "reject geometry"); // Una imagen por ley.
+        require(PCIe_BuildGeometry(channels, channels / 32, channels, channels, 4, 1, 2, g) == 0, "reject geometry"); // Una imagen por ley.
         fuse driver; populate(driver, g, 1); gb_drv_handle = &driver; // Un bloque final con una ley valida.
         auto &header = driver.ready.front()->header_struct; // Modifica solo el campo bajo prueba.
         if (fault == 0) header.magic_number = 0; // Firma corrupta.
@@ -114,6 +128,7 @@ void rejected_blocks() // Ejercita los rechazos del gestor real antes de entrega
         if (fault == 4) header.image_focal_law_word.bits.image_focal_law_total = 0; // Final sin leyes utiles.
         if (fault == 5) header.image_focal_law_word.bits.image_focal_law_total = 3; // Mas leyes validas que la reserva.
         if (fault == 6) driver.fault = 1; // Lectura DMA fallida antes de tener un bloque.
+        configure_header_check(g); // Reinicia la secuencia para cada fallo inyectado.
         CImageHandle manager(&driver, 4, g); // Ejecuta la misma validacion que hardware.
         short *law = nullptr; // Un rechazo no debe entregar este puntero.
         require(manager.GetOneImage_Pointers(&law, nullptr, nullptr) == EPCIE_BlockLayout && law == nullptr, "reject malformed block"); // Comprueba codigo y ausencia de salida.

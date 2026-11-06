@@ -163,6 +163,7 @@ public:
 // =============================================================================
 
 extern CBufferHW *gb_buffer_hw;
+int ST_EnsureHWBuffer(void); // Devuelve -703 si no se puede construir el buffer, sin cerrar el proceso anfitrion.
 extern vector<short int> vresult_buf;
 extern vector<long> gb_buffer_frame;
 

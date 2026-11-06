@@ -13,4 +13,8 @@ implementation = (source / 'c_image_handle.cpp').read_bytes().decode('latin1')  
 implementation = re.sub(r'^#include[^\r\n]*', '', implementation, flags=re.M)  # El harness proporciona solo las dependencias externas simuladas.
 (output / 'types.inc').write_text(types, encoding='utf-8')  # Publica el formato real de las cabeceras para el test nativo Windows.
 (output / 'manager.inc').write_text(header + '\n' + implementation, encoding='utf-8')  # Compila la clase actual, no una copia mantenida a mano.
-print('Preparado el test del gestor real; no se ha compilado ni ejecutado C++.')  # Explicita el alcance de esta preparacion.
+pcie_source = (source / 'pcie.cpp').read_bytes().decode('latin1')  # Extrae tambien el verificador de secuencia de produccion.
+checker = pcie_source[pcie_source.index('int PCIe_CheckPCIeHeader_fast(void *ptr_block)'):]  # Selecciona su firma exacta.
+checker = checker[:checker.index('// -----------------------------------------------------------------------------')]  # Termina antes de la funcion siguiente.
+(output / 'checker.inc').write_text(checker, encoding='utf-8')  # Evita sustituir por exito la conversion del contador de bloques.
+print('Preparados gestor y verificador reales; no se ha compilado ni ejecutado C++.')  # Explicita el alcance de esta preparacion.

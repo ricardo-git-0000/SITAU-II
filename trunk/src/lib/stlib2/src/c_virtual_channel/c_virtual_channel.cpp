@@ -405,7 +405,8 @@ unsigned long size_header_img_pa;
        else // Solo calcula y divide con dimensiones positivas y representables.
        { // El resto de la configuracion sigue compartido entre TCP y PCIe.
            cfg_.gtx_nfl_blocks = static_cast<int>((GTX_SIZE_BLOCK - GTX_SIZE_HEADER) / law_bytes); // Al menos una ley cabe en el bloque.
-           if (UCIP.status_pcie && cfg_.gtx_nfl_blocks > 1024) cfg_.gtx_nfl_blocks = 1024; // El campo PCIe de leyes menos uno tiene diez bits.
+           const int transport_units_per_law = (UCIP.status_pcie && n_bases == 8) ? 2 : 1; // Solo PCIe de ocho modulos necesita dos grupos por ley real.
+           if (UCIP.status_pcie && cfg_.gtx_nfl_blocks > 1024 / transport_units_per_law) cfg_.gtx_nfl_blocks = 1024 / transport_units_per_law; // Limita el contador de transporte a diez bits antes del ajuste de rafaga.
            if (burst_laws < static_cast<unsigned long long>(cfg_.gtx_nfl_blocks)) cfg_.gtx_nfl_blocks = static_cast<int>(burst_laws); // No reserva mas leyes que la rafaga.
            else if (UCIP.pause_after_burst > 0) // Una pausa exige terminar en un limite de bloque.
            { // Busca un divisor positivo de la rafaga.
@@ -657,7 +658,8 @@ try
       msg->n_bases = sys_.base.size();
       msg->acquisition_type = cfg_.acquisition_type;
       msg->signal_mode = cfg_.signal_mode;
-      msg->gtx_n_focal_law = cfg_.gtx_nfl_blocks;
+      const int transport_units_per_law = (UCIP.status_pcie && msg->n_bases == 8) ? 2 : 1; // Conserva TCP y PCIe de cuatro modulos.
+      msg->gtx_n_focal_law = cfg_.gtx_nfl_blocks * transport_units_per_law; // Adapta solo el mensaje; imagenes y emisiones mantienen sus leyes reales.
       msg->start_element = 0;
 
       if (cfg_.acq.n_acq_samples == 0 || cfg_.acq.n_beamformed_samples == 0)
@@ -1380,7 +1382,8 @@ int n_vch;
 
     n_vch = (int)gb_virtual_channel.size();
     if (n_vch <= 0) return ELOG(charES2_DataInconsistency, ES2_DataInconsistency);
-    if (gb_buffer_hw == NULL) gb_buffer_hw = new CBufferHW(SIZE_BUFFER_HW);
+    int buffer_result = ST_EnsureHWBuffer(); // Usa la misma construccion protegida que ST_MemoryResize.
+    if (buffer_result < 0) return RLOG(buffer_result); // No continua con un buffer ausente ni pierde el error.
     if (gb_fp_buffer_acq == NULL) gb_fp_buffer_acq = new CBufferAcq();
     if (gb_pa_buffer_acq == NULL) gb_pa_buffer_acq = new CBufferAcq();
     if (gb_tfm_buffer_acq == NULL) gb_tfm_buffer_acq = new CBufferAcq();
@@ -1435,8 +1438,7 @@ int acquiring = ST_Acquiring();
 // -----------------------------------------------------------------------------
 int ST_VirtualChannelsDefault (void)
 {
-   ST_VirtualChannelsDelete();
-   return ES2_NONE;
+   return ST_VirtualChannelsDelete(); // Conserva el error de creacion en lugar de devolver exito incondicional.
 }
 // -----------------------------------------------------------------------------
 /**

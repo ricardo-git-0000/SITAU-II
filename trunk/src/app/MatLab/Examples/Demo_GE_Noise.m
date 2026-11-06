@@ -24,13 +24,25 @@ end
 %% SYSTEM CONFIGURATION
 xmlFile = 'SITAU2_GE_NOISE.XML';
 
-% [valid, withWarnings, performance] = Validate_XMLConfig(xmlFile);
+try % Valida el mismo formato MC antes de configurar el equipo.
+    [valid, withWarnings, performance] = Validate_XMLConfig(xmlFile, ST2_GetChannelsNumber(), 0); % Usa los canales de BASES_NUMBER y el enlace de OpenSys.
+catch validation_error % No deja el sistema abierto si el XML es incompatible.
+    CloseSys(); % Libera la conexion antes de informar el error de configuracion.
+    rethrow(validation_error); % Mantiene el mensaje y la linea de la validacion.
+end % Fin de validacion previa.
 result = FUS_LoadXMLFileConfig(xmlFile);
 
 if (result < 0)
     CloseSys();
     return;
 end
+
+try % Contrasta las dimensiones que realmente aplico la DLL.
+    Validate_LoadedMCConfig(performance); % Detecta XML ignorado, DLL antigua o rafagas distintas.
+catch validation_error % No inicia adquisicion con una configuracion diferente de la solicitada.
+    CloseSys(); % Cierra la configuracion rechazada antes de volver a intentarlo.
+    rethrow(validation_error); % Muestra la dimension que no coincide.
+end % Fin de comprobacion posterior a la carga.
 
 result = ST2_SetPulseAmplitude(0);
 if (result < 0)

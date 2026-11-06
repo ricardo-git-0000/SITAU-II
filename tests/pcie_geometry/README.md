@@ -73,3 +73,12 @@ Tras un XML rechazado, corregirlo, cerrar y reabrir el sistema. No recargar mien
 - El guard de 512 bloques GTX por ráfaga es el límite de software heredado; no se presenta como máximo de firmware confirmado.
 
 La fase 4 se cierra cuando los ejecutables, la compilación de DLL y esta matriz de hardware pasan y quedan registrados sus resultados. No se considera cerrada por superar las comprobaciones Python.
+
+
+## Actualización: transporte 4+4 de 256
+
+El contador nominal `block_focal_laws` representa unidades de cuatro módulos menos uno: factor 1 para 128 y 2 para 256. Índices de imagen, total por imagen y leyes válidas del último bloque permanecen en leyes reales. `block_beats` no cambia. El mapa físico queda pendiente; no se ha modificado.
+
+Ejecutar de nuevo las tres órdenes Python y compilar los dos tests C++ con los comandos anteriores. La preparación genera ahora también `generated/checker.inc`: el test de flujo ejecuta el verificador de secuencia real además del gestor. Incluye cabeceras adaptadas de 256, regresión de 128, contador impar rechazado y límite de 512 leyes reales. No se han ejecutado esos binarios desde el asistente.
+
+Compilar stlib2 y api_pcie en la misma configuración x64; para probar en otro PC usar ambas Release. Probar primero 128 y después 256, con varias leyes por imagen y último bloque parcial. La simulación del driver no genera este nuevo contrato de cabecera; usar los tests sintéticos y después hardware real. Ver el contrato completo y las limitaciones en `PARAMETRIZACION_BASES_128_256.md`, apartado de transporte de cuatro módulos.
