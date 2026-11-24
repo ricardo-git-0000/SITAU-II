@@ -1,7 +1,9 @@
-function [found, description] = calllib(~, function_name, error_code, ~) % Simula exclusivamente la consulta del catalogo.
+function [found, description] = calllib(~, function_name, error_code, buffer) % Simula exclusivamente la consulta del catalogo y verifica su capacidad C.
 global error_test_state; % Lee el escenario configurado por el test.
 assert(strcmp(function_name, 'ST2_GetError')); % Impide realizar otra operacion de la API durante estas pruebas.
 error_test_state.last_code = double(error_code); % Registra el codigo realmente consultado.
+error_test_state.buffer_capacity = numel(buffer); % Expone la reserva para que el test no confunda un fallo de asercion con el fallback esperado.
+error_test_state.buffer_has_null = any(buffer == char(0)); % Detecta el defecto que truncaba la cstring antes de llamar a la DLL.
 if error_test_state.fail % Simula una DLL incompatible o un fallo de consulta.
     error('SITAU:TestLookup', 'Lookup failed'); % Comprueba que se conserva el error original.
 end % Finaliza la simulacion del fallo.

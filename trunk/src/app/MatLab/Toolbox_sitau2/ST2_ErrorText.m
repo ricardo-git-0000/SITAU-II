@@ -11,7 +11,7 @@ if ~libisloaded(library_name) % Evita llamar a una DLL que no esta cargada.
     return; % Conserva el error original sin provocar un segundo fallo.
 end % Finaliza la comprobacion de disponibilidad.
 try % La presentacion del error no debe ocultar el fallo original.
-    error_buffer = repmat(char(0), 1, 4096); % Reserva espacio para las descripciones del catalogo de la DLL.
+    error_buffer = blanks(4096); % Reserva una cstring no vacia: los nulos iniciales pueden truncar el buffer al convertirlo para calllib.
     [found, description] = calllib(library_name, 'ST2_GetError', int32(error_code), error_buffer); % Consulta el codigo concreto, no un ultimo error potencialmente antiguo.
     description = char(description); % Normaliza el texto recibido desde la biblioteca.
     null_index = find(description == char(0), 1); % Localiza el terminador de la cadena C.

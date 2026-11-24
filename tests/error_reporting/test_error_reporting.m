@@ -13,6 +13,7 @@ for error_code = error_codes % Comprueba que el mensaje conserva cada codigo exa
     actual_message = ST2_ErrorText(error_code, 'api_pcie_x64'); % Ejecuta el codigo de produccion con una respuesta controlada.
     assert(strcmp(actual_message, sprintf('%d: Descripcion de prueba', error_code))); % Verifica formato, comillas y recorte del buffer.
     assert(error_test_state.last_code == error_code); % Verifica que no se consulta otro error anterior.
+    assert(error_test_state.buffer_capacity >= 4096 && ~error_test_state.buffer_has_null); % Exige capacidad visible para C, no solo longitud del vector MATLAB.
 end % Finaliza los casos de codigos reconocidos.
 error_test_state.description = 'Descripcion sin prefijo'; % Simula un formato alternativo sin numero duplicado.
 assert(strcmp(ST2_ErrorText(-1906), '-1906: Descripcion sin prefijo')); % Verifica la arquitectura predeterminada y el texto simple.
